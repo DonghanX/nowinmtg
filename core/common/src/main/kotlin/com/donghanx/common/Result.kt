@@ -12,3 +12,13 @@ sealed interface Result<out T> {
 
 fun <T> Flow<T>.asResultFlow(): Flow<Result<T>> =
     map<T, Result<T>> { Result.Success(it) }.catch { emit(Result.Error(it)) }
+
+fun <T, R> Flow<Result<T>>.foldResult(
+    onSuccess: (data: T) -> R,
+    onError: (exception: Throwable?) -> R
+): Flow<R> = map { result ->
+    when (result) {
+        is Result.Success -> onSuccess(result.data)
+        is Result.Error -> onError(result.exception)
+    }
+}
