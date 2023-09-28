@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Card(
     @SerialName("artist") val artist: String,
-    @SerialName("cmc") val cmc: Int,
+    @SerialName("cmc") val cmc: Double,
     @SerialName("colorIdentity") val colorIdentity: List<String>,
     @SerialName("colors") val colors: List<String>,
     @SerialName("flavor") val flavor: String?,
@@ -16,7 +16,7 @@ data class Card(
     @SerialName("id") val id: String,
     @SerialName("imageUrl") val imageUrl: String?,
     @SerialName("layout") val layout: String,
-    @SerialName("legalities") val legalities: List<Legality>,
+    @SerialName("legalities") val legalities: List<Legality>?,
     @SerialName("manaCost") val manaCost: String,
     @SerialName("multiverseid") val multiverseId: String?,
     @SerialName("name") val name: String,
@@ -27,7 +27,7 @@ data class Card(
     @SerialName("printings") val printings: List<String>,
     @SerialName("rarity") val rarity: String,
     @SerialName("rulings") val rulings: List<Ruling>?,
-    @SerialName("set") val `set`: String,
+    @SerialName("set") val set: String,
     @SerialName("setName") val setName: String,
     @SerialName("subtypes") val subtypes: List<String>?,
     @SerialName("supertypes") val supertypes: List<String>?,
@@ -45,6 +45,7 @@ data class ForeignName(
     @SerialName("language") val language: String,
     @SerialName("multiverseid") val multiverseId: Int,
     @SerialName("name") val name: String,
+    @SerialName("faceName") val faceName: String?,
     @SerialName("text") val text: String,
     @SerialName("type") val type: String
 )

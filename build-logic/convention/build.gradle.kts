@@ -17,6 +17,11 @@ gradlePlugin {
             implementationClass = "AndroidHiltConventionPlugin"
         }
 
+        register("androidApplication") {
+            id = "donghanx.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
+
         register("androidLibrary") {
             id = "donghanx.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"

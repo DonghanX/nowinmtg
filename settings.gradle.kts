@@ -19,3 +19,5 @@ rootProject.name = "nowinmtg"
 include(":app")
 include(":core:network")
 include(":core:model")
+include(":core:data")
+include(":core:common")
