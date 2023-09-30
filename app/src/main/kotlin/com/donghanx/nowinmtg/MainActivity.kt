@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -18,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donghanx.nowinmtg.ui.theme.NowInMTGTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,21 +45,27 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        val defaultCardsUiState by viewModel.defaultCardsStateFlow.collectAsState()
+        val defaultCardsUiState by viewModel.randomCardsUiState.collectAsState()
 
         when (val uiState = defaultCardsUiState) {
-            is DefaultCardsUiState.Success -> {
-                LazyColumn {
-                    items(uiState.cards, key = { it.id }) { card -> Text(text = card.name) }
+            is RandomCardsUiState.Success -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(uiState.cards, key = { it.id }) { card ->
+                        Text(text = card.name, textAlign = TextAlign.Center)
+                    }
                 }
             }
-            is DefaultCardsUiState.Error -> {
+            is RandomCardsUiState.Error -> {
                 LaunchedEffect(uiState) { uiState.exception?.printStackTrace() }
                 Snackbar { Text(text = "Error message: ${uiState.exception?.message.orEmpty()}") }
             }
-            DefaultCardsUiState.Loading -> {
+            RandomCardsUiState.Loading -> {
                 CircularProgressIndicator()
             }
+            RandomCardsUiState.Refreshing -> Unit
         }
     }
 }

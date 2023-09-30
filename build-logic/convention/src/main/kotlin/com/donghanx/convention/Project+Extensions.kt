@@ -7,6 +7,7 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
@@ -55,6 +56,25 @@ private fun Project.configureKotlin() {
                         "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                         "-opt-in=kotlinx.coroutines.FlowPreview",
                     )
+        }
+    }
+}
+
+internal fun Project.configureAndroidCompose(
+    commonExtension: CommonExtensionType,
+) {
+    commonExtension.apply {
+        buildFeatures { compose = true }
+
+        composeOptions {
+            kotlinCompilerExtensionVersion =
+                libs.findVersion("android.compose.compiler").get().toString()
+        }
+
+        dependencies {
+            val bom = libs.findLibrary("androidx.compose.bom").get()
+            add("implementation", platform(bom))
+            add("androidTestImplementation", platform(bom))
         }
     }
 }

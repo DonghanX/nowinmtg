@@ -9,15 +9,15 @@ import kotlinx.serialization.Serializable
 data class Card(
     @SerialName("artist") val artist: String,
     @SerialName("cmc") val cmc: Double,
-    @SerialName("colorIdentity") val colorIdentity: List<String>,
-    @SerialName("colors") val colors: List<String>,
+    @SerialName("colorIdentity") val colorIdentity: List<String>?,
+    @SerialName("colors") val colors: List<String>?,
     @SerialName("flavor") val flavor: String?,
     @SerialName("foreignNames") val foreignNames: List<ForeignName>?,
     @SerialName("id") val id: String,
     @SerialName("imageUrl") val imageUrl: String?,
     @SerialName("layout") val layout: String,
     @SerialName("legalities") val legalities: List<Legality>?,
-    @SerialName("manaCost") val manaCost: String,
+    @SerialName("manaCost") val manaCost: String?,
     @SerialName("multiverseid") val multiverseId: String?,
     @SerialName("name") val name: String,
     @SerialName("number") val number: String,
@@ -31,7 +31,7 @@ data class Card(
     @SerialName("setName") val setName: String,
     @SerialName("subtypes") val subtypes: List<String>?,
     @SerialName("supertypes") val supertypes: List<String>?,
-    @SerialName("text") val text: String,
+    @SerialName("text") val text: String?,
     @SerialName("toughness") val toughness: String?,
     @SerialName("type") val type: String,
     @SerialName("types") val types: List<String>,
@@ -41,13 +41,13 @@ data class Card(
 @Serializable
 data class ForeignName(
     @SerialName("flavor") val flavor: String?,
-    @SerialName("imageUrl") val imageUrl: String,
+    @SerialName("imageUrl") val imageUrl: String?,
     @SerialName("language") val language: String,
-    @SerialName("multiverseid") val multiverseId: Int,
+    @SerialName("multiverseid") val multiverseId: String?,
     @SerialName("name") val name: String,
     @SerialName("faceName") val faceName: String?,
-    @SerialName("text") val text: String,
-    @SerialName("type") val type: String
+    @SerialName("text") val text: String?,
+    @SerialName("type") val type: String?
 )
 
 @Serializable

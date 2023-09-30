@@ -13,32 +13,37 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val cardsRepository: CardsRepository) :
-    ViewModel() {
+class MainViewModel
+@Inject
+constructor(
+    cardsRepository: CardsRepository,
+) : ViewModel() {
 
     companion object {
         private const val DEFAULT_STOP_TIMEOUT_MILLIS = 5_000L
     }
 
-    val defaultCardsStateFlow: StateFlow<DefaultCardsUiState> =
+    val randomCardsUiState: StateFlow<RandomCardsUiState> =
         cardsRepository
-            .defaultCards()
+            .randomCards()
             .asResultFlow()
             .foldResult(
-                onSuccess = { cards -> DefaultCardsUiState.Success(cards) },
-                onError = { exception -> DefaultCardsUiState.Error(exception) }
+                onSuccess = { cards -> RandomCardsUiState.Success(cards) },
+                onError = { exception -> RandomCardsUiState.Error(exception) }
             )
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
-                initialValue = DefaultCardsUiState.Loading
+                initialValue = RandomCardsUiState.Loading
             )
 }
 
-sealed interface DefaultCardsUiState {
-    data class Success(val cards: List<Card>) : DefaultCardsUiState
+sealed interface RandomCardsUiState {
+    data class Success(val cards: List<Card>) : RandomCardsUiState
 
-    data class Error(val exception: Throwable?) : DefaultCardsUiState
+    data class Error(val exception: Throwable?) : RandomCardsUiState
 
-    data object Loading : DefaultCardsUiState
+    data object Loading : RandomCardsUiState
+
+    data object Refreshing : RandomCardsUiState
 }

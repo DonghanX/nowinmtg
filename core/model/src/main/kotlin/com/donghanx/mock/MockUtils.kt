@@ -57,7 +57,7 @@ object MockUtils {
                         faceName = "大天使艾维欣",
                         imageUrl =
                             "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=410071&type=card",
-                        multiverseId = 410071,
+                        multiverseId = "410071",
                         flavor = null
                     ),
                     ForeignName(
@@ -70,7 +70,7 @@ object MockUtils {
                         type = "Créature légendaire : ange",
                         imageUrl =
                             "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=411061&type=card",
-                        multiverseId = 411061
+                        multiverseId = "411061"
                     )
                 ),
             printings = listOf("SOI"),

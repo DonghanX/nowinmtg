@@ -31,5 +31,15 @@ gradlePlugin {
             id = "donghanx.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+
+        register("androidLibraryCompose") {
+            id = "donghanx.android.library.compose"
+            implementationClass = "AndroidLibraryComposeConventionPlugin"
+        }
+
+        register("androidApplicationCompose") {
+            id = "donghanx.android.application.compose"
+            implementationClass = "AndroidApplicationComposeConventionPlugin"
+        }
     }
 }
