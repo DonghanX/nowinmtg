@@ -27,7 +27,7 @@ constructor(
             cardsRemoteDataSource
                 .getRandomCards()
                 .map { it.asRandomCardEntity() }
-                .also { randomCardsDao.upsertRandomCards(it) }
+                .also { randomCardsDao.deleteAllAndInsertRandomCards(it) }
         }
     }
 }
