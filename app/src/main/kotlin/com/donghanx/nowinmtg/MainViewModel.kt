@@ -11,21 +11,26 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel
 @Inject
 constructor(
-    cardsRepository: CardsRepository,
+    private val cardsRepository: CardsRepository,
 ) : ViewModel() {
 
     companion object {
         private const val DEFAULT_STOP_TIMEOUT_MILLIS = 5_000L
     }
 
+    init {
+        refreshRandomCards()
+    }
+
     val randomCardsUiState: StateFlow<RandomCardsUiState> =
         cardsRepository
-            .randomCards()
+            .getRandomCards()
             .asResultFlow()
             .foldResult(
                 onSuccess = { cards -> RandomCardsUiState.Success(cards) },
@@ -36,6 +41,10 @@ constructor(
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
                 initialValue = RandomCardsUiState.Loading
             )
+
+    fun refreshRandomCards() {
+        viewModelScope.launch { cardsRepository.refreshRandomCards() }
+    }
 }
 
 sealed interface RandomCardsUiState {

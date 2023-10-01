@@ -2,11 +2,12 @@ package com.donghanx.mock
 
 import com.donghanx.model.Card
 import com.donghanx.model.ForeignName
+import com.donghanx.model.NetworkCard
 import com.donghanx.model.Ruling
 
 object MockUtils {
-    fun mockAvacyn(): Card =
-        Card(
+    fun mockAvacyn(): NetworkCard =
+        NetworkCard(
             name = "Archangel Avacyn",
             manaCost = "{3}{W}{W}",
             cmc = 5.0,
