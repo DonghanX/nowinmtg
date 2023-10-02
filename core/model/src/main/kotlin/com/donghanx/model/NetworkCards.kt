@@ -3,10 +3,10 @@ package com.donghanx.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable data class Cards(@SerialName("cards") val cards: List<Card>)
+@Serializable data class NetworkCards(@SerialName("cards") val cards: List<NetworkCard>)
 
 @Serializable
-data class Card(
+data class NetworkCard(
     @SerialName("artist") val artist: String,
     @SerialName("cmc") val cmc: Double,
     @SerialName("colorIdentity") val colorIdentity: List<String>?,

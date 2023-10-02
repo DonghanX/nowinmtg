@@ -21,6 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.donghanx.design.pullrefresh.PullRefreshIndicator
+import com.donghanx.design.pullrefresh.pullRefresh
+import com.donghanx.design.pullrefresh.rememberPullRefreshState
 import com.donghanx.nowinmtg.ui.theme.NowInMTGTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,7 +47,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    val refreshing by viewModel.refreshing.collectAsState()
+    val pullRefreshState =
+        rememberPullRefreshState(
+            refreshing = refreshing,
+            onRefresh = { viewModel.refreshRandomCards() }
+        )
+
+    Box(
+        modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState),
+        contentAlignment = Alignment.Center
+    ) {
         val defaultCardsUiState by viewModel.randomCardsUiState.collectAsState()
 
         when (val uiState = defaultCardsUiState) {
@@ -65,7 +78,12 @@ fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
             RandomCardsUiState.Loading -> {
                 CircularProgressIndicator()
             }
-            RandomCardsUiState.Refreshing -> Unit
         }
+
+        PullRefreshIndicator(
+            modifier = Modifier.align(Alignment.TopCenter),
+            refreshing = refreshing,
+            state = pullRefreshState
+        )
     }
 }
