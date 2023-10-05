@@ -1,5 +1,8 @@
 package com.donghanx.data.repository.cards
 
+import com.donghanx.common.NetworkResult
+import com.donghanx.common.asResultFlow
+import com.donghanx.common.foldResult
 import com.donghanx.database.RandomCardsDao
 import com.donghanx.database.model.RandomCardEntity
 import com.donghanx.database.model.asExternalModel
@@ -9,8 +12,9 @@ import com.donghanx.network.di.MtgCardsRemoteDataSource
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 class RandomCardsRepository
 @Inject
@@ -20,14 +24,21 @@ constructor(
     private val ioDispatcher: CoroutineDispatcher
 ) : CardsRepository {
     override fun getRandomCards(): Flow<List<Card>> =
-        randomCardsDao.getRandomCards().map { it.map(RandomCardEntity::asExternalModel) }
+        randomCardsDao
+            .getRandomCards()
+            .map { it.map(RandomCardEntity::asExternalModel) }
+            .flowOn(ioDispatcher)
 
-    override suspend fun refreshRandomCards() {
-        withContext(ioDispatcher) {
-            cardsRemoteDataSource
-                .getRandomCards()
-                .map { it.asRandomCardEntity() }
-                .also { randomCardsDao.deleteAllAndInsertRandomCards(it) }
-        }
-    }
+    override fun refreshRandomCards(): Flow<NetworkResult<Unit>> =
+        flow { emit(cardsRemoteDataSource.getRandomCards()) }
+            .asResultFlow()
+            .foldResult(
+                onSuccess = { randomCards ->
+                    randomCards
+                        .map { it.asRandomCardEntity() }
+                        .also { randomCardsDao.deleteAllAndInsertRandomCards(it) }
+                    NetworkResult.Success(Unit)
+                },
+                onError = { NetworkResult.Error(it) }
+            )
 }
