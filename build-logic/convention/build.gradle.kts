@@ -41,5 +41,10 @@ gradlePlugin {
             id = "donghanx.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
+
+        register("androidFeature") {
+            id = "donghanx.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
     }
 }

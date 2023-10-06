@@ -1,4 +1,4 @@
-package com.donghanx.nowinmtg
+package com.donghanx.randomcards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
