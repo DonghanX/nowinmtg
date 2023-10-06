@@ -12,7 +12,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,10 +23,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donghanx.design.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.pullrefresh.pullRefresh
 import com.donghanx.design.pullrefresh.rememberPullRefreshState
+import com.donghanx.model.Card
 
 @Composable
 fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
-    val refreshing by viewModel.refreshing.collectAsState()
+    val refreshing by viewModel.refreshing.collectAsStateWithLifecycle()
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = refreshing,
@@ -38,18 +38,11 @@ fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
         modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState),
         contentAlignment = Alignment.Center
     ) {
-        val defaultCardsUiState by viewModel.randomCardsUiState.collectAsState()
+        val defaultCardsUiState by viewModel.randomCardsUiState.collectAsStateWithLifecycle()
 
         when (val uiState = defaultCardsUiState) {
             is RandomCardsUiState.Success -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(uiState.cards, key = { it.id }) { card ->
-                        Text(text = card.name, textAlign = TextAlign.Center)
-                    }
-                }
+                CardsGallery(uiState.cards)
             }
             RandomCardsUiState.Empty -> {
                 Text(text = "Cards are unavailable at this time")
@@ -66,18 +59,33 @@ fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
         )
 
         val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
-        NetworkErrorSnackbar(networkStatus = networkStatus)
+        NetworkErrorSnackbar(
+            networkStatus = networkStatus,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
 @Composable
-private fun NetworkErrorSnackbar(networkStatus: NetworkStatus) {
+private fun CardsGallery(cards: List<Card>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        items(cards, key = { it.id }) { card ->
+            Text(text = card.name, textAlign = TextAlign.Center)
+        }
+    }
+}
+
+@Composable
+private fun NetworkErrorSnackbar(networkStatus: NetworkStatus, modifier: Modifier = Modifier) {
     val (isNetworkErrorSnackbarVisible, setNetworkErorSnackbarVisible) =
         remember { mutableStateOf(false) }
 
     LaunchedEffect(networkStatus) { setNetworkErorSnackbarVisible(networkStatus.hasError) }
 
-    AnimatedVisibility(visible = isNetworkErrorSnackbarVisible) {
+    AnimatedVisibility(visible = isNetworkErrorSnackbarVisible, modifier = modifier) {
         Snackbar(
             dismissAction = {
                 Button(onClick = { setNetworkErorSnackbarVisible(false) }) {
