@@ -19,7 +19,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", project(":core:design"))
 
                 add("implementation", libs.findLibrary("androidx.core.ktx").get())
-                add("implementation", libs.findLibrary("androidx.lifecycle.runtime.ktx").get())
+                add("implementation", libs.findLibrary("androidx.lifecycle.runtime.compose").get())
                 add("implementation", libs.findLibrary("androidx.lifecycle.viewmodel.compose").get())
                 add("implementation", libs.findLibrary("androidx.compose.ui").get())
                 add("implementation", libs.findLibrary("androidx.compose.ui.graphics").get())

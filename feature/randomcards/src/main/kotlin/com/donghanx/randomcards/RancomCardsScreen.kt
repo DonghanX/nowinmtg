@@ -19,24 +19,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.donghanx.design.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.pullrefresh.pullRefresh
 import com.donghanx.design.pullrefresh.rememberPullRefreshState
 
 @Composable
-fun DefaultCardsScreen(
-    modifier: Modifier = Modifier,
-    viewModel: MainViewModel = viewModel()
-) {
+fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
     val refreshing by viewModel.refreshing.collectAsState()
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = refreshing,
-            onRefresh = {
-                println("is refreshing? ${viewModel.refreshing.value}")
-                viewModel.refreshRandomCards()
-            }
+            onRefresh = { viewModel.refreshRandomCards() }
         )
 
     Box(
@@ -70,22 +65,27 @@ fun DefaultCardsScreen(
             state = pullRefreshState
         )
 
-        val (isNetworkErrorSnackbarVisible, setNetworkErorSnackbarVisible) =
-            remember { mutableStateOf(false) }
-        val networkStatus by viewModel.networkStatus.collectAsState()
+        val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
+        NetworkErrorSnackbar(networkStatus = networkStatus)
+    }
+}
 
-        LaunchedEffect(networkStatus) { setNetworkErorSnackbarVisible(networkStatus.hasError) }
+@Composable
+private fun NetworkErrorSnackbar(networkStatus: NetworkStatus) {
+    val (isNetworkErrorSnackbarVisible, setNetworkErorSnackbarVisible) =
+        remember { mutableStateOf(false) }
 
-        AnimatedVisibility(visible = isNetworkErrorSnackbarVisible) {
-            Snackbar(
-                dismissAction = {
-                    Button(onClick = { setNetworkErorSnackbarVisible(false) }) {
-                        Text(text = "Dismiss")
-                    }
+    LaunchedEffect(networkStatus) { setNetworkErorSnackbarVisible(networkStatus.hasError) }
+
+    AnimatedVisibility(visible = isNetworkErrorSnackbarVisible) {
+        Snackbar(
+            dismissAction = {
+                Button(onClick = { setNetworkErorSnackbarVisible(false) }) {
+                    Text(text = "Dismiss")
                 }
-            ) {
-                Text(text = networkStatus.errorMessage)
             }
+        ) {
+            Text(text = networkStatus.errorMessage)
         }
     }
 }
