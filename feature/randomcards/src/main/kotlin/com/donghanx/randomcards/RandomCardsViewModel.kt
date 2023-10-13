@@ -58,7 +58,7 @@ constructor(
         viewModelScope.launch {
             withRefreshing {
                 cardsRepository
-                    .refreshRandomCards()
+                    .refreshRandomCards(shouldContainImageUrl = true)
                     .onEach { networkResult -> networkResult.updateNetworkStatus() }
                     .collect()
             }

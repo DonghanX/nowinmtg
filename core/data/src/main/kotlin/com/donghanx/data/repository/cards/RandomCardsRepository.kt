@@ -29,14 +29,16 @@ constructor(
             .map { it.map(RandomCardEntity::asExternalModel) }
             .flowOn(ioDispatcher)
 
-    override fun refreshRandomCards(): Flow<NetworkResult<Unit>> =
+    override fun refreshRandomCards(shouldContainImageUrl: Boolean): Flow<NetworkResult<Unit>> =
         flow { emit(cardsRemoteDataSource.getRandomCards()) }
             .asResultFlow()
             .foldResult(
                 onSuccess = { randomCards ->
                     randomCards
+                        .filterNot { shouldContainImageUrl && it.imageUrl == null }
                         .map { it.asRandomCardEntity() }
                         .also { randomCardsDao.deleteAllAndInsertRandomCards(it) }
+
                     NetworkResult.Success(Unit)
                 },
                 onError = { NetworkResult.Error(it) }
