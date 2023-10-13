@@ -3,11 +3,13 @@ package com.donghanx.data.repository.cards
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asResultFlow
 import com.donghanx.common.foldResult
+import com.donghanx.data.sync.syncWith
 import com.donghanx.database.RandomCardsDao
 import com.donghanx.database.model.RandomCardEntity
 import com.donghanx.database.model.asExternalModel
 import com.donghanx.database.model.asRandomCardEntity
 import com.donghanx.model.Card
+import com.donghanx.model.NetworkCard
 import com.donghanx.network.di.MtgCardsRemoteDataSource
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -36,8 +38,10 @@ constructor(
                 onSuccess = { randomCards ->
                     randomCards
                         .filterNot { shouldContainImageUrl && it.imageUrl == null }
-                        .map { it.asRandomCardEntity() }
-                        .also { randomCardsDao.deleteAllAndInsertRandomCards(it) }
+                        .syncWith(
+                            entityConverter = NetworkCard::asRandomCardEntity,
+                            modelActions = randomCardsDao::deleteAllAndInsertRandomCards
+                        )
 
                     NetworkResult.Success(Unit)
                 },

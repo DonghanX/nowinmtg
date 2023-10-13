@@ -1,7 +1,9 @@
 package com.donghanx.randomcards
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -20,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -71,13 +74,19 @@ fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
 
 @Composable
 private fun CardsGallery(cards: List<Card>) {
-    LazyVerticalGrid(columns = GridCells.Fixed(count = 2), modifier = Modifier.fillMaxSize()) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(count = 2),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(cards, key = { it.id }) { card ->
             AsyncImage(
                 model = card.imageUrl,
                 contentDescription = card.text,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth(0.5F).wrapContentHeight()
+                modifier = Modifier.fillMaxWidth().wrapContentHeight()
             )
         }
     }
