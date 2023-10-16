@@ -51,7 +51,11 @@ constructor(
             )
 
     init {
-        refreshRandomCards()
+        viewModelScope.launch {
+            if (cardsRepository.shouldFetchInitialCards()) {
+                refreshRandomCards()
+            }
+        }
     }
 
     fun refreshRandomCards() {
