@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,6 +34,7 @@ import com.donghanx.design.R as DesignR
 import com.donghanx.design.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.pullrefresh.pullRefresh
 import com.donghanx.design.pullrefresh.rememberPullRefreshState
+import com.donghanx.mock.MockUtils
 import com.donghanx.model.Card
 import kotlinx.coroutines.launch
 
@@ -127,4 +129,10 @@ private fun ScrollToGridTopButton(
     AnimatedVisibility(visible = visible, modifier = modifier) {
         Button(onClick = onScrollToGridTopClick) { Text(text = "Scroll To Top") }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CardsGalleryPreview() {
+    CardsGallery(cards = MockUtils.emptyCards)
 }

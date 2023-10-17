@@ -6,7 +6,20 @@ import com.donghanx.model.NetworkCard
 import com.donghanx.model.Ruling
 
 object MockUtils {
-    fun mockAvacyn(): NetworkCard =
+    val emptyCards = List(5) { Card(id = it.toString(), name = "", text = "", imageUrl = "") }
+
+    val externalCards =
+        listOf(
+            Card(
+                id = "291e09c9-747e-5e5d-9ee8-179e1a296ae8",
+                name = "Dorothea, Vengeful Victim // Dorothea's Retribution",
+                text =
+                    "Enchant creature\\nEnchanted creature has \\\"Whenever this creature attacks, create a 4/4 white Spirit creature token with flying that's tapped and attacking. Sacrifice that token at end of combat.\\\"\\nIf Dorothea's Retribution would be put into a graveyard from anywhere, exile it instead.",
+                imageUrl = ""
+            )
+        )
+
+    val networkCard: NetworkCard =
         NetworkCard(
             name = "Archangel Avacyn",
             manaCost = "{3}{W}{W}",
