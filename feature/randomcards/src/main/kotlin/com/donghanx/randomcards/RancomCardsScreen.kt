@@ -1,8 +1,6 @@
 package com.donghanx.randomcards
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,13 +12,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Button
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -67,12 +62,6 @@ fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
             modifier = Modifier.align(Alignment.TopCenter),
             refreshing = refreshing,
             state = pullRefreshState
-        )
-
-        val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
-        NetworkErrorSnackbar(
-            networkStatus = networkStatus,
-            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }
@@ -125,25 +114,5 @@ private fun ScrollToGridTopButton(
 ) {
     AnimatedVisibility(visible = visible, modifier = modifier) {
         Button(onClick = onScrollToGridTopClick) { Text(text = "Scroll To Top") }
-    }
-}
-
-@Composable
-private fun NetworkErrorSnackbar(networkStatus: NetworkStatus, modifier: Modifier = Modifier) {
-    val (isNetworkErrorSnackbarVisible, setNetworkErorSnackbarVisible) =
-        remember { mutableStateOf(false) }
-
-    LaunchedEffect(networkStatus) { setNetworkErorSnackbarVisible(networkStatus.hasError) }
-
-    AnimatedVisibility(visible = isNetworkErrorSnackbarVisible, modifier = modifier) {
-        Snackbar(
-            dismissAction = {
-                Button(onClick = { setNetworkErorSnackbarVisible(false) }) {
-                    Text(text = "Dismiss")
-                }
-            }
-        ) {
-            Text(text = networkStatus.errorMessage)
-        }
     }
 }
