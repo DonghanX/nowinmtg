@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.donghanx.carddetails.navigation.cardDetailsScreen
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
 import com.donghanx.randomcards.navigation.randomCardsScreen
 
@@ -20,5 +21,6 @@ fun NimNavHost(
         modifier = modifier
     ) {
         randomCardsScreen(onShowSnackbar = onShowSnackbar)
+        cardDetailsScreen(onShowSnackbar = onShowSnackbar)
     }
 }
