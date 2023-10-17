@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.donghanx.design.R as DesignR
@@ -39,10 +39,10 @@ import com.donghanx.model.Card
 import kotlinx.coroutines.launch
 
 @Composable
-fun DefaultCardsScreen(
+fun RandomCardsScreen(
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     val refreshing by viewModel.refreshing.collectAsStateWithLifecycle()
     val pullRefreshState =
