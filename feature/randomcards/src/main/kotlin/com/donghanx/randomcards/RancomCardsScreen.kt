@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -36,7 +37,11 @@ import com.donghanx.model.Card
 import kotlinx.coroutines.launch
 
 @Composable
-fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
+fun DefaultCardsScreen(
+    onShowSnackbar: suspend (message: String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = viewModel()
+) {
     val refreshing by viewModel.refreshing.collectAsStateWithLifecycle()
     val pullRefreshState =
         rememberPullRefreshState(
@@ -63,6 +68,13 @@ fun DefaultCardsScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
             refreshing = refreshing,
             state = pullRefreshState
         )
+
+        val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
+        LaunchedEffect(networkStatus) {
+            if (networkStatus.hasError) {
+                onShowSnackbar(networkStatus.errorMessage)
+            }
+        }
     }
 }
 
