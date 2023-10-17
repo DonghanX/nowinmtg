@@ -21,7 +21,8 @@ data class RandomCardEntity(
     val type: String,
 )
 
-fun RandomCardEntity.asExternalModel(): Card = Card(id = id, name = name, text = text.orEmpty())
+fun RandomCardEntity.asExternalModel(): Card =
+    Card(id = id, name = name, text = text.orEmpty(), imageUrl = imageUrl.orEmpty())
 
 fun NetworkCard.asRandomCardEntity(): RandomCardEntity =
     RandomCardEntity(

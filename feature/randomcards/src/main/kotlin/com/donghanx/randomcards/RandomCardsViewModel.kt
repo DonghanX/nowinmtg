@@ -3,6 +3,7 @@ package com.donghanx.randomcards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.donghanx.common.NetworkResult
+import com.donghanx.common.NetworkStatus
 import com.donghanx.data.repository.cards.CardsRepository
 import com.donghanx.model.Card
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,14 +52,18 @@ constructor(
             )
 
     init {
-        refreshRandomCards()
+        viewModelScope.launch {
+            if (cardsRepository.shouldFetchInitialCards()) {
+                refreshRandomCards()
+            }
+        }
     }
 
     fun refreshRandomCards() {
         viewModelScope.launch {
             withRefreshing {
                 cardsRepository
-                    .refreshRandomCards()
+                    .refreshRandomCards(shouldContainImageUrl = true)
                     .onEach { networkResult -> networkResult.updateNetworkStatus() }
                     .collect()
             }
@@ -96,9 +101,3 @@ sealed interface RandomCardsUiState {
     data object Empty : RandomCardsUiState
     data object Loading : RandomCardsUiState
 }
-
-data class NetworkStatus(
-    val hasError: Boolean,
-    val errorMessage: String = "",
-    val replayTick: Int = 0
-)

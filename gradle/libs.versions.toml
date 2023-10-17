@@ -15,14 +15,16 @@ material = "1.9.0"
 hilt = "2.47"
 kotlinx-serialization = "1.5.1"
 ktor = "2.3.4"
+okhttp = "4.11.0"
 room = "2.5.2"
 ksp = "1.9.10-1.0.13"
+coil = "2.4.0"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
-androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle"}
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }
@@ -59,10 +61,19 @@ ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "k
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
-#room
+# room
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+# coil
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
+# okhttp
+okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+
+# Play Services
+play-services-basement = { group = "com.google.android.gms", name = "play-services-basement", version = "18.2.0" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

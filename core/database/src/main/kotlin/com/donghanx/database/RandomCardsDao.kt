@@ -21,4 +21,7 @@ interface RandomCardsDao {
         deleteAllRandomCards()
         insertRandomCards(randomCards)
     }
+
+    @Query("SELECT COUNT(*) FROM random_cards")
+    suspend fun getRandomCardsCount(): Int
 }

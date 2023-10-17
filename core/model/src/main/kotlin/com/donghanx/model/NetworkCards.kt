@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NetworkCard(
-    @SerialName("artist") val artist: String,
+    @SerialName("artist") val artist: String?,
     @SerialName("cmc") val cmc: Double,
     @SerialName("colorIdentity") val colorIdentity: List<String>?,
     @SerialName("colors") val colors: List<String>?,
