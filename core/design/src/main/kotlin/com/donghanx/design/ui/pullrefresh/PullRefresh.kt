@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.donghanx.design.pullrefresh
+package com.donghanx.design.ui.pullrefresh
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset

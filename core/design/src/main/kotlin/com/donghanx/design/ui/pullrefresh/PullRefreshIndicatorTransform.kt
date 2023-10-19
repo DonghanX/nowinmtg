@@ -1,4 +1,4 @@
-package com.donghanx.design.pullrefresh
+package com.donghanx.design.ui.pullrefresh
 
 /*
  * Copyright 2022 The Android Open Source Project

@@ -31,15 +31,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.donghanx.design.R as DesignR
-import com.donghanx.design.pullrefresh.PullRefreshIndicator
-import com.donghanx.design.pullrefresh.pullRefresh
-import com.donghanx.design.pullrefresh.rememberPullRefreshState
+import com.donghanx.design.composable.extensions.rippleClickable
+import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
+import com.donghanx.design.ui.pullrefresh.pullRefresh
+import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.Card
 import kotlinx.coroutines.launch
 
 @Composable
 fun RandomCardsScreen(
+    onCardClick: (cardId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel()
@@ -59,7 +61,7 @@ fun RandomCardsScreen(
 
         when (val uiState = defaultCardsUiState) {
             is RandomCardsUiState.Success -> {
-                CardsGallery(uiState.cards)
+                CardsGallery(uiState.cards, onCardClick = onCardClick)
             }
             RandomCardsUiState.Empty,
             RandomCardsUiState.Loading -> Unit
@@ -81,7 +83,7 @@ fun RandomCardsScreen(
 }
 
 @Composable
-private fun CardsGallery(cards: List<Card>) {
+private fun CardsGallery(cards: List<Card>, onCardClick: (cardId: String) -> Unit) {
     val scope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
@@ -104,7 +106,10 @@ private fun CardsGallery(cards: List<Card>) {
                     contentDescription = card.text,
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .wrapContentHeight()
+                            .rippleClickable(onClick = { onCardClick(card.id) })
                 )
             }
         }
@@ -134,5 +139,5 @@ private fun ScrollToGridTopButton(
 @Preview(showBackground = true)
 @Composable
 private fun CardsGalleryPreview() {
-    CardsGallery(cards = MockUtils.emptyCards)
+    CardsGallery(cards = MockUtils.emptyCards, onCardClick = {})
 }
