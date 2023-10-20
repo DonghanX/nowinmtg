@@ -36,7 +36,7 @@ import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.ui.pullrefresh.pullRefresh
 import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
 import com.donghanx.mock.MockUtils
-import com.donghanx.model.Card
+import com.donghanx.model.CardPreview
 import kotlinx.coroutines.launch
 
 @Composable
@@ -83,7 +83,7 @@ fun RandomCardsScreen(
 }
 
 @Composable
-private fun CardsGallery(cards: List<Card>, onCardClick: (cardId: String) -> Unit) {
+private fun CardsGallery(cards: List<CardPreview>, onCardClick: (cardId: String) -> Unit) {
     val scope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
@@ -103,7 +103,7 @@ private fun CardsGallery(cards: List<Card>, onCardClick: (cardId: String) -> Uni
                             .data(card.imageUrl)
                             .crossfade(true)
                             .build(),
-                    contentDescription = card.text,
+                    contentDescription = card.name,
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
                     modifier =
@@ -114,11 +114,11 @@ private fun CardsGallery(cards: List<Card>, onCardClick: (cardId: String) -> Uni
             }
         }
 
-        val isLastItemReached by remember {
+        val shouldShowScrollToTopButton by remember {
             derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
         }
         ScrollToGridTopButton(
-            visible = isLastItemReached,
+            visible = shouldShowScrollToTopButton,
             onScrollToGridTopClick = { scope.launch { lazyGridState.animateScrollToItem(0) } },
             modifier = Modifier.align(Alignment.BottomCenter)
         )

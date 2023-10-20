@@ -8,7 +8,7 @@ import com.donghanx.database.RandomCardsDao
 import com.donghanx.database.model.RandomCardEntity
 import com.donghanx.database.model.asExternalModel
 import com.donghanx.database.model.asRandomCardEntity
-import com.donghanx.model.Card
+import com.donghanx.model.CardPreview
 import com.donghanx.model.NetworkCard
 import com.donghanx.network.di.MtgCardsRemoteDataSource
 import javax.inject.Inject
@@ -26,7 +26,7 @@ constructor(
     private val cardsRemoteDataSource: MtgCardsRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher
 ) : CardsRepository {
-    override fun getRandomCards(): Flow<List<Card>> =
+    override fun getRandomCards(): Flow<List<CardPreview>> =
         randomCardsDao
             .getRandomCards()
             .map { it.map(RandomCardEntity::asExternalModel) }

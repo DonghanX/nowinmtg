@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.NetworkStatus
 import com.donghanx.data.repository.cards.CardsRepository
-import com.donghanx.model.Card
+import com.donghanx.model.CardPreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -97,7 +97,7 @@ constructor(
 }
 
 sealed interface RandomCardsUiState {
-    data class Success(val cards: List<Card>) : RandomCardsUiState
+    data class Success(val cards: List<CardPreview>) : RandomCardsUiState
     data object Empty : RandomCardsUiState
     data object Loading : RandomCardsUiState
 }

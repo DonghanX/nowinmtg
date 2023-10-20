@@ -1,0 +1,65 @@
+package com.donghanx.database.model
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.donghanx.model.NetworkCard
+
+@Entity(tableName = "card_details")
+data class CardDetailsEntity(
+    @PrimaryKey val id: String,
+    val artist: String?,
+    val cmc: Double,
+    val colorIdentity: List<String>?,
+    val colors: List<String>?,
+    val flavor: String?,
+    val imageUrl: String?,
+    val layout: String,
+    val manaCost: String?,
+    val multiverseId: String?,
+    val name: String,
+    val number: String,
+    val originalText: String?,
+    val originalType: String?,
+    val power: String?,
+    val printings: List<String>,
+    val rarity: String,
+    val set: String,
+    val setName: String,
+    val subtypes: List<String>?,
+    val supertypes: List<String>?,
+    val text: String?,
+    val toughness: String?,
+    val type: String,
+    val types: List<String>,
+    val variations: List<String>?
+)
+
+//fun NetworkCard.asCardDetailsEntity(): CardDetailsEntity =
+//    CardDetailsEntity(
+//        id = id,
+//        artist = artist,
+//        cmc = cmc,
+//        colorIdentity = colorIdentity,
+//        colors = colors,
+//        flavor = flavor,
+//        imageUrl = imageUrl,
+//        layout = layout,
+//        manaCost = manaCost,
+//        multiverseId = multiverseId,
+//        name = name,
+//        number = number,
+//        originalText = originalText,
+//        originalType = originalType,
+//        power = power,
+//        printings = printings,
+//        rarity = rarity,
+//        set = set,
+//        setName = setName,
+//        subtypes = subtypes,
+//        supertypes = supertypes,
+//        text = text,
+//        toughness = toughness,
+//        type = type,
+//        types = types,
+//        variations = variations
+//    )
