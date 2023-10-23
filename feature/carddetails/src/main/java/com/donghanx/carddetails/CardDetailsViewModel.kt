@@ -12,6 +12,7 @@ import com.donghanx.data.repository.carddetails.CardDetailsRepository
 import com.donghanx.model.CardDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +36,8 @@ constructor(
     private val cardId: StateFlow<String?> =
         savedStateHandle.getStateFlow(key = CARD_ID_ARGS, initialValue = null)
 
+    private val validCardId: Flow<String> = cardId.filterNotNull()
+
     private val viewModelState = MutableStateFlow(CardDetailsViewModelState(refreshing = true))
 
     val cardDetailsUiState: StateFlow<CardDetailsUiState> =
@@ -51,11 +54,11 @@ constructor(
     }
 
     private fun observeCardDetails() {
+        refreshCardDetails()
+
         viewModelScope.launch {
-            cardId
-                .filterNotNull()
+            validCardId
                 .flatMapLatest { cardId ->
-                    refreshCardDetails(cardId)
                     // Populates the card details using the offline-stored data if exists
                     cardDetailsRepository.getCardDetailsById(cardId)
                 }
@@ -72,18 +75,21 @@ constructor(
         }
     }
 
-    suspend fun refreshCardDetails(cardId: String) {
-        cardDetailsRepository
-            .refreshCardDetails(cardId)
-            .onEach { it.updateViewModelState() }
-            .collect()
+    fun refreshCardDetails() {
+        viewModelScope.launch {
+            validCardId
+                .flatMapLatest { cardId -> cardDetailsRepository.refreshCardDetails(cardId) }
+                .onEach { it.updateViewModelState() }
+                .collect()
+        }
     }
 
     private fun <T> NetworkResult<T>.updateViewModelState() {
         viewModelState.update {
             when (this) {
-                is NetworkResult.Success ->
+                is NetworkResult.Success -> {
                     CardDetailsViewModelState(cardDetails = it.cardDetails, refreshing = false)
+                }
                 is NetworkResult.Error ->
                     CardDetailsViewModelState(
                         cardDetails = it.cardDetails,

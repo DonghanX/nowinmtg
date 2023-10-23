@@ -1,12 +1,21 @@
 package com.donghanx.carddetails
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
+import com.donghanx.design.ui.pullrefresh.pullRefresh
+import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
 
 @Composable
 fun CardDetailsScreen(
@@ -16,18 +25,37 @@ fun CardDetailsScreen(
 ) {
     val cardDetailsUiState by viewModel.cardDetailsUiState.collectAsStateWithLifecycle()
 
-    when (val uiState = cardDetailsUiState) {
-        is CardDetailsUiState.Success -> {
-            Text(text = "Success: card name is ${uiState.cardDetails.name}")
-        }
-        is CardDetailsUiState.NoCardDetails -> {
-            Text(text = "Empty")
-        }
-    }
+    val pullRefreshState =
+        rememberPullRefreshState(
+            refreshing = cardDetailsUiState.refreshing,
+            onRefresh = { viewModel.refreshCardDetails() }
+        )
 
-    LaunchedEffect(cardDetailsUiState.errorMessage) {
-        if (cardDetailsUiState.hasError()) {
-            onShowSnackbar(cardDetailsUiState.errorMessage.message)
+    Box(
+        modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState())) {
+            when (val uiState = cardDetailsUiState) {
+                is CardDetailsUiState.Success -> {
+                    Text(text = "Success: card name is ${uiState.cardDetails.name}")
+                }
+                is CardDetailsUiState.NoCardDetails -> {
+                    Text(text = "Empty")
+                }
+            }
+        }
+
+        PullRefreshIndicator(
+            refreshing = cardDetailsUiState.refreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+
+        LaunchedEffect(cardDetailsUiState.errorMessage) {
+            if (cardDetailsUiState.hasError()) {
+                onShowSnackbar(cardDetailsUiState.errorMessage.message)
+            }
         }
     }
 }
