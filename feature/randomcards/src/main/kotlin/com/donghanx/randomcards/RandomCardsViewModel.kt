@@ -26,10 +26,6 @@ constructor(
     private val cardsRepository: CardsRepository,
 ) : ViewModel() {
 
-    companion object {
-        private const val DEFAULT_STOP_TIMEOUT_MILLIS = 5_000L
-    }
-
     private val _refreshing = MutableStateFlow(false)
     val refreshing = _refreshing.asStateFlow()
 
@@ -47,7 +43,7 @@ constructor(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
+                started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
                 initialValue = RandomCardsUiState.Loading
             )
 
@@ -101,3 +97,5 @@ sealed interface RandomCardsUiState {
     data object Empty : RandomCardsUiState
     data object Loading : RandomCardsUiState
 }
+
+private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

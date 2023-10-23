@@ -1,6 +1,8 @@
 package com.donghanx.network.di
 
 import com.donghanx.model.NetworkCard
+import com.donghanx.model.NetworkCardDetails
+import com.donghanx.model.NetworkCardDetailsList
 import com.donghanx.model.NetworkCards
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -21,4 +23,14 @@ class MtgCardsRemoteDataSource @Inject constructor(private val mtgHttpClient: Mt
             }
             .body<NetworkCards>()
             .cards
+
+    suspend fun getCardDetailsById(cardId: String): NetworkCardDetails =
+        mtgHttpClient()
+            .get {
+                url(path = "/cards")
+                parameter(key = "id", value = cardId)
+            }
+            .body<NetworkCardDetailsList>()
+            .cards
+            .first()
 }

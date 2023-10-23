@@ -5,9 +5,9 @@ import androidx.room.Ignore
 import androidx.room.Transaction
 
 @Dao
-abstract class TransactionRunnerDao : TransactionRunner {
+interface TransactionRunnerDao : TransactionRunner {
     @Transaction
-    protected open suspend fun runInTransaction(block: suspend () -> Unit) {
+    suspend fun runInTransaction(block: suspend () -> Unit) {
         block()
     }
 
@@ -18,5 +18,5 @@ abstract class TransactionRunnerDao : TransactionRunner {
 }
 
 interface TransactionRunner {
-    suspend operator fun invoke(tx: suspend () -> Unit)
+    suspend operator fun invoke(block: suspend () -> Unit)
 }

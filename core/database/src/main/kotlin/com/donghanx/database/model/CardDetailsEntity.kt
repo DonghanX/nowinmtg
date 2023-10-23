@@ -2,11 +2,13 @@ package com.donghanx.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.donghanx.model.NetworkCard
+import com.donghanx.model.CardDetails
+import com.donghanx.model.NetworkCardDetails
 
 @Entity(tableName = "card_details")
 data class CardDetailsEntity(
     @PrimaryKey val id: String,
+    val multiverseId: String?,
     val artist: String?,
     val cmc: Double,
     val colorIdentity: List<String>?,
@@ -15,7 +17,6 @@ data class CardDetailsEntity(
     val imageUrl: String?,
     val layout: String,
     val manaCost: String?,
-    val multiverseId: String?,
     val name: String,
     val number: String,
     val originalText: String?,
@@ -30,36 +31,66 @@ data class CardDetailsEntity(
     val text: String?,
     val toughness: String?,
     val type: String,
-    val types: List<String>,
+    val types: List<String>?,
     val variations: List<String>?
 )
 
-//fun NetworkCard.asCardDetailsEntity(): CardDetailsEntity =
-//    CardDetailsEntity(
-//        id = id,
-//        artist = artist,
-//        cmc = cmc,
-//        colorIdentity = colorIdentity,
-//        colors = colors,
-//        flavor = flavor,
-//        imageUrl = imageUrl,
-//        layout = layout,
-//        manaCost = manaCost,
-//        multiverseId = multiverseId,
-//        name = name,
-//        number = number,
-//        originalText = originalText,
-//        originalType = originalType,
-//        power = power,
-//        printings = printings,
-//        rarity = rarity,
-//        set = set,
-//        setName = setName,
-//        subtypes = subtypes,
-//        supertypes = supertypes,
-//        text = text,
-//        toughness = toughness,
-//        type = type,
-//        types = types,
-//        variations = variations
-//    )
+fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
+    CardDetailsEntity(
+        id = id,
+        multiverseId = multiverseId,
+        artist = artist,
+        cmc = cmc,
+        colorIdentity = colorIdentity,
+        colors = colors,
+        flavor = flavor,
+        imageUrl = imageUrl,
+        layout = layout,
+        manaCost = manaCost,
+        name = name,
+        number = number,
+        originalText = originalText,
+        originalType = originalType,
+        power = power,
+        printings = printings,
+        rarity = rarity,
+        set = set,
+        setName = setName,
+        subtypes = subtypes,
+        supertypes = supertypes,
+        text = text,
+        toughness = toughness,
+        type = type,
+        types = types,
+        variations = variations
+    )
+
+fun CardDetailsEntity.asExternalModel(): CardDetails =
+    CardDetails(
+        id = id,
+        multiverseId = id,
+        artist = artist,
+        cmc = cmc,
+        colorIdentity = colorIdentity,
+        colors = colors,
+        flavor = flavor,
+        imageUrl = imageUrl,
+        layout = layout,
+        manaCost = manaCost,
+        name = name,
+        number = number,
+        originalText = originalText,
+        originalType = originalType,
+        power = power,
+        printings = printings,
+        rarity = rarity,
+        set = set,
+        setName = setName,
+        subtypes = subtypes,
+        supertypes = supertypes,
+        text = text,
+        toughness = toughness,
+        type = type,
+        types = types,
+        variations = variations
+    )
