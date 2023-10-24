@@ -3,10 +3,12 @@ package com.donghanx.data.repository.carddetails
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asResultFlow
 import com.donghanx.common.foldResult
+import com.donghanx.data.sync.syncWith
 import com.donghanx.database.CardDetailsDao
 import com.donghanx.database.model.asCardDetailsEntity
 import com.donghanx.database.model.asExternalModel
 import com.donghanx.model.CardDetails
+import com.donghanx.model.NetworkCardDetails
 import com.donghanx.network.di.MtgCardsRemoteDataSource
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,7 +32,10 @@ constructor(
             .asResultFlow()
             .foldResult(
                 onSuccess = { cardDetails ->
-                    cardDetailsDao.upsertCardDetails(cardDetails.asCardDetailsEntity())
+                    cardDetails.syncWith(
+                        entityConverter = NetworkCardDetails::asCardDetailsEntity,
+                        modelActions = cardDetailsDao::upsertCardDetails
+                    )
                     NetworkResult.Success(Unit)
                 },
                 onError = { NetworkResult.Error(it) }
