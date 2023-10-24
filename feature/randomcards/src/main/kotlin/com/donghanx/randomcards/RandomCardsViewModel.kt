@@ -2,18 +2,19 @@ package com.donghanx.randomcards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
-import com.donghanx.common.NetworkStatus
-import com.donghanx.data.repository.cards.CardsRepository
+import com.donghanx.common.asErrorMessage
+import com.donghanx.common.emptyErrorMessage
+import com.donghanx.data.repository.cards.RandomCardsRepository
 import com.donghanx.model.CardPreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -23,79 +24,99 @@ import kotlinx.coroutines.launch
 class MainViewModel
 @Inject
 constructor(
-    private val cardsRepository: CardsRepository,
+    private val randomCardsRepository: RandomCardsRepository,
 ) : ViewModel() {
 
-    private val _refreshing = MutableStateFlow(false)
-    val refreshing = _refreshing.asStateFlow()
-
-    private val _networkStatus = MutableStateFlow(networkSuccess())
-    val networkStatus = _networkStatus.asStateFlow()
+    private val viewModelState = MutableStateFlow(RandomCardsViewModelState(refreshing = true))
 
     val randomCardsUiState: StateFlow<RandomCardsUiState> =
-        cardsRepository
-            .getRandomCards()
-            .mapLatest { cards ->
-                when {
-                    cards.isNotEmpty() -> RandomCardsUiState.Success(cards)
-                    else -> RandomCardsUiState.Empty
-                }
-            }
+        viewModelState
+            .map(RandomCardsViewModelState::toUiState)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
-                initialValue = RandomCardsUiState.Loading
+                initialValue = viewModelState.value.toUiState()
             )
 
     init {
+        observeRandomCards()
+
         viewModelScope.launch {
-            if (cardsRepository.shouldFetchInitialCards()) {
+            if (randomCardsRepository.shouldFetchInitialCards()) {
                 refreshRandomCards()
             }
         }
     }
 
     fun refreshRandomCards() {
+        viewModelState.update { it.copy(refreshing = true) }
+
         viewModelScope.launch {
-            withRefreshing {
-                cardsRepository
-                    .refreshRandomCards(shouldContainImageUrl = true)
-                    .onEach { networkResult -> networkResult.updateNetworkStatus() }
-                    .collect()
-            }
+            randomCardsRepository
+                .refreshRandomCards(shouldContainImageUrl = true)
+                .onEach { it.updateViewModelState() }
+                .collect()
         }
     }
 
-    private inline fun withRefreshing(block: () -> Unit) {
-        _refreshing.update { true }
-        block()
-        _refreshing.update { false }
-    }
-
-    private fun <T> NetworkResult<T>.updateNetworkStatus() {
-        when (this) {
-            is NetworkResult.Success -> {
-                _networkStatus.update { networkSuccess() }
-            }
-            is NetworkResult.Error -> {
-                _networkStatus.update {
-                    it.copy(
-                        hasError = true,
-                        errorMessage = exception?.message.orEmpty(),
-                        replayTick = it.replayTick + 1
-                    )
+    private fun observeRandomCards() {
+        viewModelScope.launch {
+            randomCardsRepository
+                .getRandomCards()
+                .onEach { randomCards ->
+                    viewModelState.update { it.copy(randomCards = randomCards, refreshing = false) }
                 }
-            }
+                .collect()
         }
     }
 
-    private fun networkSuccess() = NetworkStatus(hasError = false)
+    private fun <T> NetworkResult<T>.updateViewModelState() {
+        viewModelState.update { prevState ->
+            when (this) {
+                is NetworkResult.Success -> prevState.copy(refreshing = false)
+                is NetworkResult.Error ->
+                    prevState.copy(
+                        refreshing = false,
+                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1)
+                    )
+            }
+        }
+    }
 }
 
 sealed interface RandomCardsUiState {
-    data class Success(val cards: List<CardPreview>) : RandomCardsUiState
-    data object Empty : RandomCardsUiState
-    data object Loading : RandomCardsUiState
+    val refreshing: Boolean
+    val errorMessage: ErrorMessage
+
+    data class Success(
+        val cards: List<CardPreview>,
+        override val refreshing: Boolean,
+        override val errorMessage: ErrorMessage = emptyErrorMessage()
+    ) : RandomCardsUiState
+
+    data class Empty(
+        override val refreshing: Boolean,
+        override val errorMessage: ErrorMessage = emptyErrorMessage()
+    ) : RandomCardsUiState
 }
+
+private data class RandomCardsViewModelState(
+    val randomCards: List<CardPreview> = emptyList(),
+    val refreshing: Boolean,
+    val errorMessage: ErrorMessage = emptyErrorMessage()
+) {
+    fun toUiState(): RandomCardsUiState =
+        when {
+            randomCards.isNotEmpty() ->
+                RandomCardsUiState.Success(
+                    cards = randomCards,
+                    refreshing = refreshing,
+                    errorMessage = errorMessage
+                )
+            else -> RandomCardsUiState.Empty(refreshing = refreshing, errorMessage = errorMessage)
+        }
+}
+
+fun RandomCardsUiState.hasError(): Boolean = errorMessage.hasError
 
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
