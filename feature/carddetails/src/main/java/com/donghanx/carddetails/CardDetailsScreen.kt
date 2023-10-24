@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,13 +35,17 @@ fun CardDetailsScreen(
         modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState),
         contentAlignment = Alignment.Center
     ) {
-        Column(modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState())) {
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             when (val uiState = cardDetailsUiState) {
                 is CardDetailsUiState.Success -> {
-                    Text(text = "Success: card name is ${uiState.cardDetails.name}")
+                    CardDetailsView(cardDetails = uiState.cardDetails)
                 }
                 is CardDetailsUiState.NoCardDetails -> {
-                    Text(text = "Empty")
+                    // TODO: use a more intuitive placeholder view instead
+                    CircularProgressIndicator()
                 }
             }
         }
@@ -54,7 +58,7 @@ fun CardDetailsScreen(
 
         LaunchedEffect(cardDetailsUiState.errorMessage) {
             if (cardDetailsUiState.hasError()) {
-                onShowSnackbar(cardDetailsUiState.errorMessage.message)
+                onShowSnackbar(cardDetailsUiState.errorMessage())
             }
         }
     }

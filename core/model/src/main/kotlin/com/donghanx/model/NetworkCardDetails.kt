@@ -29,7 +29,7 @@ data class NetworkCardDetails(
     @SerialName("setName") val setName: String,
     @SerialName("subtypes") val subtypes: List<String>?,
     @SerialName("supertypes") val supertypes: List<String>?,
-    @SerialName("text") val text: String,
+    @SerialName("text") val text: String?,
     @SerialName("toughness") val toughness: String?,
     @SerialName("type") val type: String,
     @SerialName("types") val types: List<String>?,

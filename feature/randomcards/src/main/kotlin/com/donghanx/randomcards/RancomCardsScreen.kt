@@ -92,7 +92,7 @@ private fun CardsGallery(cards: List<CardPreview>, onCardClick: (cardId: String)
             columns = GridCells.Fixed(count = 2),
             state = lazyGridState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            contentPadding = PaddingValues(all = 4.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {

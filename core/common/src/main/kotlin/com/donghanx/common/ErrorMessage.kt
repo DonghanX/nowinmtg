@@ -1,6 +1,8 @@
 package com.donghanx.common
 
-data class ErrorMessage(val id: Int, val message: String, val hasError: Boolean = true)
+data class ErrorMessage(val id: Int, val message: String, val hasError: Boolean = true) {
+    operator fun invoke(): String = message
+}
 
 fun emptyErrorMessage(): ErrorMessage = ErrorMessage(id = 0, message = "", hasError = false)
 
