@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class MainViewModel
+class RandomCardsViewModel
 @Inject
 constructor(
     private val randomCardsRepository: RandomCardsRepository,

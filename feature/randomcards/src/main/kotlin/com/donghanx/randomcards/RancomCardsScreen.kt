@@ -44,7 +44,7 @@ fun RandomCardsScreen(
     onCardClick: (cardId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: RandomCardsViewModel = hiltViewModel()
 ) {
     val randomCardsUiState by viewModel.randomCardsUiState.collectAsStateWithLifecycle()
     val pullRefreshState =
