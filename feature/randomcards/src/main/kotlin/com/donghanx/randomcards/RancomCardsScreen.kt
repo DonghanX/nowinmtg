@@ -44,12 +44,12 @@ fun RandomCardsScreen(
     onCardClick: (cardId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: RandomCardsViewModel = hiltViewModel()
 ) {
-    val refreshing by viewModel.refreshing.collectAsStateWithLifecycle()
+    val randomCardsUiState by viewModel.randomCardsUiState.collectAsStateWithLifecycle()
     val pullRefreshState =
         rememberPullRefreshState(
-            refreshing = refreshing,
+            refreshing = randomCardsUiState.refreshing,
             onRefresh = { viewModel.refreshRandomCards() }
         )
 
@@ -57,26 +57,22 @@ fun RandomCardsScreen(
         modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState),
         contentAlignment = Alignment.Center
     ) {
-        val defaultCardsUiState by viewModel.randomCardsUiState.collectAsStateWithLifecycle()
-
-        when (val uiState = defaultCardsUiState) {
+        when (val uiState = randomCardsUiState) {
             is RandomCardsUiState.Success -> {
                 CardsGallery(uiState.cards, onCardClick = onCardClick)
             }
-            RandomCardsUiState.Empty,
-            RandomCardsUiState.Loading -> Unit
+            is RandomCardsUiState.Empty -> Unit
         }
 
         PullRefreshIndicator(
             modifier = Modifier.align(Alignment.TopCenter),
-            refreshing = refreshing,
+            refreshing = randomCardsUiState.refreshing,
             state = pullRefreshState
         )
 
-        val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
-        LaunchedEffect(networkStatus) {
-            if (networkStatus.hasError) {
-                onShowSnackbar(networkStatus.errorMessage)
+        LaunchedEffect(randomCardsUiState.errorMessage) {
+            if (randomCardsUiState.hasError()) {
+                onShowSnackbar(randomCardsUiState.errorMessage())
             }
         }
     }

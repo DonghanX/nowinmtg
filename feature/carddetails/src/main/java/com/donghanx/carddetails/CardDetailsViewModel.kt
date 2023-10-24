@@ -63,19 +63,15 @@ constructor(
                     cardDetailsRepository.getCardDetailsById(cardId)
                 }
                 .onEach { cardDetails ->
-                    viewModelState.update {
-                        CardDetailsViewModelState(
-                            cardDetails = cardDetails,
-                            refreshing = false,
-                            errorMessage = it.errorMessage
-                        )
-                    }
+                    viewModelState.update { it.copy(cardDetails = cardDetails, refreshing = false) }
                 }
                 .collect()
         }
     }
 
     fun refreshCardDetails() {
+        viewModelState.update { it.copy(refreshing = true) }
+
         viewModelScope.launch {
             validCardId
                 .flatMapLatest { cardId -> cardDetailsRepository.refreshCardDetails(cardId) }
@@ -85,16 +81,15 @@ constructor(
     }
 
     private fun <T> NetworkResult<T>.updateViewModelState() {
-        viewModelState.update {
+        viewModelState.update { prevState ->
             when (this) {
                 is NetworkResult.Success -> {
-                    CardDetailsViewModelState(cardDetails = it.cardDetails, refreshing = false)
+                    prevState.copy(refreshing = false, errorMessage = emptyErrorMessage())
                 }
                 is NetworkResult.Error ->
-                    CardDetailsViewModelState(
-                        cardDetails = it.cardDetails,
+                    prevState.copy(
                         refreshing = false,
-                        errorMessage = exception.asErrorMessage(id = it.errorMessage.id + 1)
+                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1)
                     )
             }
         }
