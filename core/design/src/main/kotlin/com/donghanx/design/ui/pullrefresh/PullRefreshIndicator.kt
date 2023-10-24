@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.donghanx.design.pullrefresh
+package com.donghanx.design.ui.pullrefresh
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearEasing

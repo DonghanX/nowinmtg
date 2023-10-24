@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.NetworkStatus
 import com.donghanx.data.repository.cards.CardsRepository
-import com.donghanx.model.Card
+import com.donghanx.model.CardPreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,10 +26,6 @@ constructor(
     private val cardsRepository: CardsRepository,
 ) : ViewModel() {
 
-    companion object {
-        private const val DEFAULT_STOP_TIMEOUT_MILLIS = 5_000L
-    }
-
     private val _refreshing = MutableStateFlow(false)
     val refreshing = _refreshing.asStateFlow()
 
@@ -47,7 +43,7 @@ constructor(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIMEOUT_MILLIS),
+                started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
                 initialValue = RandomCardsUiState.Loading
             )
 
@@ -97,7 +93,9 @@ constructor(
 }
 
 sealed interface RandomCardsUiState {
-    data class Success(val cards: List<Card>) : RandomCardsUiState
+    data class Success(val cards: List<CardPreview>) : RandomCardsUiState
     data object Empty : RandomCardsUiState
     data object Loading : RandomCardsUiState
 }
+
+private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

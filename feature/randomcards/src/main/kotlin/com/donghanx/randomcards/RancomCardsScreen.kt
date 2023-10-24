@@ -31,15 +31,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.donghanx.design.R as DesignR
-import com.donghanx.design.pullrefresh.PullRefreshIndicator
-import com.donghanx.design.pullrefresh.pullRefresh
-import com.donghanx.design.pullrefresh.rememberPullRefreshState
+import com.donghanx.design.composable.extensions.rippleClickable
+import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
+import com.donghanx.design.ui.pullrefresh.pullRefresh
+import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
 import com.donghanx.mock.MockUtils
-import com.donghanx.model.Card
+import com.donghanx.model.CardPreview
 import kotlinx.coroutines.launch
 
 @Composable
 fun RandomCardsScreen(
+    onCardClick: (cardId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel()
@@ -59,7 +61,7 @@ fun RandomCardsScreen(
 
         when (val uiState = defaultCardsUiState) {
             is RandomCardsUiState.Success -> {
-                CardsGallery(uiState.cards)
+                CardsGallery(uiState.cards, onCardClick = onCardClick)
             }
             RandomCardsUiState.Empty,
             RandomCardsUiState.Loading -> Unit
@@ -81,7 +83,7 @@ fun RandomCardsScreen(
 }
 
 @Composable
-private fun CardsGallery(cards: List<Card>) {
+private fun CardsGallery(cards: List<CardPreview>, onCardClick: (cardId: String) -> Unit) {
     val scope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
@@ -90,7 +92,7 @@ private fun CardsGallery(cards: List<Card>) {
             columns = GridCells.Fixed(count = 2),
             state = lazyGridState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            contentPadding = PaddingValues(all = 4.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -101,19 +103,22 @@ private fun CardsGallery(cards: List<Card>) {
                             .data(card.imageUrl)
                             .crossfade(true)
                             .build(),
-                    contentDescription = card.text,
+                    contentDescription = card.name,
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .wrapContentHeight()
+                            .rippleClickable(onClick = { onCardClick(card.id) })
                 )
             }
         }
 
-        val isLastItemReached by remember {
+        val shouldShowScrollToTopButton by remember {
             derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
         }
         ScrollToGridTopButton(
-            visible = isLastItemReached,
+            visible = shouldShowScrollToTopButton,
             onScrollToGridTopClick = { scope.launch { lazyGridState.animateScrollToItem(0) } },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -134,5 +139,5 @@ private fun ScrollToGridTopButton(
 @Preview(showBackground = true)
 @Composable
 private fun CardsGalleryPreview() {
-    CardsGallery(cards = MockUtils.emptyCards)
+    CardsGallery(cards = MockUtils.emptyCards, onCardClick = {})
 }
