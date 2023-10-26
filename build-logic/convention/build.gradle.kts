@@ -5,6 +5,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_18
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions { jvmTarget = JavaVersion.VERSION_18.toString() }
+}
+
 dependencies {
     compileOnly(libs.android.gradle.plugin)
     compileOnly(libs.kotlin.gradlePlugin)

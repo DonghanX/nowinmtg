@@ -113,8 +113,10 @@ internal constructor(
 
     internal val refreshing
         get() = _refreshing
+
     internal val position
         get() = _position
+
     internal val threshold
         get() = _threshold
 

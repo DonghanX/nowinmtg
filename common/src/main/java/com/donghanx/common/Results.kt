@@ -1,4 +1,3 @@
 package com.donghanx.common
 
-class Results {
-}
+class Results {}

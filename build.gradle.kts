@@ -6,4 +6,17 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.com.google.dagger.hilt.android) apply false
     alias(libs.plugins.com.google.devtools.ksp) apply false
+    alias(libs.plugins.com.diffplug.spotless)
+}
+
+spotless {
+    kotlin {
+        ktfmt("0.46").kotlinlangStyle()
+        target("**/*.kt")
+        targetExclude("**/build/**/*.kt")
+    }
+    format("kts") {
+        target("**/*.kts")
+        targetExclude("**/build/**/*.kts")
+    }
 }

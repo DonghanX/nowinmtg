@@ -1,4 +1,3 @@
-
 import com.android.build.api.dsl.ApplicationExtension
 import com.donghanx.convention.configureAndroidCompose
 import org.gradle.api.Plugin
@@ -14,5 +13,4 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
             configureAndroidCompose(extension)
         }
     }
-
 }
