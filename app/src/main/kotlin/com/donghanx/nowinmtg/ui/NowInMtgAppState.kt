@@ -18,13 +18,12 @@ fun rememberNowInMtgAppState(
 @Stable
 class NowInMtgAppState(val navController: NavHostController) {
 
-    val topLevelDestinations: List<TopLevelDestination> = listOf(TopLevelDestination.RandomCards)
+    val topLevelDestinations: List<TopLevelDestination> =
+        listOf(TopLevelDestination.RandomCards)
 
     fun navigateToTopLevelDestination(route: String) {
         navController.navigate(route) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
+            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
             launchSingleTop = true
             restoreState = true
         }

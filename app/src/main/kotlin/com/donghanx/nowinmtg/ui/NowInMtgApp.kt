@@ -31,7 +31,7 @@ fun NowInMtgApp() {
             bottomBar = {
                 BottomNavigationBar(
                     topLevelDestinations = appState.topLevelDestinations,
-                    onNavItemClick = {}
+                    onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) }
                 )
             }
         ) { paddingValues ->
@@ -50,13 +50,13 @@ fun NowInMtgApp() {
 @Composable
 private fun BottomNavigationBar(
     topLevelDestinations: List<TopLevelDestination>,
-    onNavItemClick: () -> Unit
+    onNavItemClick: (route: String) -> Unit
 ) {
     NavigationBar {
         topLevelDestinations.forEach { destination ->
             NavigationBarItem(
                 selected = false,
-                onClick = onNavItemClick,
+                onClick = { onNavItemClick(destination.route) },
                 icon = {
                     Icon(
                         painter = painterResource(id = destination.iconResId),
