@@ -3,7 +3,7 @@ package com.donghanx.database.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.donghanx.model.CardPreview
-import com.donghanx.model.NetworkCard
+import com.donghanx.model.network.NetworkCard
 
 @Entity(tableName = "random_cards")
 data class RandomCardEntity(

@@ -3,6 +3,7 @@ package com.donghanx.database.di
 import com.donghanx.database.CardDetailsDao
 import com.donghanx.database.NimDatabase
 import com.donghanx.database.RandomCardsDao
+import com.donghanx.database.SetsDao
 import com.donghanx.database.TransactionRunnerDao
 import dagger.Module
 import dagger.Provides
@@ -20,6 +21,8 @@ object DaoModule {
     @Provides
     fun provideCardDetailsDao(nimDatabase: NimDatabase): CardDetailsDao =
         nimDatabase.cardDetailsDao()
+
+    @Provides fun providesSetsDao(nimDatabase: NimDatabase): SetsDao = nimDatabase.setsDao()
 
     @Provides
     fun provideTransactionRunner(nimDatabase: NimDatabase): TransactionRunnerDao =
