@@ -1,6 +1,5 @@
 package com.donghanx.randomcards
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,8 +10,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -35,6 +32,7 @@ import com.donghanx.design.composable.extensions.rippleClickable
 import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.ui.pullrefresh.pullRefresh
 import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
+import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import kotlinx.coroutines.launch
@@ -80,10 +78,10 @@ fun RandomCardsScreen(
 
 @Composable
 private fun CardsGallery(cards: List<CardPreview>, onCardClick: (cardId: String) -> Unit) {
-    val scope = rememberCoroutineScope()
-    val lazyGridState = rememberLazyGridState()
-
     Box(modifier = Modifier.fillMaxSize()) {
+        val scope = rememberCoroutineScope()
+        val lazyGridState = rememberLazyGridState()
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(count = 2),
             state = lazyGridState,
@@ -113,22 +111,11 @@ private fun CardsGallery(cards: List<CardPreview>, onCardClick: (cardId: String)
         val shouldShowScrollToTopButton by remember {
             derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
         }
-        ScrollToGridTopButton(
+        ScrollToTopButton(
             visible = shouldShowScrollToTopButton,
-            onScrollToGridTopClick = { scope.launch { lazyGridState.animateScrollToItem(0) } },
+            onClick = { scope.launch { lazyGridState.animateScrollToItem(0) } },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
-    }
-}
-
-@Composable
-private fun ScrollToGridTopButton(
-    visible: Boolean,
-    onScrollToGridTopClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    AnimatedVisibility(visible = visible, modifier = modifier) {
-        Button(onClick = onScrollToGridTopClick) { Text(text = "Scroll To Top") }
     }
 }
 
