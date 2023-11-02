@@ -9,4 +9,6 @@ interface SetsRepository {
     suspend fun getAllSets(): Flow<List<SetInfo>>
 
     suspend fun refreshAllSets(): Flow<NetworkResult<Unit>>
+
+    suspend fun shouldFetchInitialSets(): Boolean
 }

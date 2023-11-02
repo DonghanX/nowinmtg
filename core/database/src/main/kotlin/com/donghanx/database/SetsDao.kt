@@ -12,4 +12,6 @@ interface SetsDao {
     @Query("SELECT * FROM sets") fun getAllSets(): Flow<List<SetEntity>>
 
     @Upsert suspend fun upsertSets(sets: List<SetEntity>)
+
+    @Query("SELECT COUNT(*) FROM sets") fun getSetsCount(): Int
 }
