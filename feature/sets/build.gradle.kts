@@ -1,6 +1,4 @@
-plugins {
-    id("donghanx.android.feature")
-}
+plugins { id("donghanx.android.feature") }
 
 android {
     namespace = "com.donghanx.sets"
@@ -22,6 +20,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.coil.svg)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

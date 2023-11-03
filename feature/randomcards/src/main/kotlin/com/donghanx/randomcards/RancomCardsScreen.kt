@@ -59,6 +59,7 @@ fun RandomCardsScreen(
             is RandomCardsUiState.Success -> {
                 CardsGallery(uiState.cards, onCardClick = onCardClick)
             }
+            // TODO: add a placeholder composable for empty cards
             is RandomCardsUiState.Empty -> Unit
         }
 

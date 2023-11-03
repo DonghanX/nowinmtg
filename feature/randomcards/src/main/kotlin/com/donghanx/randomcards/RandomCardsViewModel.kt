@@ -73,7 +73,8 @@ constructor(
     private fun <T> NetworkResult<T>.updateViewModelState() {
         viewModelState.update { prevState ->
             when (this) {
-                is NetworkResult.Success -> prevState.copy(refreshing = false)
+                is NetworkResult.Success ->
+                    prevState.copy(refreshing = false, errorMessage = emptyErrorMessage())
                 is NetworkResult.Error ->
                     prevState.copy(
                         refreshing = false,
