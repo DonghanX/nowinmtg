@@ -4,6 +4,8 @@ import com.donghanx.data.repository.carddetails.CardDetailsRepository
 import com.donghanx.data.repository.carddetails.OfflineFirstCardDetailsRepository
 import com.donghanx.data.repository.cards.OfflineFirstRandomCardsRepository
 import com.donghanx.data.repository.cards.RandomCardsRepository
+import com.donghanx.data.repository.sets.OfflineFirstSetsRepository
+import com.donghanx.data.repository.sets.SetsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -22,4 +24,7 @@ interface DataModule {
     fun bindCardDetailsRepository(
         offlineFirstCardDetailsRepository: OfflineFirstCardDetailsRepository
     ): CardDetailsRepository
+
+    @Binds
+    fun bindSetsRepository(offlineFirstSetsRepository: OfflineFirstSetsRepository): SetsRepository
 }

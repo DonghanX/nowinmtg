@@ -9,8 +9,8 @@ import com.donghanx.database.model.RandomCardEntity
 import com.donghanx.database.model.asExternalModel
 import com.donghanx.database.model.asRandomCardEntity
 import com.donghanx.model.CardPreview
-import com.donghanx.model.NetworkCard
-import com.donghanx.network.di.MtgCardsRemoteDataSource
+import com.donghanx.model.network.NetworkCard
+import com.donghanx.network.MtgCardsRemoteDataSource
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.donghanx.randomcards
+package com.donghanx.sets
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,8 +6,8 @@ import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
-import com.donghanx.data.repository.cards.RandomCardsRepository
-import com.donghanx.model.CardPreview
+import com.donghanx.data.repository.sets.SetsRepository
+import com.donghanx.model.SetInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,17 +21,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class RandomCardsViewModel
-@Inject
-constructor(
-    private val randomCardsRepository: RandomCardsRepository,
-) : ViewModel() {
+class SetsViewModel @Inject constructor(private val setsRepository: SetsRepository) : ViewModel() {
 
-    private val viewModelState = MutableStateFlow(RandomCardsViewModelState(refreshing = true))
+    private val viewModelState = MutableStateFlow(SetsViewModelState(refreshing = false))
 
-    val randomCardsUiState: StateFlow<RandomCardsUiState> =
+    val setsUiState: StateFlow<SetsUiState> =
         viewModelState
-            .map(RandomCardsViewModelState::toUiState)
+            .map(SetsViewModelState::toUiState)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
@@ -39,34 +35,31 @@ constructor(
             )
 
     init {
-        observeRandomCards()
+        observeSets()
 
         viewModelScope.launch {
-            if (randomCardsRepository.shouldFetchInitialCards()) {
-                refreshRandomCards()
+            if (setsRepository.shouldFetchInitialSets()) {
+                refreshSets()
             }
         }
     }
 
-    fun refreshRandomCards() {
-        viewModelState.update { it.copy(refreshing = true) }
-
+    private fun observeSets() {
         viewModelScope.launch {
-            randomCardsRepository
-                .refreshRandomCards(shouldContainImageUrl = true)
-                .onEach { it.updateViewModelState() }
+            setsRepository
+                .getAllSets()
+                .onEach { sets ->
+                    viewModelState.update { it.copy(sets = sets, refreshing = false) }
+                }
                 .collect()
         }
     }
 
-    private fun observeRandomCards() {
+    fun refreshSets() {
         viewModelScope.launch {
-            randomCardsRepository
-                .getRandomCards()
-                .onEach { randomCards ->
-                    viewModelState.update { it.copy(randomCards = randomCards, refreshing = false) }
-                }
-                .collect()
+            viewModelState.update { it.copy(refreshing = true) }
+
+            setsRepository.refreshAllSets().onEach { it.updateViewModelState() }.collect()
         }
     }
 
@@ -85,39 +78,39 @@ constructor(
     }
 }
 
-sealed interface RandomCardsUiState {
+sealed interface SetsUiState {
     val refreshing: Boolean
     val errorMessage: ErrorMessage
 
     data class Success(
-        val cards: List<CardPreview>,
+        val sets: List<SetInfo>,
         override val refreshing: Boolean,
         override val errorMessage: ErrorMessage = emptyErrorMessage()
-    ) : RandomCardsUiState
+    ) : SetsUiState
 
     data class Empty(
         override val refreshing: Boolean,
         override val errorMessage: ErrorMessage = emptyErrorMessage()
-    ) : RandomCardsUiState
+    ) : SetsUiState
 }
 
-private data class RandomCardsViewModelState(
-    val randomCards: List<CardPreview> = emptyList(),
+private data class SetsViewModelState(
+    val sets: List<SetInfo> = emptyList(),
     val refreshing: Boolean,
     val errorMessage: ErrorMessage = emptyErrorMessage()
 ) {
-    fun toUiState(): RandomCardsUiState =
+    fun toUiState(): SetsUiState =
         when {
-            randomCards.isNotEmpty() ->
-                RandomCardsUiState.Success(
-                    cards = randomCards,
+            sets.isNotEmpty() ->
+                SetsUiState.Success(
+                    sets = sets,
                     refreshing = refreshing,
                     errorMessage = errorMessage
                 )
-            else -> RandomCardsUiState.Empty(refreshing = refreshing, errorMessage = errorMessage)
+            else -> SetsUiState.Empty(refreshing = refreshing, errorMessage = errorMessage)
         }
 }
 
-fun RandomCardsUiState.hasError(): Boolean = errorMessage.hasError
+fun SetsUiState.hasError(): Boolean = errorMessage.hasError
 
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

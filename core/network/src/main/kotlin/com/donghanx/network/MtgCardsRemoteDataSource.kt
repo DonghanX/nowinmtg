@@ -1,9 +1,10 @@
-package com.donghanx.network.di
+package com.donghanx.network
 
-import com.donghanx.model.NetworkCard
-import com.donghanx.model.NetworkCardDetails
-import com.donghanx.model.NetworkCardDetailsList
-import com.donghanx.model.NetworkCards
+import com.donghanx.model.network.NetworkCard
+import com.donghanx.model.network.NetworkCardDetails
+import com.donghanx.model.network.NetworkCardDetailsList
+import com.donghanx.model.network.NetworkCards
+import com.donghanx.network.client.MtgHttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

@@ -3,7 +3,7 @@ package com.donghanx.database.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.donghanx.model.CardDetails
-import com.donghanx.model.NetworkCardDetails
+import com.donghanx.model.network.NetworkCardDetails
 
 @Entity(tableName = "card_details")
 data class CardDetailsEntity(

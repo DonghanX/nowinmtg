@@ -133,6 +133,6 @@ private data class CardDetailsViewModelState(
         }
 }
 
-fun CardDetailsUiState.hasError(): Boolean = this.errorMessage.hasError
+fun CardDetailsUiState.hasError(): Boolean = errorMessage.hasError
 
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
