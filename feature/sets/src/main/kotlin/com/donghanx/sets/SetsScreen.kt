@@ -2,6 +2,7 @@ package com.donghanx.sets
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,7 +40,12 @@ fun SetsScreen(
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {
         when (val uiState = setsUiState) {
-            is SetsUiState.Success -> SetsList(sets = uiState.sets)
+            is SetsUiState.Success ->
+                Column(modifier = Modifier.fillMaxSize()) {
+                    SetsFilterRow()
+                    SetsList(sets = uiState.sets)
+                }
+
             // TODO: add a placeholder composable for empty sets
             is SetsUiState.Empty -> Unit
         }
@@ -70,7 +76,7 @@ private fun SetsList(sets: List<SetInfo>) {
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(items = sets, key = { it.scryfallId }) {
-                SetInfoItemView(code = it.code, name = it.name, iconUrl = it.iconSvgUri)
+                SetInfoItem(code = it.code, name = it.name, iconUrl = it.iconSvgUri)
             }
         }
 
