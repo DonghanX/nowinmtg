@@ -8,9 +8,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.url
 import javax.inject.Inject
 
-class SetsRemoteDataSource
-@Inject
-constructor(private val scryfallHttpClient: ScryfallHttpClient) {
+class SetsRemoteDataSource @Inject constructor(private val scryfallHttpClient: ScryfallHttpClient) {
     suspend fun getAllSets(): List<NetworkSet> =
         scryfallHttpClient().get { url(path = "/sets") }.body<NetworkSets>().data
 }

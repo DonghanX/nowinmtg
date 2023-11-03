@@ -3,7 +3,6 @@ package com.donghanx.network.client
 import io.ktor.client.HttpClient
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.serialization.ExperimentalSerializationApi
 
 @Singleton
 class MtgHttpClient @Inject constructor() {
