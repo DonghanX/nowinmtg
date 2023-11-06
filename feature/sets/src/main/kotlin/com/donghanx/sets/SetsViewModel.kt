@@ -1,5 +1,6 @@
 package com.donghanx.sets
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.donghanx.common.ErrorMessage
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -21,9 +23,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class SetsViewModel @Inject constructor(private val setsRepository: SetsRepository) : ViewModel() {
+class SetsViewModel
+@Inject
+constructor(
+    private val setsRepository: SetsRepository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(SetsViewModelState(refreshing = false))
+
+    private val selectedSetType =
+        savedStateHandle.getStateFlow<String?>(key = SET_TYPE_KEY, initialValue = null)
 
     val setsUiState: StateFlow<SetsUiState> =
         viewModelState
@@ -46,8 +56,9 @@ class SetsViewModel @Inject constructor(private val setsRepository: SetsReposito
 
     private fun observeSets() {
         viewModelScope.launch {
-            setsRepository
-                .getAllSets()
+            combine(setsRepository.getAllSets(), selectedSetType) { sets, setType ->
+                    sets.filter { setInfo -> setType == null || setInfo.setType == setType }
+                }
                 .onEach { sets ->
                     viewModelState.update { it.copy(sets = sets, refreshing = false) }
                 }
@@ -76,6 +87,16 @@ class SetsViewModel @Inject constructor(private val setsRepository: SetsReposito
             }
         }
     }
+
+    fun onSelectedSetTypeChanged(setType: String?) {
+        savedStateHandle[SET_TYPE_KEY] = setType
+    }
+
+    fun onSelectedSetTypeReset() {
+        savedStateHandle[SET_TYPE_KEY] = null
+    }
+
+    fun getSelectedSetType(): String? = savedStateHandle[SET_TYPE_KEY]
 }
 
 sealed interface SetsUiState {
@@ -114,3 +135,4 @@ private data class SetsViewModelState(
 fun SetsUiState.hasError(): Boolean = errorMessage.hasError
 
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
+private const val SET_TYPE_KEY = "SetType"

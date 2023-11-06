@@ -47,7 +47,11 @@ fun SetsScreen(
         when (val uiState = setsUiState) {
             is SetsUiState.Success ->
                 Column(modifier = Modifier.fillMaxSize()) {
-                    SetsFilterRow()
+                    SetsFilterRow(
+                        selectedSetType = viewModel.getSelectedSetType(),
+                        onSetTypeChanged = viewModel::onSelectedSetTypeChanged,
+                        onSetTypeReset = viewModel::onSelectedSetTypeReset
+                    )
                     SetsList(sets = uiState.sets)
                 }
 
@@ -97,14 +101,23 @@ private fun SetsList(sets: List<SetInfo>) {
 }
 
 @Composable
-private fun SetsFilterRow(modifier: Modifier = Modifier) {
+private fun SetsFilterRow(
+    modifier: Modifier = Modifier,
+    selectedSetType: String?,
+    onSetTypeChanged: (setType: String?) -> Unit,
+    onSetTypeReset: () -> Unit
+) {
     Row(
         modifier =
-        modifier
-            .fillMaxWidth()
-            .padding(all = 6.dp)
-            .horizontalScroll(state = rememberScrollState())
+            modifier
+                .fillMaxWidth()
+                .padding(all = 6.dp)
+                .horizontalScroll(state = rememberScrollState())
     ) {
-        SetTypeFilter()
+        SetTypeFilter(
+            selectedSetType = selectedSetType,
+            onSetTypeChanged = onSetTypeChanged,
+            onSetTypeReset = onSetTypeReset
+        )
     }
 }

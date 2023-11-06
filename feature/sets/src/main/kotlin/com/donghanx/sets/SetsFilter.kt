@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,16 +31,28 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.donghanx.common.ext.capitalize
 import com.donghanx.design.ui.chip.FilterChipWithLeadingIcon
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetTypeFilter() {
+fun SetTypeFilter(
+    selectedSetType: String?,
+    onSetTypeChanged: (setType: String?) -> Unit,
+    onSetTypeReset: () -> Unit
+) {
+    val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     FilterChip(
-        label = { Text(text = stringResource(id = R.string.type)) },
-        selected = false,
+        label = {
+            val labelText =
+                selectedSetType?.let { it.toReadableSetTypeLabel() }
+                    ?: stringResource(R.string.type)
+            Text(text = labelText)
+        },
+        selected = selectedSetType != null,
         onClick = { showBottomSheet = true }
     )
 
@@ -49,12 +62,14 @@ fun SetTypeFilter() {
             sheetState = bottomSheetState
         ) {
             SetTypesSelector(
+                initialSelectedType = selectedSetType,
                 setTypes = stringArrayResource(R.array.set_types).toSet(),
-                onSetTypeChanged = {
-                    // TODO
-                },
-                onSetTypeReset = {
-                    // TODO
+                onSetTypeChanged = onSetTypeChanged,
+                onSetTypeReset = onSetTypeReset,
+                onHideBottomSheet = {
+                    scope
+                        .launch { bottomSheetState.hide() }
+                        .invokeOnCompletion { showBottomSheet = false }
                 }
             )
         }
@@ -64,16 +79,18 @@ fun SetTypeFilter() {
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun SetTypesSelector(
+    initialSelectedType: String?,
     setTypes: Set<String>,
     onSetTypeChanged: (setType: String?) -> Unit,
-    onSetTypeReset: () -> Unit
+    onSetTypeReset: () -> Unit,
+    onHideBottomSheet: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        var selectedType by remember { mutableStateOf<String?>(null) }
+        var selectedType by remember { mutableStateOf(initialSelectedType) }
 
         FlowRow(horizontalArrangement = Arrangement.Start) {
             setTypes.forEach { setType ->
@@ -94,14 +111,23 @@ private fun SetTypesSelector(
         }
 
         Button(
-            onClick = { onSetTypeChanged(selectedType) },
+            onClick = {
+                onSetTypeChanged(selectedType)
+                onHideBottomSheet()
+            },
             modifier = Modifier.fillMaxWidth().height(40.dp),
         ) {
             Text(text = stringResource(id = R.string.view_results), fontSize = 16.sp)
         }
 
-        TextButton(onClick = onSetTypeReset, modifier = Modifier.fillMaxWidth().height(40.dp)) {
-            Text(text = stringResource(id = R.string.view_results), fontSize = 16.sp)
+        TextButton(
+            onClick = {
+                onSetTypeReset()
+                onHideBottomSheet()
+            },
+            modifier = Modifier.fillMaxWidth().height(40.dp)
+        ) {
+            Text(text = stringResource(id = R.string.reset), fontSize = 16.sp)
         }
     }
 }
@@ -110,6 +136,4 @@ private fun String.toReadableSetTypeLabel(
     oldDelimiter: String = "_",
     newDelimiter: String = " "
 ): String =
-    split(oldDelimiter).joinToString(separator = newDelimiter) { prevStr ->
-        prevStr.replaceFirstChar { it.uppercase() }
-    }
+    split(oldDelimiter).joinToString(separator = newDelimiter) { prevStr -> prevStr.capitalize() }
