@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="sets">Sets</string>
+    <string name="view_results">View Results</string>
+    <string name="reset">Reset</string>
+    <string name="type">Type</string>
+    <string-array name="set_types">
+        <item>expansion</item>
+        <item>core</item>
+        <item>masters</item>
+        <item>alchemy</item>
+        <item>masterpiece</item>
+        <item>arsenal</item>
+        <item>from_the_vault</item>
+        <item>spellbook</item>
+        <item>premium_deck</item>
+        <item>duel_deck</item>
+        <item>draft_innovation</item>
+        <item>treasure_chest</item>
+        <item>commander</item>
+        <item>planechase</item>
+        <item>archenemy</item>
+        <item>vanguard</item>
+        <item>funny</item>
+        <item>starter</item>
+        <item>box</item>
+        <item>promo</item>
+        <item>token</item>
+        <item>memorabilia</item>
+        <item>minigame</item>
+    </string-array>
 </resources>

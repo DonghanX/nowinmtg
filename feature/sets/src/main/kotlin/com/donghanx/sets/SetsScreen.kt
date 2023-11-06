@@ -1,12 +1,17 @@
 package com.donghanx.sets
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -88,5 +93,18 @@ private fun SetsList(sets: List<SetInfo>) {
             onClick = { scope.launch { lazyListState.animateScrollToItem(0) } },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
+    }
+}
+
+@Composable
+private fun SetsFilterRow(modifier: Modifier = Modifier) {
+    Row(
+        modifier =
+        modifier
+            .fillMaxWidth()
+            .padding(all = 6.dp)
+            .horizontalScroll(state = rememberScrollState())
+    ) {
+        SetTypeFilter()
     }
 }
