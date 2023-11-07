@@ -40,17 +40,13 @@ import kotlinx.coroutines.launch
 fun SetTypeFilter(
     selectedSetType: String?,
     onSetTypeChanged: (setType: String?) -> Unit,
-    onSetTypeReset: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     FilterChip(
         label = {
-            val labelText =
-                selectedSetType?.let { it.toReadableSetTypeLabel() }
-                    ?: stringResource(R.string.type)
-            Text(text = labelText)
+            Text(text = selectedSetType?.toReadableSetTypeLabel() ?: stringResource(R.string.type))
         },
         selected = selectedSetType != null,
         onClick = { showBottomSheet = true }
@@ -65,7 +61,6 @@ fun SetTypeFilter(
                 initialSelectedType = selectedSetType,
                 setTypes = stringArrayResource(R.array.set_types).toSet(),
                 onSetTypeChanged = onSetTypeChanged,
-                onSetTypeReset = onSetTypeReset,
                 onHideBottomSheet = {
                     scope
                         .launch { bottomSheetState.hide() }
@@ -82,7 +77,6 @@ private fun SetTypesSelector(
     initialSelectedType: String?,
     setTypes: Set<String>,
     onSetTypeChanged: (setType: String?) -> Unit,
-    onSetTypeReset: () -> Unit,
     onHideBottomSheet: () -> Unit
 ) {
     Column(
@@ -122,7 +116,7 @@ private fun SetTypesSelector(
 
         TextButton(
             onClick = {
-                onSetTypeReset()
+                onSetTypeChanged(null)
                 onHideBottomSheet()
             },
             modifier = Modifier.fillMaxWidth().height(40.dp)

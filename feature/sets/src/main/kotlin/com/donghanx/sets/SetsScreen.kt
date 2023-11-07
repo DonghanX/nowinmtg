@@ -49,8 +49,7 @@ fun SetsScreen(
                 Column(modifier = Modifier.fillMaxSize()) {
                     SetsFilterRow(
                         selectedSetType = viewModel.getSelectedSetType(),
-                        onSetTypeChanged = viewModel::onSelectedSetTypeChanged,
-                        onSetTypeReset = viewModel::onSelectedSetTypeReset
+                        onSetTypeChanged = viewModel::onSelectedSetTypeChanged
                     )
                     SetsList(sets = uiState.sets)
                 }
@@ -105,7 +104,6 @@ private fun SetsFilterRow(
     modifier: Modifier = Modifier,
     selectedSetType: String?,
     onSetTypeChanged: (setType: String?) -> Unit,
-    onSetTypeReset: () -> Unit
 ) {
     Row(
         modifier =
@@ -116,8 +114,7 @@ private fun SetsFilterRow(
     ) {
         SetTypeFilter(
             selectedSetType = selectedSetType,
-            onSetTypeChanged = onSetTypeChanged,
-            onSetTypeReset = onSetTypeReset
+            onSetTypeChanged = onSetTypeChanged
         )
     }
 }

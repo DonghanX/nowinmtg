@@ -57,7 +57,7 @@ constructor(
     private fun observeSets() {
         viewModelScope.launch {
             combine(setsRepository.getAllSets(), selectedSetType) { sets, setType ->
-                    sets.filter { setInfo -> setType == null || setInfo.setType == setType }
+                    sets.filter { setType == null || it.setType == setType }
                 }
                 .onEach { sets ->
                     viewModelState.update { it.copy(sets = sets, refreshing = false) }
@@ -90,10 +90,6 @@ constructor(
 
     fun onSelectedSetTypeChanged(setType: String?) {
         savedStateHandle[SET_TYPE_KEY] = setType
-    }
-
-    fun onSelectedSetTypeReset() {
-        savedStateHandle[SET_TYPE_KEY] = null
     }
 
     fun getSelectedSetType(): String? = savedStateHandle[SET_TYPE_KEY]
