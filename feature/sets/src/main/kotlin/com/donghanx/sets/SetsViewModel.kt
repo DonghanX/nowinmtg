@@ -11,6 +11,7 @@ import com.donghanx.data.repository.sets.SetsRepository
 import com.donghanx.model.SetInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -32,8 +33,11 @@ constructor(
 
     private val viewModelState = MutableStateFlow(SetsViewModelState(refreshing = false))
 
-    private val selectedSetType =
-        savedStateHandle.getStateFlow<String?>(key = SET_TYPE_KEY, initialValue = null)
+    private val filterSetType: StateFlow<String?> =
+        savedStateHandle.getStateFlow(key = SET_TYPE_KEY, initialValue = null)
+
+    private val setsQuery: Flow<SetsQuery> =
+        filterSetType.map { filterSetType -> SetsQuery(filterSetType = filterSetType) }
 
     val setsUiState: StateFlow<SetsUiState> =
         viewModelState
@@ -56,8 +60,10 @@ constructor(
 
     private fun observeSets() {
         viewModelScope.launch {
-            combine(setsRepository.getAllSets(), selectedSetType) { sets, setType ->
-                    sets.filter { setType == null || it.setType == setType }
+            combine(setsRepository.getAllSets(), setsQuery) { sets, setsQuery ->
+                    setsQuery.filterSetType?.let { filterSetType ->
+                        sets.filter { it.setType == filterSetType }
+                    } ?: sets
                 }
                 .onEach { sets ->
                     viewModelState.update { it.copy(sets = sets, refreshing = false) }
@@ -127,6 +133,10 @@ private data class SetsViewModelState(
             else -> SetsUiState.Empty(refreshing = refreshing, errorMessage = errorMessage)
         }
 }
+
+private data class SetsQuery(
+    val filterSetType: String? = null,
+)
 
 fun SetsUiState.hasError(): Boolean = errorMessage.hasError
 
