@@ -112,9 +112,6 @@ private fun SetsFilterRow(
                 .padding(all = 6.dp)
                 .horizontalScroll(state = rememberScrollState())
     ) {
-        SetTypeFilter(
-            selectedSetType = selectedSetType,
-            onSetTypeChanged = onSetTypeChanged
-        )
+        SetTypeFilter(selectedSetType = selectedSetType, onSetTypeChanged = onSetTypeChanged)
     }
 }
