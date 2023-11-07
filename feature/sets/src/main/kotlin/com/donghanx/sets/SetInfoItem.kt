@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
 @Composable
-fun SetInfoItemView(
+fun SetInfoItem(
     code: String,
     name: String,
     iconUrl: String,
@@ -43,7 +43,7 @@ fun SetInfoItemView(
 @Preview(showBackground = true)
 @Composable
 private fun SetInfoItemPreview() {
-    SetInfoItemView(
+    SetInfoItem(
         code = "soi",
         name = "Shadows over Innistrad",
         iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400"

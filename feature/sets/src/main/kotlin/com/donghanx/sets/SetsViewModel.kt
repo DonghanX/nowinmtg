@@ -1,5 +1,6 @@
 package com.donghanx.sets
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.donghanx.common.ErrorMessage
@@ -10,10 +11,12 @@ import com.donghanx.data.repository.sets.SetsRepository
 import com.donghanx.model.SetInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -21,9 +24,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class SetsViewModel @Inject constructor(private val setsRepository: SetsRepository) : ViewModel() {
+class SetsViewModel
+@Inject
+constructor(
+    private val setsRepository: SetsRepository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(SetsViewModelState(refreshing = false))
+
+    private val filterSetType: StateFlow<String?> =
+        savedStateHandle.getStateFlow(key = SET_TYPE_KEY, initialValue = null)
+
+    private val setsQuery: Flow<SetsQuery> =
+        filterSetType.map { filterSetType -> SetsQuery(filterSetType = filterSetType) }
 
     val setsUiState: StateFlow<SetsUiState> =
         viewModelState
@@ -46,8 +60,11 @@ class SetsViewModel @Inject constructor(private val setsRepository: SetsReposito
 
     private fun observeSets() {
         viewModelScope.launch {
-            setsRepository
-                .getAllSets()
+            combine(setsRepository.getAllSets(), setsQuery) { sets, setsQuery ->
+                    setsQuery.filterSetType?.let { filterSetType ->
+                        sets.filter { it.setType == filterSetType }
+                    } ?: sets
+                }
                 .onEach { sets ->
                     viewModelState.update { it.copy(sets = sets, refreshing = false) }
                 }
@@ -76,6 +93,12 @@ class SetsViewModel @Inject constructor(private val setsRepository: SetsReposito
             }
         }
     }
+
+    fun onSelectedSetTypeChanged(setType: String?) {
+        savedStateHandle[SET_TYPE_KEY] = setType
+    }
+
+    fun getSelectedSetType(): String? = savedStateHandle[SET_TYPE_KEY]
 }
 
 sealed interface SetsUiState {
@@ -111,6 +134,11 @@ private data class SetsViewModelState(
         }
 }
 
+private data class SetsQuery(
+    val filterSetType: String? = null,
+)
+
 fun SetsUiState.hasError(): Boolean = errorMessage.hasError
 
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
+private const val SET_TYPE_KEY = "SetType"

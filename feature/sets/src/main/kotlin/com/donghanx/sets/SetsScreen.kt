@@ -1,11 +1,17 @@
 package com.donghanx.sets
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -39,7 +45,15 @@ fun SetsScreen(
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {
         when (val uiState = setsUiState) {
-            is SetsUiState.Success -> SetsList(sets = uiState.sets)
+            is SetsUiState.Success ->
+                Column(modifier = Modifier.fillMaxSize()) {
+                    SetsFilterRow(
+                        selectedSetType = viewModel.getSelectedSetType(),
+                        onSetTypeChanged = viewModel::onSelectedSetTypeChanged
+                    )
+                    SetsList(sets = uiState.sets)
+                }
+
             // TODO: add a placeholder composable for empty sets
             is SetsUiState.Empty -> Unit
         }
@@ -70,7 +84,7 @@ private fun SetsList(sets: List<SetInfo>) {
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(items = sets, key = { it.scryfallId }) {
-                SetInfoItemView(code = it.code, name = it.name, iconUrl = it.iconSvgUri)
+                SetInfoItem(code = it.code, name = it.name, iconUrl = it.iconSvgUri)
             }
         }
 
@@ -82,5 +96,22 @@ private fun SetsList(sets: List<SetInfo>) {
             onClick = { scope.launch { lazyListState.animateScrollToItem(0) } },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
+    }
+}
+
+@Composable
+private fun SetsFilterRow(
+    modifier: Modifier = Modifier,
+    selectedSetType: String?,
+    onSetTypeChanged: (setType: String?) -> Unit,
+) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(all = 6.dp)
+                .horizontalScroll(state = rememberScrollState())
+    ) {
+        SetTypeFilter(selectedSetType = selectedSetType, onSetTypeChanged = onSetTypeChanged)
     }
 }
