@@ -1,5 +1,6 @@
 package com.donghanx.sets
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,14 +21,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.ui.pullrefresh.pullRefresh
 import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.model.SetInfo
+import com.donghanx.sets.preview.SetsListPreviewParameterProvider
 import kotlinx.coroutines.launch
 
 @Composable
@@ -40,7 +45,7 @@ fun SetsScreen(
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = setsUiState.refreshing,
-            onRefresh = { viewModel.refreshSets() }
+            onRefresh = viewModel::refreshSets
         )
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {
@@ -51,7 +56,7 @@ fun SetsScreen(
                         selectedSetType = viewModel.getSelectedSetType(),
                         onSetTypeChanged = viewModel::onSelectedSetTypeChanged
                     )
-                    SetsList(sets = uiState.sets)
+                    SetsList(groupedSets = uiState.groupedSets)
                 }
 
             // TODO: add a placeholder composable for empty sets
@@ -72,8 +77,9 @@ fun SetsScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun SetsList(sets: List<SetInfo>) {
+private fun SetsList(groupedSets: Map<Int, List<SetInfo>>) {
     Box(modifier = Modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
@@ -83,13 +89,27 @@ private fun SetsList(sets: List<SetInfo>) {
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(items = sets, key = { it.scryfallId }) {
-                SetInfoItem(code = it.code, name = it.name, iconUrl = it.iconSvgUri)
+            groupedSets.forEach { (yearReleased, sets) ->
+                stickyHeader(key = yearReleased) {
+                    StickyYearReleased(
+                        yearReleased = yearReleased,
+                        modifier = Modifier.padding(horizontal = 6.dp)
+                    )
+                }
+
+                items(items = sets, key = { it.scryfallId }) {
+                    SetInfoItem(
+                        code = it.code,
+                        name = it.name,
+                        iconUrl = it.iconSvgUri,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp)
+                    )
+                }
             }
         }
 
         val shouldShowScrollToTopButton by remember {
-            derivedStateOf { lazyListState.firstVisibleItemIndex > 0 }
+            derivedStateOf { lazyListState.isFirstItemNotVisible() }
         }
         ScrollToTopButton(
             visible = shouldShowScrollToTopButton,
@@ -114,4 +134,12 @@ private fun SetsFilterRow(
     ) {
         SetTypeFilter(selectedSetType = selectedSetType, onSetTypeChanged = onSetTypeChanged)
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun SetsListPreview(
+    @PreviewParameter(SetsListPreviewParameterProvider::class) groupedSets: Map<Int, List<SetInfo>>
+) {
+    SetsList(groupedSets = groupedSets)
 }

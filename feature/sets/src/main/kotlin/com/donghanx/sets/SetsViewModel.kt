@@ -10,6 +10,7 @@ import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.sets.SetsRepository
 import com.donghanx.model.SetInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,8 +66,9 @@ constructor(
                         sets.filter { it.setType == filterSetType }
                     } ?: sets
                 }
-                .onEach { sets ->
-                    viewModelState.update { it.copy(sets = sets, refreshing = false) }
+                .map { sets -> sets.groupBy { it.releasedAt.yearOfDate() } }
+                .onEach { groupedSets ->
+                    viewModelState.update { it.copy(groupedSets = groupedSets, refreshing = false) }
                 }
                 .collect()
         }
@@ -106,7 +108,7 @@ sealed interface SetsUiState {
     val errorMessage: ErrorMessage
 
     data class Success(
-        val sets: List<SetInfo>,
+        val groupedSets: SetInfoMap,
         override val refreshing: Boolean,
         override val errorMessage: ErrorMessage = emptyErrorMessage()
     ) : SetsUiState
@@ -118,15 +120,15 @@ sealed interface SetsUiState {
 }
 
 private data class SetsViewModelState(
-    val sets: List<SetInfo> = emptyList(),
+    val groupedSets: SetInfoMap = emptyMap(),
     val refreshing: Boolean,
     val errorMessage: ErrorMessage = emptyErrorMessage()
 ) {
     fun toUiState(): SetsUiState =
         when {
-            sets.isNotEmpty() ->
+            groupedSets.isNotEmpty() ->
                 SetsUiState.Success(
-                    sets = sets,
+                    groupedSets = groupedSets,
                     refreshing = refreshing,
                     errorMessage = errorMessage
                 )
@@ -140,5 +142,12 @@ private data class SetsQuery(
 
 fun SetsUiState.hasError(): Boolean = errorMessage.hasError
 
+private fun String.yearOfDate(): Int = LocalDate.parse(this).year
+
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
 private const val SET_TYPE_KEY = "SetType"
+
+/**
+ * A typealias of the Map that uses the year String as the key and the [SetInfo] list as the value
+ */
+private typealias SetInfoMap = Map<Int, List<SetInfo>>

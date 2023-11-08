@@ -2,6 +2,7 @@ package com.donghanx.mock
 
 import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
+import com.donghanx.model.SetInfo
 
 object MockUtils {
     val emptyCards = List(5) { CardPreview(id = it.toString(), name = "", imageUrl = "") }
@@ -124,5 +125,37 @@ object MockUtils {
             flavor = null,
             setName = "Shadows over Innistrad",
             variations = null
+        )
+
+    val soiExpansion =
+        SetInfo(
+            scryfallId = "5e914d7e-c1e9-446c-a33d-d093c02b2743",
+            code = "soi",
+            name = "Shadows over Innistrad",
+            cardCount = 297,
+            digital = false,
+            iconSvgUri = "https://svgs.scryfall.io/sets/soi.svg?1699246800",
+            setType = "expansion",
+            releasedAt = "2016-04-08",
+            scryfallUri = "https://scryfall.com/sets/soi",
+            searchUri =
+                "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Asoi&unique=prints",
+            uri = "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743"
+        )
+
+    val xlnExpansion =
+        SetInfo(
+            scryfallId = "fe0dad85-54bc-4151-9200-d68da84dd0f2",
+            code = "xln",
+            name = "Ixalan",
+            cardCount = 289,
+            digital = false,
+            iconSvgUri = "https://svgs.scryfall.io/sets/xln.svg?1699246800",
+            setType = "expansion",
+            releasedAt = "2017-09-29",
+            scryfallUri = "https://scryfall.com/sets/xln",
+            searchUri =
+                "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Axln&unique=prints",
+            uri = "https://api.scryfall.com/sets/fe0dad85-54bc-4151-9200-d68da84dd0f2"
         )
 }

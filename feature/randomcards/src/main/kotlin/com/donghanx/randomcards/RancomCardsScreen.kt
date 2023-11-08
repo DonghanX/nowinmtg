@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.donghanx.design.R as DesignR
+import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.rippleClickable
 import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.ui.pullrefresh.pullRefresh
@@ -110,7 +111,7 @@ private fun CardsGallery(cards: List<CardPreview>, onCardClick: (cardId: String)
         }
 
         val shouldShowScrollToTopButton by remember {
-            derivedStateOf { lazyGridState.firstVisibleItemIndex > 0 }
+            derivedStateOf { lazyGridState.isFirstItemNotVisible() }
         }
         ScrollToTopButton(
             visible = shouldShowScrollToTopButton,
