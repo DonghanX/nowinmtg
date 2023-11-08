@@ -1,10 +1,10 @@
 package com.donghanx.sets
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
@@ -19,16 +19,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
 @Composable
-fun SetInfoItem(
-    code: String,
-    name: String,
-    iconUrl: String,
-) {
+fun SetInfoItem(code: String, name: String, iconUrl: String, modifier: Modifier = Modifier) {
     Row(
-        modifier =
-            Modifier.fillMaxSize()
-                .padding(horizontal = 6.dp)
-                .horizontalScroll(state = rememberScrollState()),
+        modifier = modifier.horizontalScroll(state = rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -40,6 +33,13 @@ fun SetInfoItem(
     }
 }
 
+@Composable
+fun StickyYearReleased(yearReleased: Int, modifier: Modifier = Modifier) {
+    Row(modifier = modifier.fillMaxWidth().background(color = Color.White)) {
+        Text(text = yearReleased.toString(), fontWeight = FontWeight.Bold)
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun SetInfoItemPreview() {
@@ -48,4 +48,10 @@ private fun SetInfoItemPreview() {
         name = "Shadows over Innistrad",
         iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400"
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StickyYearReleased() {
+    StickyYearReleased(yearReleased = 2023)
 }
