@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -49,18 +50,19 @@ fun SetsScreen(
         )
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {
-        when (val uiState = setsUiState) {
-            is SetsUiState.Success ->
-                Column(modifier = Modifier.fillMaxSize()) {
-                    SetsFilterRow(
-                        selectedSetType = viewModel.getSelectedSetType(),
-                        onSetTypeChanged = viewModel::onSelectedSetTypeChanged
-                    )
-                    SetsList(groupedSets = uiState.groupedSets)
-                }
+        Column(modifier = Modifier.fillMaxSize()) {
+            SetsFilterRow(
+                selectedSetType = viewModel.getSelectedSetType(),
+                onSetTypeChanged = viewModel::onSelectedSetTypeChanged,
+                onDateRangeSelected = viewModel::onDateRangeSelected
+            )
 
-            // TODO: add a placeholder composable for empty sets
-            is SetsUiState.Empty -> Unit
+            when (val uiState = setsUiState) {
+                is SetsUiState.Success -> SetsList(groupedSets = uiState.groupedSets)
+
+                // TODO: add a placeholder composable for empty sets
+                is SetsUiState.Empty -> Unit
+            }
         }
 
         PullRefreshIndicator(
@@ -124,15 +126,18 @@ private fun SetsFilterRow(
     modifier: Modifier = Modifier,
     selectedSetType: String?,
     onSetTypeChanged: (setType: String?) -> Unit,
+    onDateRangeSelected: (startDateMillis: Long?, endDateMillis: Long?) -> Unit,
 ) {
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(all = 6.dp)
-                .horizontalScroll(state = rememberScrollState())
+                .horizontalScroll(state = rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(space = 6.dp)
     ) {
         SetTypeFilter(selectedSetType = selectedSetType, onSetTypeChanged = onSetTypeChanged)
+        ReleaseDateFilter(onDateRangeSelected = onDateRangeSelected)
     }
 }
 

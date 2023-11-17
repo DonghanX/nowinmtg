@@ -4,6 +4,8 @@
     <string name="view_results">View Results</string>
     <string name="reset">Reset</string>
     <string name="type">Type</string>
+    <string name="card_count">Card Count</string>
+    <string name="release_date">Release Date</string>
     <string-array name="set_types">
         <item>expansion</item>
         <item>core</item>
