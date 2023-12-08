@@ -7,10 +7,12 @@ import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
+import com.donghanx.common.utils.DateMillisRange
+import com.donghanx.common.utils.epochMilliOfDate
+import com.donghanx.common.utils.yearOfDate
 import com.donghanx.data.repository.sets.SetsRepository
 import com.donghanx.model.SetInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.LocalDate
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,12 +36,6 @@ constructor(
 
     private val viewModelState = MutableStateFlow(SetsViewModelState(refreshing = false))
 
-    private val filterSetType: StateFlow<String?> =
-        savedStateHandle.getStateFlow(key = SET_TYPE_KEY, initialValue = null)
-
-    private val setsQuery: Flow<SetsQuery> =
-        filterSetType.map { filterSetType -> SetsQuery(filterSetType = filterSetType) }
-
     val setsUiState: StateFlow<SetsUiState> =
         viewModelState
             .map(SetsViewModelState::toUiState)
@@ -48,6 +44,20 @@ constructor(
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
                 initialValue = viewModelState.value.toUiState()
             )
+
+    val setTypeQuery: StateFlow<String?> =
+        savedStateHandle.getStateFlow(key = SET_TYPE_KEY, initialValue = null)
+
+    val startMillisQuery: StateFlow<Long?> =
+        savedStateHandle.getStateFlow(key = START_DATE_MILLIS_KEY, initialValue = null)
+
+    val endMillisQuery: StateFlow<Long?> =
+        savedStateHandle.getStateFlow(key = END_DATE_MILLIS_KEY, initialValue = null)
+
+    private val setsQuery: Flow<SetsQuery> =
+        combine(setTypeQuery, startMillisQuery, endMillisQuery) { setType, startMillis, endMillis ->
+            SetsQuery(setType = setType, dateRange = DateMillisRange(startMillis, endMillis))
+        }
 
     init {
         observeSets()
@@ -61,10 +71,20 @@ constructor(
 
     private fun observeSets() {
         viewModelScope.launch {
-            combine(setsRepository.getAllSets(), setsQuery) { sets, setsQuery ->
-                    setsQuery.filterSetType?.let { filterSetType ->
-                        sets.filter { it.setType == filterSetType }
-                    } ?: sets
+            combine(setsRepository.getAllSets(), setsQuery) { sets, query ->
+                    if (query.isNotEmpty()) {
+                        sets
+                            .asSequence()
+                            .filter { query.setType == null || it.setType == query.setType }
+                            .filter {
+                                query.dateRange.contains(
+                                    it.releasedAt.epochMilliOfDate(RELEASE_DATE_OFFSET)
+                                )
+                            }
+                            .toList()
+                    } else {
+                        sets
+                    }
                 }
                 .map { sets -> sets.groupBy { it.releasedAt.yearOfDate() } }
                 .onEach { groupedSets ->
@@ -100,7 +120,10 @@ constructor(
         savedStateHandle[SET_TYPE_KEY] = setType
     }
 
-    fun getSelectedSetType(): String? = savedStateHandle[SET_TYPE_KEY]
+    fun onDateRangeSelected(startDateMillis: Long?, endDateMillis: Long?) {
+        savedStateHandle[START_DATE_MILLIS_KEY] = startDateMillis
+        savedStateHandle[END_DATE_MILLIS_KEY] = endDateMillis
+    }
 }
 
 sealed interface SetsUiState {
@@ -137,15 +160,20 @@ private data class SetsViewModelState(
 }
 
 private data class SetsQuery(
-    val filterSetType: String? = null,
-)
+    val setType: String? = null,
+    val dateRange: DateMillisRange = DateMillisRange.EMPTY
+) {
+    fun isNotEmpty(): Boolean = setType != null || dateRange.isNotEmpty()
+}
 
 fun SetsUiState.hasError(): Boolean = errorMessage.hasError
 
-private fun String.yearOfDate(): Int = LocalDate.parse(this).year
-
+// The date the set was released is in GMT-8 Pacific time
+const val RELEASE_DATE_OFFSET = 8
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
 private const val SET_TYPE_KEY = "SetType"
+private const val START_DATE_MILLIS_KEY = "StartDateMillis"
+private const val END_DATE_MILLIS_KEY = "EndDateMillis"
 
 /**
  * A typealias of the Map that uses the year String as the key and the [SetInfo] list as the value

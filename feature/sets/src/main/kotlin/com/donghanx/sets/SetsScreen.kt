@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.ui.pullrefresh.pullRefresh
@@ -49,18 +50,24 @@ fun SetsScreen(
         )
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {
-        when (val uiState = setsUiState) {
-            is SetsUiState.Success ->
-                Column(modifier = Modifier.fillMaxSize()) {
-                    SetsFilterRow(
-                        selectedSetType = viewModel.getSelectedSetType(),
-                        onSetTypeChanged = viewModel::onSelectedSetTypeChanged
-                    )
-                    SetsList(groupedSets = uiState.groupedSets)
-                }
+        Column(modifier = Modifier.fillMaxSize()) {
+            val selectedSetType by viewModel.setTypeQuery.collectAsStateWithLifecycle()
+            val selectedStartMillis by viewModel.startMillisQuery.collectAsStateWithLifecycle()
+            val selectedEndMillis by viewModel.endMillisQuery.collectAsStateWithLifecycle()
 
-            // TODO: add a placeholder composable for empty sets
-            is SetsUiState.Empty -> Unit
+            SetsFilterRow(
+                selectedSetType = selectedSetType,
+                onSetTypeChanged = viewModel::onSelectedSetTypeChanged,
+                selectedDateMillisRange = DateMillisRange(selectedStartMillis, selectedEndMillis),
+                onDateRangeSelected = viewModel::onDateRangeSelected
+            )
+
+            when (val uiState = setsUiState) {
+                is SetsUiState.Success -> SetsList(groupedSets = uiState.groupedSets)
+
+                // TODO: add a placeholder composable for empty sets
+                is SetsUiState.Empty -> Unit
+            }
         }
 
         PullRefreshIndicator(
@@ -123,16 +130,24 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>) {
 private fun SetsFilterRow(
     modifier: Modifier = Modifier,
     selectedSetType: String?,
+    selectedDateMillisRange: DateMillisRange,
     onSetTypeChanged: (setType: String?) -> Unit,
+    onDateRangeSelected: (startDateMillis: Long?, endDateMillis: Long?) -> Unit,
 ) {
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(all = 6.dp)
-                .horizontalScroll(state = rememberScrollState())
+                .horizontalScroll(state = rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(space = 6.dp)
     ) {
         SetTypeFilter(selectedSetType = selectedSetType, onSetTypeChanged = onSetTypeChanged)
+
+        ReleaseDateFilter(
+            selectedDateMillisRange = selectedDateMillisRange,
+            onDateRangeSelected = onDateRangeSelected
+        )
     }
 }
 

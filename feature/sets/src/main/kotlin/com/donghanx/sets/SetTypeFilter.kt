@@ -88,9 +88,11 @@ private fun SetTypesSelector(
 
         FlowRow(horizontalArrangement = Arrangement.Start) {
             setTypes.forEach { setType ->
+                val setTypeLabel = remember { setType.toReadableSetTypeLabel() }
+
                 FilterChipWithLeadingIcon(
                     selected = selectedType == setType,
-                    label = setType.toReadableSetTypeLabel(),
+                    label = setTypeLabel,
                     onClick = { selectedType = if (selectedType == setType) null else setType },
                     leadingIcon = {
                         Icon(
