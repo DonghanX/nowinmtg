@@ -8,6 +8,8 @@ data class DateMillisRange(val startMillis: Long? = null, val endMillis: Long? =
 
     fun isEmpty(): Boolean = startMillis == null && endMillis == null
 
+    fun isNotEmpty(): Boolean = !isEmpty()
+
     fun contains(targetMillis: Long): Boolean {
         val isAfterStartMillis = startMillis?.let { targetMillis > it } ?: true
         val isBeforeEndMillis = endMillis?.let { targetMillis < it } ?: true

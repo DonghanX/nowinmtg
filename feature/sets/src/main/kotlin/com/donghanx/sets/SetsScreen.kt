@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,6 +26,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.ui.pullrefresh.pullRefresh
@@ -51,9 +51,14 @@ fun SetsScreen(
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {
         Column(modifier = Modifier.fillMaxSize()) {
+            val selectedSetType by viewModel.setTypeQuery.collectAsStateWithLifecycle()
+            val selectedStartMillis by viewModel.startMillisQuery.collectAsStateWithLifecycle()
+            val selectedEndMillis by viewModel.endMillisQuery.collectAsStateWithLifecycle()
+
             SetsFilterRow(
-                selectedSetType = viewModel.getSelectedSetType(),
+                selectedSetType = selectedSetType,
                 onSetTypeChanged = viewModel::onSelectedSetTypeChanged,
+                selectedDateMillisRange = DateMillisRange(selectedStartMillis, selectedEndMillis),
                 onDateRangeSelected = viewModel::onDateRangeSelected
             )
 
@@ -125,6 +130,7 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>) {
 private fun SetsFilterRow(
     modifier: Modifier = Modifier,
     selectedSetType: String?,
+    selectedDateMillisRange: DateMillisRange,
     onSetTypeChanged: (setType: String?) -> Unit,
     onDateRangeSelected: (startDateMillis: Long?, endDateMillis: Long?) -> Unit,
 ) {
@@ -137,7 +143,11 @@ private fun SetsFilterRow(
         horizontalArrangement = Arrangement.spacedBy(space = 6.dp)
     ) {
         SetTypeFilter(selectedSetType = selectedSetType, onSetTypeChanged = onSetTypeChanged)
-        ReleaseDateFilter(onDateRangeSelected = onDateRangeSelected)
+
+        ReleaseDateFilter(
+            selectedDateMillisRange = selectedDateMillisRange,
+            onDateRangeSelected = onDateRangeSelected
+        )
     }
 }
 

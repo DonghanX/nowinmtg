@@ -45,13 +45,13 @@ constructor(
                 initialValue = viewModelState.value.toUiState()
             )
 
-    private val setTypeQuery: StateFlow<String?> =
+    val setTypeQuery: StateFlow<String?> =
         savedStateHandle.getStateFlow(key = SET_TYPE_KEY, initialValue = null)
 
-    private val startMillisQuery: StateFlow<Long?> =
+    val startMillisQuery: StateFlow<Long?> =
         savedStateHandle.getStateFlow(key = START_DATE_MILLIS_KEY, initialValue = null)
 
-    private val endMillisQuery: StateFlow<Long?> =
+    val endMillisQuery: StateFlow<Long?> =
         savedStateHandle.getStateFlow(key = END_DATE_MILLIS_KEY, initialValue = null)
 
     private val setsQuery: Flow<SetsQuery> =
@@ -73,7 +73,6 @@ constructor(
         viewModelScope.launch {
             combine(setsRepository.getAllSets(), setsQuery) { sets, query ->
                     if (query.isNotEmpty()) {
-                        println("Date range is ${query.dateRange}")
                         sets
                             .asSequence()
                             .filter { query.setType == null || it.setType == query.setType }
@@ -121,16 +120,10 @@ constructor(
         savedStateHandle[SET_TYPE_KEY] = setType
     }
 
-    fun getSelectedSetType(): String? = savedStateHandle[SET_TYPE_KEY]
-
     fun onDateRangeSelected(startDateMillis: Long?, endDateMillis: Long?) {
         savedStateHandle[START_DATE_MILLIS_KEY] = startDateMillis
         savedStateHandle[END_DATE_MILLIS_KEY] = endDateMillis
     }
-
-    fun getSelectedStartDate(): Long? = savedStateHandle[START_DATE_MILLIS_KEY]
-
-    fun getSelectedEndDate(): Long? = savedStateHandle[START_DATE_MILLIS_KEY]
 }
 
 sealed interface SetsUiState {
@@ -170,13 +163,13 @@ private data class SetsQuery(
     val setType: String? = null,
     val dateRange: DateMillisRange = DateMillisRange.EMPTY
 ) {
-    fun isNotEmpty(): Boolean = setType != null || !dateRange.isEmpty()
+    fun isNotEmpty(): Boolean = setType != null || dateRange.isNotEmpty()
 }
 
 fun SetsUiState.hasError(): Boolean = errorMessage.hasError
 
 // The date the set was released is in GMT-8 Pacific time
-private const val RELEASE_DATE_OFFSET = 8
+const val RELEASE_DATE_OFFSET = 8
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
 private const val SET_TYPE_KEY = "SetType"
 private const val START_DATE_MILLIS_KEY = "StartDateMillis"

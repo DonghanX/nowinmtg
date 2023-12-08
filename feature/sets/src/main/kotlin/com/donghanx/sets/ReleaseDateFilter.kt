@@ -17,12 +17,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import com.donghanx.common.utils.DateMillisRange
+import com.donghanx.common.utils.epochMilliOfDate
 import com.donghanx.sets.composable.BottomSheetContentWrapper
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReleaseDateFilter(
+    selectedDateMillisRange: DateMillisRange,
     onDateRangeSelected: (startDateMillis: Long?, endDateMillis: Long?) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -30,7 +33,7 @@ fun ReleaseDateFilter(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     FilterChip(
         label = { Text(stringResource(R.string.release_date)) },
-        selected = false,
+        selected = selectedDateMillisRange.isNotEmpty(),
         onClick = { showBottomSheet = true }
     )
 
@@ -41,6 +44,7 @@ fun ReleaseDateFilter(
             windowInsets = WindowInsets.ime
         ) {
             ReleaseDatePicker(
+                initialDateMillisRange = selectedDateMillisRange,
                 onDateRangeSelected = onDateRangeSelected,
                 onHideBottomSheet = {
                     scope
@@ -55,10 +59,18 @@ fun ReleaseDateFilter(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReleaseDatePicker(
+    initialDateMillisRange: DateMillisRange,
     onDateRangeSelected: (startDateMillis: Long?, endDateMillis: Long?) -> Unit,
     onHideBottomSheet: () -> Unit
 ) {
-    val dateRangePickerState = rememberDateRangePickerState(initialDisplayMode = DisplayMode.Input)
+
+    val dateRangePickerState =
+        rememberDateRangePickerState(
+            initialDisplayMode = DisplayMode.Input,
+            initialSelectedStartDateMillis =
+                remember { initialDateMillisRange.startDateMillisOrDefault() },
+            initialSelectedEndDateMillis = initialDateMillisRange.endMillis
+        )
 
     BottomSheetContentWrapper(
         onViewResultsClick = {
@@ -74,4 +86,18 @@ private fun ReleaseDatePicker(
     ) {
         DateRangePicker(state = dateRangePickerState, showModeToggle = false)
     }
+}
+
+/**
+ * Return the default start date millis (the release date of the first MTG set) if the
+ * [DateMillisRange.endMillis] is provided and the [DateMillisRange.startMillis] is null. Otherwise
+ * return the original [DateMillisRange.startMillis].
+ *
+ * The default start date millis helps accommodate the input requirement of [DateRangePicker] , as
+ * [DateRangePicker] throws an exception when an end date is provided without a start date,
+ */
+private fun DateMillisRange.startDateMillisOrDefault(): Long? {
+    return if (endMillis != null && startMillis == null)
+        "1993-08-05".epochMilliOfDate(RELEASE_DATE_OFFSET)
+    else startMillis
 }

@@ -20,6 +20,10 @@ private fun String.toIsoLocalDate(): LocalDate {
 }
 
 private fun Int.toZoneOffset(): ZoneOffset {
-    require(this > 0)
+    require(this >= 0)
     return ZoneOffset.of("+$this")
+}
+
+object DateUtils {
+    val maxSupportedDateMillis = LocalDate.MAX.toEpochMilli(0)
 }
