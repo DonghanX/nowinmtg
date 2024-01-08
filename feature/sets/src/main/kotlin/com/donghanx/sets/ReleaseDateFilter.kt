@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.common.utils.epochMilliOfDate
+import com.donghanx.common.utils.fromEpochMilliseconds
 import com.donghanx.sets.composable.BottomSheetContentWrapper
 import kotlinx.coroutines.launch
 
@@ -32,7 +33,7 @@ fun ReleaseDateFilter(
     var showBottomSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     FilterChip(
-        label = { Text(stringResource(R.string.release_date)) },
+        label = { Text(text = selectedDateMillisRange.toReleaseDateFilterChipLabel()) },
         selected = selectedDateMillisRange.isNotEmpty(),
         onClick = { showBottomSheet = true }
     )
@@ -97,7 +98,19 @@ private fun ReleaseDatePicker(
  * [DateRangePicker] throws an exception when an end date is provided without a start date,
  */
 private fun DateMillisRange.startDateMillisOrDefault(): Long? {
-    return if (endMillis != null && startMillis == null)
-        "1993-08-05".epochMilliOfDate(RELEASE_DATE_OFFSET)
+    return if (hasEndMillisOnly()) "1993-08-05".epochMilliOfDate(RELEASE_DATE_OFFSET)
     else startMillis
+}
+
+@Composable
+private fun DateMillisRange.toReleaseDateFilterChipLabel(): String {
+    val startDateIfExists = startMillis?.fromEpochMilliseconds(RELEASE_DATE_OFFSET)
+    val endDateIfExists = endMillis?.fromEpochMilliseconds(RELEASE_DATE_OFFSET)
+
+    return when {
+        isEmpty() -> stringResource(id = R.string.release_date)
+        hasStartMillisOnly() -> "from $startDateIfExists"
+        hasEndMillisOnly() -> "until $endDateIfExists"
+        else -> "from $startDateIfExists to $endDateIfExists"
+    }
 }
