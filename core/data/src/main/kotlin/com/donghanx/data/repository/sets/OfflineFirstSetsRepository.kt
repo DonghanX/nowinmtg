@@ -26,10 +26,10 @@ constructor(
     private val setsRemoteDataSource: SetsRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher
 ) : SetsRepository {
-    override suspend fun getAllSets(): Flow<List<SetInfo>> =
+    override fun getAllSets(): Flow<List<SetInfo>> =
         setsDao.getAllSets().map { it.map(SetEntity::asExternalModel) }.flowOn(ioDispatcher)
 
-    override suspend fun refreshAllSets(): Flow<NetworkResult<Unit>> =
+    override fun refreshAllSets(): Flow<NetworkResult<Unit>> =
         flow { emit(setsRemoteDataSource.getAllSets()) }
             .asResultFlow()
             .foldResult(
