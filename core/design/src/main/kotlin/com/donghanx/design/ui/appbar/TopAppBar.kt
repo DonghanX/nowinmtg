@@ -20,6 +20,7 @@ fun NowInMtgTopAppBar(
     @StringRes titleResId: Int,
     navigationIcon: ImageVector,
     navigationIconContentDescription: String?,
+    showNavigationIcon: Boolean,
     modifier: Modifier = Modifier,
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
     onNavigationIconClick: () -> Unit = {}
@@ -28,11 +29,13 @@ fun NowInMtgTopAppBar(
         title = { Text(text = stringResource(titleResId), fontWeight = FontWeight.Bold) },
         colors = colors,
         navigationIcon = {
-            IconButton(onClick = onNavigationIconClick) {
-                Icon(
-                    imageVector = navigationIcon,
-                    contentDescription = navigationIconContentDescription
-                )
+            if (showNavigationIcon) {
+                IconButton(onClick = onNavigationIconClick) {
+                    Icon(
+                        imageVector = navigationIcon,
+                        contentDescription = navigationIconContentDescription
+                    )
+                }
             }
         },
         modifier = modifier

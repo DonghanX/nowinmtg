@@ -40,7 +40,12 @@ fun NowInMtgApp() {
                     NowInMtgTopAppBar(
                         titleResId = topLevelDestination.labelResId,
                         navigationIcon = Icons.Rounded.Search,
-                        navigationIconContentDescription = stringResource(DesignR.string.search)
+                        navigationIconContentDescription = stringResource(DesignR.string.search),
+                        showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
+                        onNavigationIconClick = {
+                            // TODO: add functionality to navigate to search screen by clicking the
+                            //  navigation icon in the TopAppBar
+                        }
                     )
                 }
             },
