@@ -1,9 +1,11 @@
 package com.donghanx.nowinmtg.ui
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -16,11 +18,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.donghanx.design.R as DesignR
+import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
+import com.donghanx.nowinmtg.navigation.TopLevelDestinationScope
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NowInMtgApp() {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -28,6 +35,20 @@ fun NowInMtgApp() {
         val snackbarHostState = remember { SnackbarHostState() }
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
+            topBar = {
+                TopLevelDestinationScope(appState = appState) { topLevelDestination ->
+                    NowInMtgTopAppBar(
+                        titleResId = topLevelDestination.labelResId,
+                        navigationIcon = Icons.Rounded.Search,
+                        navigationIconContentDescription = stringResource(DesignR.string.search),
+                        showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
+                        onNavigationIconClick = {
+                            // TODO: add functionality to navigate to search screen by clicking the
+                            //  navigation icon in the TopAppBar
+                        }
+                    )
+                }
+            },
             bottomBar = {
                 BottomNavigationBar(
                     topLevelDestinations = appState.topLevelDestinations,
@@ -52,7 +73,7 @@ private fun BottomNavigationBar(
     topLevelDestinations: List<TopLevelDestination>,
     onNavItemClick: (route: String) -> Unit
 ) {
-    NavigationBar {
+    NavigationBar(containerColor = Color.Transparent) {
         topLevelDestinations.forEach { destination ->
             NavigationBarItem(
                 selected = false,

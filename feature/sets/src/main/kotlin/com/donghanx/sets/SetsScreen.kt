@@ -138,7 +138,7 @@ private fun SetsFilterRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(all = 6.dp)
+                .padding(horizontal = 6.dp)
                 .horizontalScroll(state = rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(space = 6.dp)
     ) {
