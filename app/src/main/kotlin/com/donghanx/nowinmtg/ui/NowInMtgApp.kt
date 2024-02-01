@@ -26,6 +26,7 @@ import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.nowinmtg.navigation.TopLevelDestinationScope
+import com.donghanx.search.navigation.navigateToSearch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,10 +43,7 @@ fun NowInMtgApp() {
                         navigationIcon = Icons.Rounded.Search,
                         navigationIconContentDescription = stringResource(DesignR.string.search),
                         showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
-                        onNavigationIconClick = {
-                            // TODO: add functionality to navigate to search screen by clicking the
-                            //  navigation icon in the TopAppBar
-                        }
+                        onNavigationIconClick = appState.navController::navigateToSearch
                     )
                 }
             },

@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":feature:randomcards"))
     implementation(project(":feature:carddetails"))
     implementation(project(":feature:sets"))
+    implementation(project(":feature:search"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

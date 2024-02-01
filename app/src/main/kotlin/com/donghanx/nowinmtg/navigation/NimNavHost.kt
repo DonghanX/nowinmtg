@@ -8,6 +8,7 @@ import com.donghanx.carddetails.navigation.cardDetailsScreen
 import com.donghanx.carddetails.navigation.navigateToCardDetails
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
 import com.donghanx.randomcards.navigation.randomCardsScreen
+import com.donghanx.search.navigation.searchScreen
 import com.donghanx.sets.navigation.setsScreen
 
 @Composable
@@ -28,5 +29,6 @@ fun NimNavHost(
         )
         setsScreen(onShowSnackbar = onShowSnackbar)
         cardDetailsScreen(onShowSnackbar = onShowSnackbar)
+        searchScreen(onShowSnackbar = onShowSnackbar)
     }
 }
