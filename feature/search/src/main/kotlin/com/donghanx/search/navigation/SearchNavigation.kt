@@ -12,5 +12,5 @@ fun NavController.navigateToSearch() {
 }
 
 fun NavGraphBuilder.searchScreen(onShowSnackbar: suspend (message: String) -> Unit) {
-    composable(route = SEARCH_ROUTE) { SearchScreen() }
+    composable(route = SEARCH_ROUTE) { SearchScreen(onShowSnackbar = onShowSnackbar) }
 }
