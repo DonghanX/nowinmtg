@@ -29,6 +29,6 @@ fun NimNavHost(
         )
         setsScreen(onShowSnackbar = onShowSnackbar)
         cardDetailsScreen(onShowSnackbar = onShowSnackbar)
-        searchScreen(onShowSnackbar = onShowSnackbar)
+        searchScreen(onCloseClick = navController::popBackStack)
     }
 }

@@ -2,4 +2,5 @@
 <resources>
     <string name="scroll_to_top">Scroll To Top</string>
     <string name="search">Search</string>
+    <string name="back">Back</string>
 </resources>

@@ -62,6 +62,7 @@ constructor(
     init {
         observeSets()
 
+        // TODO: extract this logic to domain layer
         viewModelScope.launch {
             if (setsRepository.shouldFetchInitialSets()) {
                 refreshSets()
