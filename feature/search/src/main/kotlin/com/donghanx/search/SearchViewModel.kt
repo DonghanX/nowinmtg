@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.sets.SetsRepository
+import com.donghanx.domain.RefreshSetsUseCase
 import com.donghanx.model.SetInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -24,6 +25,7 @@ class SearchViewModel
 @Inject
 constructor(
     private val setsRepository: SetsRepository,
+    refreshSetsIfNeeded: RefreshSetsUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -43,12 +45,7 @@ constructor(
             )
 
     init {
-        // TODO: extract this logic to domain layer
-        viewModelScope.launch {
-            if (setsRepository.shouldFetchInitialSets()) {
-                setsRepository.refreshAllSets().collect()
-            }
-        }
+        viewModelScope.launch { refreshSetsIfNeeded().collect() }
     }
 
     fun onSearchQueryChanged(searchQuery: String) {

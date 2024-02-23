@@ -46,7 +46,7 @@ fun SetsScreen(
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = setsUiState.refreshing,
-            onRefresh = viewModel::refreshSets
+            onRefresh = { viewModel.refreshSets(forceRefresh = true) }
         )
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {

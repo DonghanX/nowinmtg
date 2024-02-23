@@ -42,10 +42,7 @@ fun SearchScreen(
                 IconButton(onClick = onCloseClick) {
                     Icon(
                         imageVector = Icons.Rounded.Close,
-                        contentDescription =
-                            stringResource(
-                                id = DesignR.string.back,
-                            ),
+                        contentDescription = stringResource(id = DesignR.string.back),
                     )
                 }
             }
@@ -54,7 +51,8 @@ fun SearchScreen(
                 is SearchUiState.Success -> {
                     LazyColumn { items(uiState.searchedSets) { Text(text = it.name) } }
                 }
-                else -> Text(text = "No search results found")
+                is SearchUiState.Empty ->
+                    Text(text = stringResource(id = R.string.no_search_results))
             }
         }
     }
