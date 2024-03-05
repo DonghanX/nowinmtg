@@ -34,6 +34,8 @@ import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.model.SetInfo
 import com.donghanx.sets.preview.SetsListPreviewParameterProvider
+import com.donghanx.ui.SetInfoItem
+import com.donghanx.ui.StickyYearReleased
 import kotlinx.coroutines.launch
 
 @Composable
@@ -46,7 +48,7 @@ fun SetsScreen(
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = setsUiState.refreshing,
-            onRefresh = viewModel::refreshSets
+            onRefresh = { viewModel.refreshSets(forceRefresh = true) }
         )
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {

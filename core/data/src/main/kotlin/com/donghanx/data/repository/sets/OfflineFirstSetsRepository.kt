@@ -14,6 +14,7 @@ import com.donghanx.network.SetsRemoteDataSource
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -42,6 +43,13 @@ constructor(
                 },
                 onError = { NetworkResult.Error(it) }
             )
+            .flowOn(ioDispatcher)
+
+    override fun searchAllSetsByQuery(query: String): Flow<List<SetInfo>> =
+        setsDao
+            .searchAllSetsByQuery(query)
+            .distinctUntilChanged()
+            .map { it.map(SetEntity::asExternalModel) }
             .flowOn(ioDispatcher)
 
     override suspend fun shouldFetchInitialSets(): Boolean {

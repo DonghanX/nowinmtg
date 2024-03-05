@@ -35,9 +35,11 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
     implementation(project(":core:design"))
+    implementation(project(":core:ui"))
     implementation(project(":feature:randomcards"))
     implementation(project(":feature:carddetails"))
     implementation(project(":feature:sets"))
+    implementation(project(":feature:search"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

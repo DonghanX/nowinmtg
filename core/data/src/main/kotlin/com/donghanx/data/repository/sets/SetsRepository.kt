@@ -10,5 +10,7 @@ interface SetsRepository {
 
     fun refreshAllSets(): Flow<NetworkResult<Unit>>
 
+    fun searchAllSetsByQuery(query: String): Flow<List<SetInfo>>
+
     suspend fun shouldFetchInitialSets(): Boolean
 }

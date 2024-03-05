@@ -13,5 +13,10 @@ interface SetsDao {
 
     @Upsert suspend fun upsertSets(sets: List<SetEntity>)
 
+    @Query(
+        "SELECT * FROM sets WHERE name LIKE ('%' || :query || '%') OR code LIKE ('%' || :query || '%')"
+    )
+    fun searchAllSetsByQuery(query: String): Flow<List<SetEntity>>
+
     @Query("SELECT COUNT(*) FROM sets") fun getSetsCount(): Int
 }

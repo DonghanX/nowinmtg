@@ -11,6 +11,7 @@ import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.common.utils.epochMilliOfDate
 import com.donghanx.common.utils.yearOfDate
 import com.donghanx.data.repository.sets.SetsRepository
+import com.donghanx.domain.RefreshSetsUseCase
 import com.donghanx.model.SetInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,6 +33,7 @@ class SetsViewModel
 @Inject
 constructor(
     private val setsRepository: SetsRepository,
+    private val refreshSetsIfNeeded: RefreshSetsUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -61,12 +64,7 @@ constructor(
 
     init {
         observeSets()
-
-        viewModelScope.launch {
-            if (setsRepository.shouldFetchInitialSets()) {
-                refreshSets()
-            }
-        }
+        refreshSets()
     }
 
     private fun observeSets() {
@@ -94,11 +92,12 @@ constructor(
         }
     }
 
-    fun refreshSets() {
+    fun refreshSets(forceRefresh: Boolean = false) {
         viewModelScope.launch {
-            viewModelState.update { it.copy(refreshing = true) }
-
-            setsRepository.refreshAllSets().onEach { it.updateViewModelState() }.collect()
+            refreshSetsIfNeeded(forceRefresh)
+                .onStart { viewModelState.update { it.copy(refreshing = true) } }
+                .onEach { it.updateViewModelState() }
+                .collect()
         }
     }
 

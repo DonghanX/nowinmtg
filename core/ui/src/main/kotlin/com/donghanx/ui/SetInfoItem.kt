@@ -1,4 +1,4 @@
-package com.donghanx.sets
+package com.donghanx.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -55,6 +55,6 @@ private fun SetInfoItemPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun StickyYearReleased() {
+private fun StickyYearReleasedPreview() {
     StickyYearReleased(yearReleased = 2023)
 }
