@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="illustrated_by">Illustrated by</string>
+    <string name="card_details">Card Details</string>
+    <string name="card_text">Card Text</string>
+    <string name="flavor">Flavor</string>
+    <string name="rulings">Rulings</string>
+</resources>

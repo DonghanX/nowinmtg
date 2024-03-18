@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.donghanx.model.CardDetails
 import com.donghanx.model.network.NetworkCardDetails
+import com.donghanx.model.network.Ruling
 
 @Entity(tableName = "card_details")
 data class CardDetailsEntity(
@@ -32,7 +33,8 @@ data class CardDetailsEntity(
     val toughness: String?,
     val type: String,
     val types: List<String>?,
-    val variations: List<String>?
+    val variations: List<String>?,
+    val rulings: List<Ruling>?
 )
 
 fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
@@ -62,7 +64,8 @@ fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
         toughness = toughness,
         type = type,
         types = types,
-        variations = variations
+        variations = variations,
+        rulings = rulings
     )
 
 fun CardDetailsEntity.asExternalModel(): CardDetails =
@@ -92,5 +95,6 @@ fun CardDetailsEntity.asExternalModel(): CardDetails =
         toughness = toughness,
         type = type,
         types = types,
-        variations = variations
+        variations = variations,
+        rulings = rulings
     )
