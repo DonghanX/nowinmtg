@@ -12,8 +12,11 @@ fun NavController.navigateToCardDetails(cardId: String) {
     navigate(route = "$CARD_DETAILS_ROUTE/$cardId") { launchSingleTop = true }
 }
 
-fun NavGraphBuilder.cardDetailsScreen(onShowSnackbar: suspend (message: String) -> Unit) {
+fun NavGraphBuilder.cardDetailsScreen(
+    onBackClick: () -> Unit,
+    onShowSnackbar: suspend (message: String) -> Unit
+) {
     composable(route = "$CARD_DETAILS_ROUTE/{$CARD_ID_ARGS}") {
-        CardDetailsScreen(onShowSnackbar = onShowSnackbar)
+        CardDetailsScreen(onBackClick = onBackClick, onShowSnackbar = onShowSnackbar)
     }
 }

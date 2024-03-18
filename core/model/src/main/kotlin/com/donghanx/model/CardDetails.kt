@@ -1,5 +1,7 @@
 package com.donghanx.model
 
+import com.donghanx.model.network.Ruling
+
 data class CardDetails(
     val id: String,
     val multiverseId: String?,
@@ -26,5 +28,6 @@ data class CardDetails(
     val toughness: String?,
     val type: String,
     val types: List<String>?,
-    val variations: List<String>?
+    val variations: List<String>?,
+    val rulings: List<Ruling>?
 )

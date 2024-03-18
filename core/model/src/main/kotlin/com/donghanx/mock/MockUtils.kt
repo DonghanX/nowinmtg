@@ -3,6 +3,7 @@ package com.donghanx.mock
 import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
+import com.donghanx.model.network.Ruling
 
 object MockUtils {
     val emptyCards = List(5) { CardPreview(id = it.toString(), name = "", imageUrl = "") }
@@ -30,29 +31,24 @@ object MockUtils {
             multiverseId = "409741",
             imageUrl =
                 "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=409741&type=card",
-            //            rulings =
-            //                listOf(
-            //                    Ruling(
-            //                        date = "2016-04-08",
-            //                        text =
-            //                            "Archangel Avacyn’s delayed triggered ability triggers at
-            // the beginning of the next upkeep regardless of whose turn it is."
-            //                    ),
-            //                    Ruling(
-            //                        date = "2016-04-08",
-            //                        text =
-            //                            "Archangel Avacyn’s delayed triggered ability won’t cause
-            // it to transform back into Archangel Avacyn if it has already transformed into Avacyn,
-            // the Purifier, perhaps because several creatures died in one turn."
-            //                    ),
-            //                    Ruling(
-            //                        date = "2016-04-08",
-            //                        text =
-            //                            "For more information on double-faced cards, see the
-            // Shadows over Innistrad mechanics article
-            // (http://magic.wizards.com/en/articles/archive/feature/shadows-over-innistrad-mechanics)."
-            //                    )
-            //                ),
+            rulings =
+                listOf(
+                    Ruling(
+                        date = "2016-04-08",
+                        text =
+                            "Archangel Avacyn’s delayed triggered ability triggers at the beginning of the next upkeep regardless of whose turn it is."
+                    ),
+                    Ruling(
+                        date = "2016-04-08",
+                        text =
+                            "Archangel Avacyn’s delayed triggered ability won’t cause it to transform back into Archangel Avacyn if it has already transformed into Avacyn, the Purifier, perhaps because several creatures died in one turn."
+                    ),
+                    Ruling(
+                        date = "2016-04-08",
+                        text =
+                            "For more information on double-faced cards, see the Shadows over Innistrad mechanics article(http://magic.wizards.com/en/articles/archive/feature/shadows-over-innistrad-mechanics)."
+                    )
+                ),
             //            foreignNames =
             //                listOf(
             //                    ForeignName(
@@ -124,7 +120,8 @@ object MockUtils {
             id = "ad53597a-4448-5cbd-82bf-11d163b0c14f",
             flavor = null,
             setName = "Shadows over Innistrad",
-            variations = null
+            variations = null,
+            rulings = null
         )
 
     val soiExpansion =

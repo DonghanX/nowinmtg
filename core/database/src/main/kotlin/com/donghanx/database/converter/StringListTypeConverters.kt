@@ -13,7 +13,7 @@ object StringListTypeConverters {
 
     @TypeConverter
     @JvmStatic
-    fun fromStringList(strings: List<String>): String? {
+    fun fromStringList(strings: List<String>): String {
         return Json.encodeToString(strings)
     }
 }

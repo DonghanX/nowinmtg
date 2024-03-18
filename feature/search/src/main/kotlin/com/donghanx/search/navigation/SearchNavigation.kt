@@ -1,5 +1,6 @@
 package com.donghanx.search.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -14,5 +15,15 @@ fun NavController.navigateToSearch() {
 fun NavGraphBuilder.searchScreen(
     onCloseClick: () -> Unit,
 ) {
-    composable(route = SEARCH_ROUTE) { SearchScreen(onCloseClick = onCloseClick) }
+    composable(
+        route = SEARCH_ROUTE,
+        enterTransition = {
+            slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Up)
+        },
+        exitTransition = {
+            slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Down)
+        }
+    ) {
+        SearchScreen(onCloseClick = onCloseClick)
+    }
 }

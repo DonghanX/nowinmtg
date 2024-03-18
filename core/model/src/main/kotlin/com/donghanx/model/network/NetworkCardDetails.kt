@@ -37,7 +37,7 @@ data class NetworkCardDetails(
     @SerialName("watermark") val watermark: String?,
     //    @SerialName("foreignNames") val foreignNames: List<ForeignName>?,
     //    @SerialName("legalities") val legalities: List<Legality>?,
-    //    @SerialName("rulings") val rulings: List<Ruling>?,
+    @SerialName("rulings") val rulings: List<Ruling>?,
 )
 
 @Serializable
