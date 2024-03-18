@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.donghanx.carddetails.navigation.cardDetailsScreen
 import com.donghanx.carddetails.navigation.navigateToCardDetails
+import com.donghanx.favorite.navigation.favoriteScreen
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
 import com.donghanx.randomcards.navigation.randomCardsScreen
 import com.donghanx.search.navigation.searchScreen
@@ -33,5 +34,6 @@ fun NimNavHost(
             onShowSnackbar = onShowSnackbar
         )
         searchScreen(onCloseClick = navController::popBackStack)
+        favoriteScreen()
     }
 }

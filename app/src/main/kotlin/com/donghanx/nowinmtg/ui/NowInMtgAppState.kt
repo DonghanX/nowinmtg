@@ -35,7 +35,7 @@ class NowInMtgAppState(val navController: NavHostController) {
             }
 
     val topLevelDestinations: List<TopLevelDestination> =
-        listOf(TopLevelDestination.RandomCards, TopLevelDestination.Sets)
+        listOf(TopLevelDestination.RandomCards, TopLevelDestination.Sets, TopLevelDestination.Favorite)
 
     fun navigateToTopLevelDestination(route: String) {
         navController.navigate(route) {

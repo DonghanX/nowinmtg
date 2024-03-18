@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":feature:carddetails"))
     implementation(project(":feature:sets"))
     implementation(project(":feature:search"))
+    implementation(project(":feature:favorite"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
