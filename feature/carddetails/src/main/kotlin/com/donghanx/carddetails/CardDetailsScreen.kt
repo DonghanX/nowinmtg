@@ -49,7 +49,10 @@ fun CardDetailsScreen(
         contentAlignment = Alignment.Center
     ) {
         Column {
-            CardDetailsTopBar(onBackClick = onBackClick)
+            CardDetailsTopBar(
+                onBackClick = onBackClick,
+                onFavoritesClick = viewModel::onFavorites
+            )
 
             Box(
                 modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState()),
@@ -82,7 +85,11 @@ fun CardDetailsScreen(
 }
 
 @Composable
-private fun CardDetailsTopBar(onBackClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun CardDetailsTopBar(
+    onBackClick: () -> Unit,
+    onFavoritesClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -96,10 +103,10 @@ private fun CardDetailsTopBar(onBackClick: () -> Unit, modifier: Modifier = Modi
         }
 
         // TODO: add functionality to mark a card as "favorite"
-        IconButton(onClick = {}) {
+        IconButton(onClick = onFavoritesClick) {
             Icon(
                 imageVector = Icons.Filled.FavoriteBorder,
-                contentDescription = stringResource(id = DesignR.string.favorite)
+                contentDescription = stringResource(id = DesignR.string.favorites)
             )
         }
     }

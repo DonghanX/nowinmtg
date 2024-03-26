@@ -1,4 +1,4 @@
-package com.donghanx.favorite
+package com.donghanx.favorites
 
 import org.junit.Test
 

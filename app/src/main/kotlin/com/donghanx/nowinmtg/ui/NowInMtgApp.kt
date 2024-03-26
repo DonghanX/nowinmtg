@@ -25,7 +25,6 @@ import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
-import com.donghanx.nowinmtg.navigation.TopLevelDestinationScope
 import com.donghanx.search.navigation.navigateToSearch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +36,7 @@ fun NowInMtgApp() {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
-                TopLevelDestinationScope(appState = appState) { topLevelDestination ->
+                appState.currentTopLevelDestination?.let { topLevelDestination ->
                     NowInMtgTopAppBar(
                         titleResId = topLevelDestination.labelResId,
                         navigationIcon = Icons.Rounded.Search,

@@ -9,6 +9,7 @@ import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.carddetails.CardDetailsRepository
+import com.donghanx.data.repository.favorites.FavoritesRepository
 import com.donghanx.model.CardDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -30,6 +31,7 @@ class CardDetailsViewModel
 @Inject
 constructor(
     private val cardDetailsRepository: CardDetailsRepository,
+    private val favoritesRepository: FavoritesRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -77,6 +79,14 @@ constructor(
                 .flatMapLatest { cardId -> cardDetailsRepository.refreshCardDetails(cardId) }
                 .onEach { it.updateViewModelState() }
                 .collect()
+        }
+    }
+
+    fun onFavorites() {
+        viewModelScope.launch {
+            viewModelState.value.cardDetails?.let { cardDetails ->
+                favoritesRepository.favoriteCard(cardDetails)
+            }
         }
     }
 

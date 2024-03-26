@@ -40,7 +40,7 @@ dependencies {
     implementation(project(":feature:carddetails"))
     implementation(project(":feature:sets"))
     implementation(project(":feature:search"))
-    implementation(project(":feature:favorite"))
+    implementation(project(":feature:favorites"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
+    implementation(libs.okhttp3)
+    implementation(libs.okhttp3.tls)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

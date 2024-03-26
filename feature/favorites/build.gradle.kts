@@ -1,7 +1,7 @@
 plugins { id("donghanx.android.feature") }
 
 android {
-    namespace = "com.donghanx.favorite"
+    namespace = "com.donghanx.favorites"
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
