@@ -52,14 +52,12 @@ fun CardDetailsScreen(
         contentAlignment = Alignment.Center
     ) {
         Column {
-            val scope = rememberCoroutineScope()
             val isCardFavorite by viewModel.isCardFavorite.collectAsStateWithLifecycle()
             CardDetailsTopBar(
                 isCardFavorite = isCardFavorite,
                 onBackClick = onBackClick,
                 onFavoritesClick = {
                     viewModel.onFavoriteClick()
-                    scope.launch { onShowSnackbar("") }
                 }
             )
 

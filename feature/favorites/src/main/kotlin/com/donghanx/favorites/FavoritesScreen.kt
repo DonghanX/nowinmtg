@@ -22,6 +22,6 @@ fun FavoritesScreen(
                 onCardClick = onCardClick,
                 modifier = modifier
             )
-        is FavoritesUiState.Empty -> Unit
+        is FavoritesUiState.Empty -> EmptyFavoritesView()
     }
 }
