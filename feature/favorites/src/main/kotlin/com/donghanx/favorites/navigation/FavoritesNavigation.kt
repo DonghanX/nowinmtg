@@ -9,5 +9,9 @@ const val FAVORITES_ROUTE = "Favorites"
 fun NavGraphBuilder.favoriteScreen(
     onCardClick: (cardId: String) -> Unit,
 ) {
-    composable(route = FAVORITES_ROUTE) { FavoritesScreen(onCardClick = onCardClick) }
+    composable(
+        route = FAVORITES_ROUTE,
+    ) {
+        FavoritesScreen(onCardClick = onCardClick)
+    }
 }
