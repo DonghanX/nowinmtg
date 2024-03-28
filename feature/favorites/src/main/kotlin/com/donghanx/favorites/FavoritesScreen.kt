@@ -17,7 +17,11 @@ fun FavoritesScreen(
 
     when (val uiState = favoritesUiState) {
         is FavoritesUiState.Success ->
-            CardsGallery(cards = uiState.favoriteCards, onCardClick = onCardClick, modifier = modifier)
+            CardsGallery(
+                cards = uiState.favoriteCards,
+                onCardClick = onCardClick,
+                modifier = modifier
+            )
         is FavoritesUiState.Empty -> Unit
     }
 }

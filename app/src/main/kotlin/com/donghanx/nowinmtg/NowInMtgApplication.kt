@@ -32,7 +32,5 @@ class NowInMtgApplication : Application(), ImageLoaderFactory {
     }
 }
 
-/**
- * A insecure host for fetching MTG card images
- */
+/** A insecure host for fetching MTG card images */
 private const val INSECURE_MTG_HOST_NAME = "gatherer.wizards.com"
