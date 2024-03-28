@@ -6,6 +6,8 @@ import com.donghanx.favorites.FavoritesScreen
 
 const val FAVORITES_ROUTE = "Favorites"
 
-fun NavGraphBuilder.favoriteScreen() {
-    composable(route = FAVORITES_ROUTE) { FavoritesScreen() }
+fun NavGraphBuilder.favoriteScreen(
+    onCardClick: (cardId: String) -> Unit,
+) {
+    composable(route = FAVORITES_ROUTE) { FavoritesScreen(onCardClick = onCardClick) }
 }

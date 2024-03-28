@@ -8,5 +8,9 @@ interface FavoritesRepository {
 
     fun getFavoriteCards(): Flow<List<CardPreview>>
 
-    suspend fun favoriteCard(cardDetails: CardDetails)
+    suspend fun favoriteCardOrUndo(
+        cardDetails: CardDetails
+    )
+
+    fun observeIsCardFavorite(cardId: String): Flow<Boolean>
 }

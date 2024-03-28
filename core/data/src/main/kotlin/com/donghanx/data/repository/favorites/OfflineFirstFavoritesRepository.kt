@@ -26,9 +26,19 @@ constructor(
             .map { it.map(FavoriteCardEntity::asExternalModel) }
             .flowOn(ioDispatcher)
 
-    override suspend fun favoriteCard(cardDetails: CardDetails) {
+    override suspend fun favoriteCardOrUndo(cardDetails: CardDetails) {
         withContext(ioDispatcher) {
-            favoritesDao.upsertFavoriteCard(cardDetails.asFavoriteCardEntity())
+            val favoriteCardEntity = cardDetails.asFavoriteCardEntity()
+            with(favoritesDao) {
+                if (isCardFavorite(favoriteCardEntity.id)) {
+                    deleteFavoriteCard(favoriteCardEntity)
+                } else {
+                    upsertFavoriteCard(favoriteCardEntity)
+                }
+            }
         }
     }
+
+    override fun observeIsCardFavorite(cardId: String): Flow<Boolean> =
+        favoritesDao.observeIsCardFavorite(cardId)
 }

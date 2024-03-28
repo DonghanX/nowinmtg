@@ -51,6 +51,15 @@ constructor(
                 initialValue = viewModelState.value.toUiState()
             )
 
+    val isCardFavorite: StateFlow<Boolean> =
+        validCardId
+            .flatMapLatest { cardId -> favoritesRepository.observeIsCardFavorite(cardId) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
+                initialValue = false
+            )
+
     init {
         observeCardDetails()
     }
@@ -82,10 +91,10 @@ constructor(
         }
     }
 
-    fun onFavorites() {
+    fun onFavoriteClick() {
         viewModelScope.launch {
             viewModelState.value.cardDetails?.let { cardDetails ->
-                favoritesRepository.favoriteCard(cardDetails)
+                favoritesRepository.favoriteCardOrUndo(cardDetails)
             }
         }
     }

@@ -34,6 +34,8 @@ fun NimNavHost(
             onShowSnackbar = onShowSnackbar
         )
         searchScreen(onCloseClick = navController::popBackStack)
-        favoriteScreen()
+        favoriteScreen(
+            onCardClick = { cardId -> navController.navigateToCardDetails(cardId = cardId) }
+        )
     }
 }

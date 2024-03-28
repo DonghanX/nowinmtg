@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,6 +30,7 @@ import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.ui.pullrefresh.pullRefresh
 import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
+import kotlinx.coroutines.launch
 
 @Composable
 fun CardDetailsScreen(
@@ -49,9 +52,15 @@ fun CardDetailsScreen(
         contentAlignment = Alignment.Center
     ) {
         Column {
+            val scope = rememberCoroutineScope()
+            val isCardFavorite by viewModel.isCardFavorite.collectAsStateWithLifecycle()
             CardDetailsTopBar(
+                isCardFavorite = isCardFavorite,
                 onBackClick = onBackClick,
-                onFavoritesClick = viewModel::onFavorites
+                onFavoritesClick = {
+                    viewModel.onFavoriteClick()
+                    scope.launch { onShowSnackbar("") }
+                }
             )
 
             Box(
@@ -86,6 +95,7 @@ fun CardDetailsScreen(
 
 @Composable
 private fun CardDetailsTopBar(
+    isCardFavorite: Boolean,
     onBackClick: () -> Unit,
     onFavoritesClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -102,10 +112,10 @@ private fun CardDetailsTopBar(
             )
         }
 
-        // TODO: add functionality to mark a card as "favorite"
         IconButton(onClick = onFavoritesClick) {
             Icon(
-                imageVector = Icons.Filled.FavoriteBorder,
+                imageVector =
+                    if (isCardFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                 contentDescription = stringResource(id = DesignR.string.favorites)
             )
         }
