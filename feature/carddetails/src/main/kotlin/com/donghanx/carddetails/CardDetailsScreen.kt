@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -49,7 +50,12 @@ fun CardDetailsScreen(
         contentAlignment = Alignment.Center
     ) {
         Column {
-            CardDetailsTopBar(onBackClick = onBackClick)
+            val isCardFavorite by viewModel.isCardFavorite.collectAsStateWithLifecycle()
+            CardDetailsTopBar(
+                isCardFavorite = isCardFavorite,
+                onBackClick = onBackClick,
+                onFavoritesClick = { viewModel.onFavoriteClick() }
+            )
 
             Box(
                 modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState()),
@@ -82,7 +88,12 @@ fun CardDetailsScreen(
 }
 
 @Composable
-private fun CardDetailsTopBar(onBackClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun CardDetailsTopBar(
+    isCardFavorite: Boolean,
+    onBackClick: () -> Unit,
+    onFavoritesClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -95,11 +106,11 @@ private fun CardDetailsTopBar(onBackClick: () -> Unit, modifier: Modifier = Modi
             )
         }
 
-        // TODO: add functionality to mark a card as "favorite"
-        IconButton(onClick = {}) {
+        IconButton(onClick = onFavoritesClick) {
             Icon(
-                imageVector = Icons.Filled.FavoriteBorder,
-                contentDescription = stringResource(id = DesignR.string.favorite)
+                imageVector =
+                    if (isCardFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                contentDescription = stringResource(id = DesignR.string.favorites)
             )
         }
     }

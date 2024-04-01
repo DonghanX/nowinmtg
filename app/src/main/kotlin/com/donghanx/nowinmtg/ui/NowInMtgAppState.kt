@@ -8,6 +8,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.donghanx.favorites.navigation.FAVORITES_ROUTE
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
 import com.donghanx.sets.navigation.SETS_ROUTE
@@ -31,11 +32,16 @@ class NowInMtgAppState(val navController: NavHostController) {
             when (currentDestination?.route) {
                 RANDOM_CARDS_ROUTE -> TopLevelDestination.RandomCards
                 SETS_ROUTE -> TopLevelDestination.Sets
+                FAVORITES_ROUTE -> TopLevelDestination.Favorites
                 else -> null
             }
 
     val topLevelDestinations: List<TopLevelDestination> =
-        listOf(TopLevelDestination.RandomCards, TopLevelDestination.Sets)
+        listOf(
+            TopLevelDestination.RandomCards,
+            TopLevelDestination.Sets,
+            TopLevelDestination.Favorites
+        )
 
     fun navigateToTopLevelDestination(route: String) {
         navController.navigate(route) {
