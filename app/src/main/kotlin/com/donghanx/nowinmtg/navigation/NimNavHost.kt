@@ -6,9 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.donghanx.carddetails.navigation.cardDetailsScreen
 import com.donghanx.carddetails.navigation.navigateToCardDetails
-import com.donghanx.favorites.navigation.favoriteScreen
-import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
-import com.donghanx.randomcards.navigation.randomCardsScreen
+import com.donghanx.favorites.navigation.favoriteGraph
+import com.donghanx.randomcards.navigation.RANDOM_CARDS_GRAPH_ROUTE
+import com.donghanx.randomcards.navigation.randomCardsGraph
 import com.donghanx.search.navigation.searchScreen
 import com.donghanx.sets.navigation.setsScreen
 
@@ -17,25 +17,39 @@ fun NimNavHost(
     navController: NavHostController,
     onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
-    startDestination: String = RANDOM_CARDS_ROUTE
+    startDestination: String = RANDOM_CARDS_GRAPH_ROUTE
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
-        randomCardsScreen(
-            onCardClick = { cardId -> navController.navigateToCardDetails(cardId = cardId) },
-            onShowSnackbar = onShowSnackbar
+        randomCardsGraph(
+            onCardClick = { cardId, parentRoute ->
+                navController.navigateToCardDetails(cardId = cardId, parentRoute = parentRoute)
+            },
+            onShowSnackbar = onShowSnackbar,
+            nestedGraphs = { from ->
+                cardDetailsScreen(
+                    parentRoute = from,
+                    onBackClick = navController::popBackStack,
+                    onShowSnackbar = onShowSnackbar
+                )
+            }
         )
         setsScreen(onShowSnackbar = onShowSnackbar)
-        cardDetailsScreen(
-            onBackClick = navController::popBackStack,
-            onShowSnackbar = onShowSnackbar
-        )
         searchScreen(onCloseClick = navController::popBackStack)
-        favoriteScreen(
-            onCardClick = { cardId -> navController.navigateToCardDetails(cardId = cardId) }
+        favoriteGraph(
+            onCardClick = { cardId, parentRoute ->
+                navController.navigateToCardDetails(cardId = cardId, parentRoute = parentRoute)
+            },
+            nestedGraphs = { parentRoute ->
+                cardDetailsScreen(
+                    parentRoute = parentRoute,
+                    onBackClick = navController::popBackStack,
+                    onShowSnackbar = onShowSnackbar
+                )
+            }
         )
     }
 }

@@ -9,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -21,8 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
+import com.donghanx.design.ui.navigation.NowInMtgNavigationBarItem
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.search.navigation.navigateToSearch
@@ -49,6 +51,7 @@ fun NowInMtgApp() {
             bottomBar = {
                 BottomNavigationBar(
                     topLevelDestinations = appState.topLevelDestinations,
+                    currentDestination = appState.currentDestination,
                     onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) }
                 )
             }
@@ -68,16 +71,23 @@ fun NowInMtgApp() {
 @Composable
 private fun BottomNavigationBar(
     topLevelDestinations: List<TopLevelDestination>,
+    currentDestination: NavDestination?,
     onNavItemClick: (route: String) -> Unit
 ) {
     NavigationBar(containerColor = Color.Transparent) {
         topLevelDestinations.forEach { destination ->
-            NavigationBarItem(
-                selected = false,
+            NowInMtgNavigationBarItem(
+                selected = currentDestination.withinTopLevelDestinationInHierarchy(destination),
                 onClick = { onNavItemClick(destination.route) },
-                icon = {
+                selectedIcon = {
                     Icon(
-                        painter = painterResource(id = destination.iconResId),
+                        painter = painterResource(id = destination.selectedIconResId),
+                        contentDescription = stringResource(id = destination.labelResId)
+                    )
+                },
+                unSelectedIcon = {
+                    Icon(
+                        painter = painterResource(id = destination.unselectedIconResId),
                         contentDescription = stringResource(id = destination.labelResId)
                     )
                 },
@@ -86,3 +96,7 @@ private fun BottomNavigationBar(
         }
     }
 }
+
+private fun NavDestination?.withinTopLevelDestinationInHierarchy(
+    topLevelDestination: TopLevelDestination
+): Boolean = this?.hierarchy?.any { it.route == topLevelDestination.route } ?: false

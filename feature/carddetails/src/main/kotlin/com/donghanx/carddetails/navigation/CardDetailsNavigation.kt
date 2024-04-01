@@ -13,16 +13,17 @@ import com.donghanx.carddetails.CardDetailsScreen
 const val CARD_DETAILS_ROUTE = "CardDetails"
 internal const val CARD_ID_ARGS = "CardId"
 
-fun NavController.navigateToCardDetails(cardId: String) {
-    navigate(route = "$CARD_DETAILS_ROUTE/$cardId") { launchSingleTop = true }
+fun NavController.navigateToCardDetails(cardId: String, parentRoute: String) {
+    navigate(route = "${cardDetailsRoute(parentRoute)}/$cardId") { launchSingleTop = true }
 }
 
 fun NavGraphBuilder.cardDetailsScreen(
+    parentRoute: String,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit
 ) {
     composable(
-        route = "$CARD_DETAILS_ROUTE/{$CARD_ID_ARGS}",
+        route = "${cardDetailsRoute(parentRoute)}/{$CARD_ID_ARGS}",
         enterTransition = {
             fadeIn(animationSpec = tween(durationMillis = 300, easing = LinearEasing)) +
                 slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start)
@@ -35,3 +36,5 @@ fun NavGraphBuilder.cardDetailsScreen(
         CardDetailsScreen(onBackClick = onBackClick, onShowSnackbar = onShowSnackbar)
     }
 }
+
+private fun cardDetailsRoute(parentRoute: String): String = "${CARD_DETAILS_ROUTE}_$parentRoute"

@@ -19,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,7 +29,6 @@ import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.pullrefresh.PullRefreshIndicator
 import com.donghanx.design.ui.pullrefresh.pullRefresh
 import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
-import kotlinx.coroutines.launch
 
 @Composable
 fun CardDetailsScreen(
@@ -56,9 +54,7 @@ fun CardDetailsScreen(
             CardDetailsTopBar(
                 isCardFavorite = isCardFavorite,
                 onBackClick = onBackClick,
-                onFavoritesClick = {
-                    viewModel.onFavoriteClick()
-                }
+                onFavoritesClick = { viewModel.onFavoriteClick() }
             )
 
             Box(
