@@ -5,19 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,9 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.donghanx.common.ext.capitalize
 import com.donghanx.design.ui.chip.FilterChipWithLeadingIcon
+import com.donghanx.sets.composable.BottomSheetContentWrapper
+import com.donghanx.sets.composable.FilterChipWithBottomSheetContent
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,32 +38,28 @@ fun SetTypeFilter(
     onSetTypeChanged: (setType: String?) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    val (showBottomSheet, onShowBottomSheetChange) = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    FilterChip(
+
+    FilterChipWithBottomSheetContent(
         label = {
             Text(text = selectedSetType?.toReadableSetTypeLabel() ?: stringResource(R.string.type))
         },
+        bottomSheetState = bottomSheetState,
         selected = selectedSetType != null,
-        onClick = { showBottomSheet = true }
-    )
-
-    if (showBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
-            sheetState = bottomSheetState
-        ) {
-            SetTypesSelector(
-                initialSelectedType = selectedSetType,
-                setTypes = stringArrayResource(R.array.set_types).toSet(),
-                onSetTypeChanged = onSetTypeChanged,
-                onHideBottomSheet = {
-                    scope
-                        .launch { bottomSheetState.hide() }
-                        .invokeOnCompletion { showBottomSheet = false }
-                }
-            )
-        }
+        showBottomSheet = showBottomSheet,
+        onShowBottomSheetChange = onShowBottomSheetChange
+    ) {
+        SetTypesSelector(
+            initialSelectedType = selectedSetType,
+            setTypes = stringArrayResource(R.array.set_types).toSet(),
+            onSetTypeChanged = onSetTypeChanged,
+            onHideBottomSheet = {
+                scope
+                    .launch { bottomSheetState.hide() }
+                    .invokeOnCompletion { onShowBottomSheetChange(false) }
+            }
+        )
     }
 }
 
@@ -86,44 +78,35 @@ private fun SetTypesSelector(
     ) {
         var selectedType by remember { mutableStateOf(initialSelectedType) }
 
-        FlowRow(horizontalArrangement = Arrangement.Start) {
-            setTypes.forEach { setType ->
-                val setTypeLabel = remember { setType.toReadableSetTypeLabel() }
-
-                FilterChipWithLeadingIcon(
-                    selected = selectedType == setType,
-                    label = setTypeLabel,
-                    onClick = { selectedType = if (selectedType == setType) null else setType },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Done,
-                            contentDescription = null,
-                            modifier = Modifier.size(FilterChipDefaults.IconSize)
-                        )
-                    },
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
-            }
-        }
-
-        Button(
-            onClick = {
+        BottomSheetContentWrapper(
+            onViewResultsClick = {
                 onSetTypeChanged(selectedType)
                 onHideBottomSheet()
             },
-            modifier = Modifier.fillMaxWidth().height(40.dp),
-        ) {
-            Text(text = stringResource(id = R.string.view_results), fontSize = 16.sp)
-        }
-
-        TextButton(
-            onClick = {
+            onResetClick = {
                 onSetTypeChanged(null)
                 onHideBottomSheet()
-            },
-            modifier = Modifier.fillMaxWidth().height(40.dp)
+            }
         ) {
-            Text(text = stringResource(id = R.string.reset), fontSize = 16.sp)
+            FlowRow(horizontalArrangement = Arrangement.Start) {
+                setTypes.forEach { setType ->
+                    val setTypeLabel = remember { setType.toReadableSetTypeLabel() }
+
+                    FilterChipWithLeadingIcon(
+                        selected = selectedType == setType,
+                        label = setTypeLabel,
+                        onClick = { selectedType = if (selectedType == setType) null else setType },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Done,
+                                contentDescription = null,
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        },
+                        modifier = Modifier.padding(horizontal = 4.dp)
+                    )
+                }
+            }
         }
     }
 }
