@@ -7,6 +7,7 @@ import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
+import com.donghanx.common.ext.filterAll
 import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.common.utils.epochMilliOfDate
 import com.donghanx.common.utils.yearOfDate
@@ -59,8 +60,9 @@ constructor(
 
     private val setsQuery: Flow<SetsQuery> =
         combine(setTypeQuery, startMillisQuery, endMillisQuery) { setType, startMillis, endMillis ->
-            SetsQuery(setType = setType, dateRange = DateMillisRange(startMillis, endMillis))
-        }
+                SetsQuery(setType = setType, dateRange = DateMillisRange(startMillis, endMillis))
+            }
+            .onEach { viewModelState.update { it.copy(refreshing = true) } }
 
     init {
         observeSets()
@@ -69,20 +71,8 @@ constructor(
 
     private fun observeSets() {
         viewModelScope.launch {
-            combine(setsRepository.getAllSets(), setsQuery) { sets, query ->
-                    if (query.isNotEmpty()) {
-                        sets
-                            .asSequence()
-                            .filter { query.setType == null || it.setType == query.setType }
-                            .filter {
-                                query.dateRange.contains(
-                                    it.releasedAt.epochMilliOfDate(RELEASE_DATE_OFFSET)
-                                )
-                            }
-                            .toList()
-                    } else {
-                        sets
-                    }
+            combine(setsRepository.getAllSets(), setsQuery) { sets, setsQuery ->
+                    sets.filteredByQuery(query = setsQuery)
                 }
                 .map { sets -> sets.groupBy { it.releasedAt.yearOfDate() } }
                 .onEach { groupedSets ->
@@ -99,6 +89,17 @@ constructor(
                 .onEach { it.updateViewModelState() }
                 .collect()
         }
+    }
+
+    private fun List<SetInfo>.filteredByQuery(query: SetsQuery): List<SetInfo> {
+        viewModelState.update { it.copy(refreshing = true) }
+
+        return if (query.isEmpty()) this
+        else
+            filterAll(
+                { query.setType == null || it.setType == query.setType },
+                { query.dateRange.contains(it.releasedAt.epochMilliOfDate(RELEASE_DATE_OFFSET)) }
+            )
     }
 
     private fun <T> NetworkResult<T>.updateViewModelState() {
@@ -162,7 +163,9 @@ private data class SetsQuery(
     val setType: String? = null,
     val dateRange: DateMillisRange = DateMillisRange.EMPTY
 ) {
-    fun isNotEmpty(): Boolean = setType != null || dateRange.isNotEmpty()
+    fun isEmpty(): Boolean = setType == null && dateRange.isEmpty()
+
+    fun isNotEmpty(): Boolean = !isNotEmpty()
 }
 
 fun SetsUiState.hasError(): Boolean = errorMessage.hasError

@@ -1,12 +1,8 @@
 package com.donghanx.sets
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.ime
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -21,6 +17,7 @@ import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.common.utils.epochMilliOfDate
 import com.donghanx.common.utils.fromEpochMilliseconds
 import com.donghanx.sets.composable.BottomSheetContentWrapper
+import com.donghanx.sets.composable.FilterChipWithBottomSheetContent
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,30 +27,25 @@ fun ReleaseDateFilter(
     onDateRangeSelected: (startDateMillis: Long?, endDateMillis: Long?) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    val (showBottomSheet, onShowBottomSheetChange) = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    FilterChip(
-        label = { Text(text = selectedDateMillisRange.toReleaseDateFilterChipLabel()) },
-        selected = selectedDateMillisRange.isNotEmpty(),
-        onClick = { showBottomSheet = true }
-    )
 
-    if (showBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
-            sheetState = bottomSheetState,
-            windowInsets = WindowInsets.ime
-        ) {
-            ReleaseDatePicker(
-                initialDateMillisRange = selectedDateMillisRange,
-                onDateRangeSelected = onDateRangeSelected,
-                onHideBottomSheet = {
-                    scope
-                        .launch { bottomSheetState.hide() }
-                        .invokeOnCompletion { showBottomSheet = false }
-                }
-            )
-        }
+    FilterChipWithBottomSheetContent(
+        label = { Text(text = selectedDateMillisRange.toReleaseDateFilterChipLabel()) },
+        bottomSheetState = bottomSheetState,
+        selected = selectedDateMillisRange.isNotEmpty(),
+        showBottomSheet = showBottomSheet,
+        onShowBottomSheetChange = onShowBottomSheetChange
+    ) {
+        ReleaseDatePicker(
+            initialDateMillisRange = selectedDateMillisRange,
+            onDateRangeSelected = onDateRangeSelected,
+            onHideBottomSheet = {
+                scope
+                    .launch { bottomSheetState.hide() }
+                    .invokeOnCompletion { onShowBottomSheetChange(false) }
+            }
+        )
     }
 }
 
