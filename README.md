@@ -11,7 +11,7 @@ The **Now in MTG** app is structured in the recommended Modern APP Architecture,
 ## Modularization
 The **Now in MTG** app adapts the modularization strategies to better organize the project, allowing it to scale as new features are added. For more information, Check out the [Google's android app modularization guidance](https://developer.android.com/topic/modularization).
 
-To maintain dependencies in a scalable way, this app utilize Gradle version catalogs ([Google's version catalogs migration guidance](https://developer.android.com/build/migrate-to-catalogs)) to manage the versions of dependencies and plugins, and organize the multi-modules build into reusable Gradle conventions plugins ([Share build logic between subprojects - Gradle](https://docs.gradle.org/current/samples/sample_convention_plugins.html)).
+To maintain dependencies in a scalable way, this app utilizes Gradle version catalogs ([Google's version catalogs migration guidance](https://developer.android.com/build/migrate-to-catalogs)) to manage the versions of dependencies and plugins, and organizes the multi-modules builds into reusable Gradle conventions plugins ([Share build logic between subprojects - Gradle](https://docs.gradle.org/current/samples/sample_convention_plugins.html)).
 
 ### Module dependency graph
 ```mermaid
