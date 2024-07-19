@@ -1,7 +1,9 @@
 Now in MTG
 ===========
+![screenshots_nowinmtg](https://github.com/user-attachments/assets/e6f05159-b8de-4fd2-90e1-d7804e3ad8da)
 
 **Now in MTG is an offline-first Android app built with Kotlin and Jetpack Compose.**
+
 
 ## Arthitecture
 The **Now in MTG** app is structured in the recommended Modern APP Architecture, following [Google's official architecture guidance](https://developer.android.com/topic/architecture).
@@ -103,17 +105,19 @@ graph TD
 </table>
 
 
-## Tech stacks
+## Tech stacks & Libraries
 - Kotlin
+- Coroutines Flow
 - Jetpack Libraries:
-  - Jetpack Compose: Android’s recommended modern toolkit for building native UI
-  - Navigation Compose: Navigate between composables while taking advantage of the Navigation component's infrastructure and features
+  - [Jetpack Compose](https://developer.android.com/develop/ui/compose): Android’s recommended modern toolkit for building native UI
+  - [Navigation Compose](https://developer.android.com/develop/ui/compose/navigation): Navigate between composables while taking advantage of the Navigation component's infrastructure and features
   - Lifecycle Compose
-  - Hilt: a dependency injection library that reduces the boilerplate of doing manual DI
+  - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android): a dependency injection library that reduces the boilerplate of doing manual DI
   - Room Database
-- Ktor Client: An asynchronous Http Client built from the ground up using Kotlin and Coroutines by JetBrains
-- Kotlin Serialization
-- Coil: An image loading library for Android backed by Kotlin Coroutines
+- [Ktor Client](https://github.com/ktorio/ktor): An asynchronous Http Client built from the ground up using Kotlin and Coroutines by JetBrains
+- [Kotlin Serialization](https://kotlinlang.org/docs/serialization.html)
+- [Coil](https://coil-kt.github.io/coil/): An image loading library for Android backed by Kotlin Coroutines
+- [Spotless](https://github.com/diffplug/spotless)
 
 ## Open APIs
 - [Magic: The Gathering API](https://docs.magicthegathering.io/) for constructing restful APIs for Random Cards and Card Details features
