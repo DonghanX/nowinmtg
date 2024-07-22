@@ -170,7 +170,6 @@ private data class SetsQuery(
     fun isNotEmpty(): Boolean = !isNotEmpty()
 }
 
-
 // The date the set was released is in GMT-8 Pacific time
 const val RELEASE_DATE_OFFSET = 8
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
