@@ -8,7 +8,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.ui.CardsGallery
 
 @Composable
-fun FavoritesScreen(
+internal fun FavoritesScreen(
     onCardClick: (cardId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FavoritesViewModel = hiltViewModel()

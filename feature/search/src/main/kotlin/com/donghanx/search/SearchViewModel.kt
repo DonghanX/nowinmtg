@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class SearchViewModel
+internal class SearchViewModel
 @Inject
 constructor(
     private val setsRepository: SetsRepository,
@@ -58,7 +58,7 @@ constructor(
     }
 }
 
-sealed interface SearchUiState {
+internal sealed interface SearchUiState {
     val refreshing: Boolean
     val errorMessage: ErrorMessage
 

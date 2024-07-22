@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReleaseDateFilter(
+internal fun ReleaseDateFilter(
     selectedDateMillisRange: DateMillisRange,
     onDateRangeSelected: (startDateMillis: Long?, endDateMillis: Long?) -> Unit,
 ) {

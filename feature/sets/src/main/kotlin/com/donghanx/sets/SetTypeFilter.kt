@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.donghanx.common.ext.capitalize
+import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.ui.chip.FilterChipWithLeadingIcon
 import com.donghanx.sets.composable.BottomSheetContentWrapper
 import com.donghanx.sets.composable.FilterChipWithBottomSheetContent
@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetTypeFilter(
+internal fun SetTypeFilter(
     selectedSetType: String?,
     onSetTypeChanged: (setType: String?) -> Unit,
 ) {

@@ -41,7 +41,7 @@ import com.donghanx.model.CardDetails
 import com.donghanx.model.network.Ruling
 
 @Composable
-fun CardDetailsView(cardDetails: CardDetails, modifier: Modifier = Modifier) {
+internal fun CardDetailsView(cardDetails: CardDetails, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 4.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             AsyncImage(

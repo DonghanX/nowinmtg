@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class RandomCardsViewModel
+internal class RandomCardsViewModel
 @Inject
 constructor(
     private val randomCardsRepository: RandomCardsRepository,
@@ -85,9 +85,11 @@ constructor(
     }
 }
 
-sealed interface RandomCardsUiState {
+internal sealed interface RandomCardsUiState {
     val refreshing: Boolean
     val errorMessage: ErrorMessage
+
+    fun hasError(): Boolean = errorMessage.hasError
 
     data class Success(
         val cards: List<CardPreview>,
@@ -118,6 +120,5 @@ private data class RandomCardsViewModelState(
         }
 }
 
-fun RandomCardsUiState.hasError(): Boolean = errorMessage.hasError
 
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

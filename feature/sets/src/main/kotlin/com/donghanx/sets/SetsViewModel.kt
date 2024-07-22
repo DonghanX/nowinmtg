@@ -7,7 +7,7 @@ import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
-import com.donghanx.common.ext.filterAll
+import com.donghanx.common.extensions.filterAll
 import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.common.utils.epochMilliOfDate
 import com.donghanx.common.utils.yearOfDate
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class SetsViewModel
+internal class SetsViewModel
 @Inject
 constructor(
     private val setsRepository: SetsRepository,
@@ -126,9 +126,11 @@ constructor(
     }
 }
 
-sealed interface SetsUiState {
+internal sealed interface SetsUiState {
     val refreshing: Boolean
     val errorMessage: ErrorMessage
+
+    fun hasError(): Boolean = errorMessage.hasError
 
     data class Success(
         val groupedSets: SetInfoMap,
@@ -168,7 +170,6 @@ private data class SetsQuery(
     fun isNotEmpty(): Boolean = !isNotEmpty()
 }
 
-fun SetsUiState.hasError(): Boolean = errorMessage.hasError
 
 // The date the set was released is in GMT-8 Pacific time
 const val RELEASE_DATE_OFFSET = 8

@@ -17,7 +17,7 @@ import com.donghanx.mock.MockUtils
 import com.donghanx.ui.CardsGallery
 
 @Composable
-fun RandomCardsScreen(
+internal fun RandomCardsScreen(
     onCardClick: (cardId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,

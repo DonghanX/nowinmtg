@@ -23,7 +23,7 @@ import com.donghanx.ui.SetInfoItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(
+internal fun SearchScreen(
     onCloseClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = hiltViewModel()

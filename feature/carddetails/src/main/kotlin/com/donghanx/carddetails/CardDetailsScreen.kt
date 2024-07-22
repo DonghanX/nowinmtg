@@ -31,7 +31,7 @@ import com.donghanx.design.ui.pullrefresh.pullRefresh
 import com.donghanx.design.ui.pullrefresh.rememberPullRefreshState
 
 @Composable
-fun CardDetailsScreen(
+internal fun CardDetailsScreen(
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,

@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class CardDetailsViewModel
+internal class CardDetailsViewModel
 @Inject
 constructor(
     private val cardDetailsRepository: CardDetailsRepository,
@@ -115,9 +115,11 @@ constructor(
     }
 }
 
-sealed interface CardDetailsUiState {
+internal sealed interface CardDetailsUiState {
     val refreshing: Boolean
     val errorMessage: ErrorMessage
+
+    fun hasError(): Boolean = errorMessage.hasError
 
     data class Success(
         val cardDetails: CardDetails,
@@ -151,7 +153,5 @@ private data class CardDetailsViewModelState(
                 )
         }
 }
-
-fun CardDetailsUiState.hasError(): Boolean = errorMessage.hasError
 
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

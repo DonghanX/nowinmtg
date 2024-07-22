@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterChipWithBottomSheetContent(
+internal fun FilterChipWithBottomSheetContent(
     label: @Composable () -> Unit,
     bottomSheetState: SheetState,
     selected: Boolean,
