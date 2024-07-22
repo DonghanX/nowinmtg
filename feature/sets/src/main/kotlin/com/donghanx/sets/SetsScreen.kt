@@ -39,7 +39,7 @@ import com.donghanx.ui.StickyYearReleased
 import kotlinx.coroutines.launch
 
 @Composable
-fun SetsScreen(
+internal fun SetsScreen(
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SetsViewModel = hiltViewModel()

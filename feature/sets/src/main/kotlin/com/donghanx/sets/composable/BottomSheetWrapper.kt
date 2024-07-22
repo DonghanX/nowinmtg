@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.donghanx.sets.R
 
 @Composable
-fun BottomSheetContentWrapper(
+internal fun BottomSheetContentWrapper(
     onViewResultsClick: () -> Unit,
     onResetClick: () -> Unit,
     content: @Composable ColumnScope.() -> Unit

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class FavoritesViewModel @Inject constructor(favoritesRepository: FavoritesRepository) :
+internal class FavoritesViewModel @Inject constructor(favoritesRepository: FavoritesRepository) :
     ViewModel() {
 
     val favoritesUiState: StateFlow<FavoritesUiState> =
@@ -30,7 +30,7 @@ class FavoritesViewModel @Inject constructor(favoritesRepository: FavoritesRepos
             )
 }
 
-sealed interface FavoritesUiState {
+internal sealed interface FavoritesUiState {
 
     data object Empty : FavoritesUiState
 
