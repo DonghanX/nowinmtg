@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.size.Precision
 import com.donghanx.design.R
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.rippleClickable
@@ -41,7 +42,7 @@ fun CardsGallery(
         val lazyGridState = rememberLazyGridState()
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(count = 2),
+            columns = GridCells.Adaptive(minSize = 160.dp),
             state = lazyGridState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(all = 4.dp),
@@ -53,10 +54,11 @@ fun CardsGallery(
                     model =
                         ImageRequest.Builder(LocalContext.current)
                             .data(card.imageUrl)
+                            .precision(Precision.EXACT)
                             .crossfade(true)
                             .build(),
                     contentDescription = card.name,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     placeholder = painterResource(id = R.drawable.blank_card_placeholder),
                     modifier =
                         Modifier.fillMaxWidth()
