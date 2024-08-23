@@ -1,6 +1,9 @@
 package com.donghanx.design.ui.appbar
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,6 +25,7 @@ fun NowInMtgTopAppBar(
     navigationIcon: ImageVector,
     navigationIconContentDescription: String?,
     showNavigationIcon: Boolean,
+    shouldAdjustNavigationRail: Boolean,
     modifier: Modifier = Modifier,
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
     onNavigationIconClick: () -> Unit = {}
@@ -29,12 +34,16 @@ fun NowInMtgTopAppBar(
         title = { Text(text = stringResource(titleResId), fontWeight = FontWeight.Bold) },
         colors = colors,
         navigationIcon = {
-            if (showNavigationIcon) {
-                IconButton(onClick = onNavigationIconClick) {
-                    Icon(
-                        imageVector = navigationIcon,
-                        contentDescription = navigationIconContentDescription
-                    )
+            Row {
+                if (showNavigationIcon) {
+                    if (shouldAdjustNavigationRail) Spacer(modifier = Modifier.width(width = 16.dp))
+
+                    IconButton(onClick = onNavigationIconClick) {
+                        Icon(
+                            imageVector = navigationIcon,
+                            contentDescription = navigationIconContentDescription
+                        )
+                    }
                 }
             }
         },

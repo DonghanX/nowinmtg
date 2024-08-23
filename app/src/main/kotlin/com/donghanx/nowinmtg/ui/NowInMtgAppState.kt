@@ -1,5 +1,7 @@
 package com.donghanx.nowinmtg.ui
 
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -15,13 +17,17 @@ import com.donghanx.sets.navigation.SETS_ROUTE
 
 @Composable
 fun rememberNowInMtgAppState(
-    navController: NavHostController = rememberNavController()
-): NowInMtgAppState {
-    return remember { NowInMtgAppState(navController = navController) }
+    navController: NavHostController = rememberNavController(),
+    windowSizeClass: WindowSizeClass
+): NowInMtgAppState = remember {
+    NowInMtgAppState(navController = navController, windowSizeClass = windowSizeClass)
 }
 
 @Stable
-class NowInMtgAppState(val navController: NavHostController) {
+class NowInMtgAppState(
+    val navController: NavHostController,
+    private val windowSizeClass: WindowSizeClass
+) {
 
     val currentDestination: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
@@ -42,6 +48,12 @@ class NowInMtgAppState(val navController: NavHostController) {
             TopLevelDestination.Sets,
             TopLevelDestination.Favorites
         )
+
+    val shouldShowBottomBar: Boolean
+        get() = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
+
+    val shouldShowLeftNavigationRail: Boolean
+        get() = !shouldShowBottomBar
 
     fun navigateToTopLevelDestination(route: String) {
         navController.navigate(route) {
