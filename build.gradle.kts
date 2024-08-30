@@ -11,7 +11,7 @@ plugins {
 
 spotless {
     kotlin {
-        ktfmt("0.46").kotlinlangStyle()
+        ktfmt("0.52").kotlinlangStyle()
         target("**/*.kt")
         targetExclude("**/build/**/*.kt")
     }
