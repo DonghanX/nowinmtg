@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CardsGallery(
     cards: List<CardPreview>,
-    onCardClick: (cardId: String) -> Unit,
+    onCardClick: (cardId: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {

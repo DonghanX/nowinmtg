@@ -24,10 +24,10 @@ constructor(
     private val cardsRemoteDataSource: MtgCardsRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher,
 ) : CardDetailsRepository {
-    override fun getCardDetailsById(cardId: String): Flow<CardDetails?> =
+    override fun getCardDetailsById(cardId: Int): Flow<CardDetails?> =
         cardDetailsDao.getCardDetailsById(cardId).map { it?.asExternalModel() }.flowOn(ioDispatcher)
 
-    override fun refreshCardDetails(cardId: String): Flow<NetworkResult<Unit>> =
+    override fun refreshCardDetails(cardId: Int): Flow<NetworkResult<Unit>> =
         flow { emit(cardsRemoteDataSource.getCardDetailsById(cardId)) }
             .asResultFlow()
             .foldResult(

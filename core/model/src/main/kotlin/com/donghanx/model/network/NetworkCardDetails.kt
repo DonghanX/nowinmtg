@@ -4,11 +4,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NetworkCardDetailsList(@SerialName("cards") val cards: List<NetworkCardDetails>)
+data class NetworkCardDetailsResponse(@SerialName("card") val card: NetworkCardDetails)
 
 @Serializable
 data class NetworkCardDetails(
-    @SerialName("id") val id: String,
+    @SerialName("multiverseid") val multiverseId: Int,
     @SerialName("artist") val artist: String?,
     @SerialName("cmc") val cmc: Double,
     @SerialName("colorIdentity") val colorIdentity: List<String>?,
@@ -17,7 +17,6 @@ data class NetworkCardDetails(
     @SerialName("imageUrl") val imageUrl: String?,
     @SerialName("layout") val layout: String,
     @SerialName("manaCost") val manaCost: String?,
-    @SerialName("multiverseid") val multiverseId: String?,
     @SerialName("name") val name: String,
     @SerialName("number") val number: String,
     @SerialName("originalText") val originalText: String?,

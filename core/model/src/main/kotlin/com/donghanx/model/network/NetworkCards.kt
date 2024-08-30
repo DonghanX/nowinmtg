@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NetworkCard(
-    @SerialName("id") val id: String,
     @SerialName("multiverseid") val multiverseId: Int,
     @SerialName("name") val name: String,
     @SerialName("imageUrl") val imageUrl: String,

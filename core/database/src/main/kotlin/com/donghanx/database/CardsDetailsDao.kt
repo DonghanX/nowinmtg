@@ -10,6 +10,6 @@ import kotlinx.coroutines.flow.Flow
 interface CardDetailsDao {
     @Upsert suspend fun upsertCardDetails(cardDetails: CardDetailsEntity)
 
-    @Query("SELECT * FROM card_details WHERE id = :cardId ")
-    fun getCardDetailsById(cardId: String): Flow<CardDetailsEntity?>
+    @Query("SELECT * FROM card_details WHERE multiverseId = :cardId ")
+    fun getCardDetailsById(cardId: Int): Flow<CardDetailsEntity?>
 }

@@ -1,3 +1,3 @@
 package com.donghanx.model
 
-data class CardPreview(val id: String, val name: String, val imageUrl: String?)
+data class CardPreview(val id: Int, val name: String, val imageUrl: String?)

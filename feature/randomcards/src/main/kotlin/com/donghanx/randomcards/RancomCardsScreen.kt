@@ -18,7 +18,7 @@ import com.donghanx.ui.CardsGallery
 
 @Composable
 internal fun RandomCardsScreen(
-    onCardClick: (cardId: String) -> Unit,
+    onCardClick: (cardId: Int) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RandomCardsViewModel = hiltViewModel(),

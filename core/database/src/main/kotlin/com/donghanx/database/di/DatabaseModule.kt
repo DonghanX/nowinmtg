@@ -15,6 +15,6 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Provides
     @Singleton
-    fun providesNiaDatabase(@ApplicationContext applicationContext: Context): NimDatabase =
-        Room.databaseBuilder(applicationContext, NimDatabase::class.java, "nia-database").build()
+    fun providesNimDatabase(@ApplicationContext applicationContext: Context): NimDatabase =
+        Room.databaseBuilder(applicationContext, NimDatabase::class.java, "nim-database").build()
 }

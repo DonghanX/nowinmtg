@@ -9,7 +9,7 @@ const val FAVORITES_GRAPH_ROUTE = "FavoritesGraph"
 const val FAVORITES_ROUTE = "Favorites"
 
 fun NavGraphBuilder.favoriteGraph(
-    onCardClick: (cardId: String, parentRoute: String) -> Unit,
+    onCardClick: (cardId: Int, parentRoute: String) -> Unit,
     nestedGraphs: NavGraphBuilder.(parentRoute: String) -> Unit,
 ) {
     navigation(startDestination = FAVORITES_ROUTE, route = FAVORITES_GRAPH_ROUTE) {

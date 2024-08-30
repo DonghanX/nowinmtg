@@ -8,8 +8,7 @@ import com.donghanx.model.network.Ruling
 
 @Entity(tableName = "card_details")
 data class CardDetailsEntity(
-    @PrimaryKey val id: String,
-    val multiverseId: String?,
+    @PrimaryKey val multiverseId: Int,
     val artist: String?,
     val cmc: Double,
     val colorIdentity: List<String>?,
@@ -39,7 +38,6 @@ data class CardDetailsEntity(
 
 fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
     CardDetailsEntity(
-        id = id,
         multiverseId = multiverseId,
         artist = artist,
         cmc = cmc,
@@ -70,8 +68,7 @@ fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
 
 fun CardDetailsEntity.asExternalModel(): CardDetails =
     CardDetails(
-        id = id,
-        multiverseId = id,
+        multiverseId = multiverseId,
         artist = artist,
         cmc = cmc,
         colorIdentity = colorIdentity,

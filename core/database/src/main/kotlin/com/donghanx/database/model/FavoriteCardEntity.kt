@@ -7,7 +7,7 @@ import com.donghanx.model.CardPreview
 
 @Entity(tableName = "favorite_card")
 data class FavoriteCardEntity(
-    @PrimaryKey val id: String,
+    @PrimaryKey val multiverseId: Int,
     val name: String,
     val imageUrl: String?,
     val set: String,
@@ -15,7 +15,7 @@ data class FavoriteCardEntity(
 )
 
 fun CardDetails.asFavoriteCardEntity(): FavoriteCardEntity =
-    FavoriteCardEntity(id = id, name = name, imageUrl = imageUrl, set = set, setName = setName)
+    FavoriteCardEntity(multiverseId = multiverseId, name = name, imageUrl = imageUrl, set = set, setName = setName)
 
 fun FavoriteCardEntity.asExternalModel(): CardPreview =
-    CardPreview(id = id, name = name, imageUrl = imageUrl)
+    CardPreview(id = multiverseId, name = name, imageUrl = imageUrl)

@@ -7,14 +7,19 @@ import com.donghanx.model.network.NetworkCard
 
 @Entity(tableName = "random_cards")
 data class RandomCardEntity(
-    @PrimaryKey val id: String,
+    @PrimaryKey val multiverseId: Int,
     val name: String,
     val imageUrl: String?,
     val types: List<String>?,
 )
 
 fun NetworkCard.asRandomCardEntity(): RandomCardEntity =
-    RandomCardEntity(id = id, name = name, imageUrl = imageUrl, types = types)
+    RandomCardEntity(
+        multiverseId = multiverseId,
+        name = name,
+        imageUrl = imageUrl,
+        types = types,
+    )
 
 fun RandomCardEntity.asExternalModel(): CardPreview =
-    CardPreview(id = id, name = name, imageUrl = imageUrl)
+    CardPreview(id = multiverseId, name = name, imageUrl = imageUrl)
