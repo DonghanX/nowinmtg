@@ -51,7 +51,7 @@ constructor(private val randomCardsRepository: RandomCardsRepository) : ViewMode
 
         viewModelScope.launch {
             randomCardsRepository
-                .refreshRandomCards(shouldContainImageUrl = true)
+                .refreshRandomCards()
                 .onEach { it.updateViewModelState() }
                 .collect()
         }

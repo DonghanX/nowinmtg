@@ -9,6 +9,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.url
+import io.ktor.http.parameters
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,6 +21,8 @@ class MtgCardsRemoteDataSource @Inject constructor(private val mtgHttpClient: Mt
             .get {
                 url(path = "/cards")
                 parameter(key = "random", value = true)
+                parameter(key = "contains", value = "multiverseId")
+                parameter(key = "contains", value = "imageUrl")
                 parameter(key = "pageSize", value = pageSize)
             }
             .body<NetworkCards>()
