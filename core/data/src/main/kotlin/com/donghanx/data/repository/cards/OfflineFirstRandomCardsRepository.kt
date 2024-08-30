@@ -24,7 +24,7 @@ class OfflineFirstRandomCardsRepository
 constructor(
     private val randomCardsDao: RandomCardsDao,
     private val cardsRemoteDataSource: MtgCardsRemoteDataSource,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
 ) : RandomCardsRepository {
     override fun getRandomCards(): Flow<List<CardPreview>> =
         randomCardsDao
@@ -41,12 +41,12 @@ constructor(
                         .filterNot { shouldContainImageUrl && it.imageUrl == null }
                         .syncWith(
                             entityConverter = NetworkCard::asRandomCardEntity,
-                            modelActions = randomCardsDao::deleteAllAndInsertRandomCards
+                            modelActions = randomCardsDao::deleteAllAndInsertRandomCards,
                         )
 
                     NetworkResult.Success(Unit)
                 },
-                onError = { NetworkResult.Error(it) }
+                onError = { NetworkResult.Error(it) },
             )
             .flowOn(ioDispatcher)
 

@@ -44,10 +44,7 @@ import androidx.compose.ui.unit.Velocity
  * TODO: migrate to M3 PullRefresh once it's ready. See Issue Tracker
  *   https://issuetracker.google.com/issues/261760718
  */
-fun Modifier.pullRefresh(
-    state: PullRefreshState,
-    enabled: Boolean = true,
-) =
+fun Modifier.pullRefresh(state: PullRefreshState, enabled: Boolean = true) =
     inspectable(
         inspectorInfo =
             debugInspectorInfo {
@@ -103,10 +100,7 @@ private class PullRefreshNestedScrollConnection(
     private val enabled: Boolean,
 ) : NestedScrollConnection {
 
-    override fun onPreScroll(
-        available: Offset,
-        source: NestedScrollSource,
-    ): Offset =
+    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset =
         when {
             !enabled -> Offset.Zero
             source == Drag && available.y < 0 -> Offset(0f, onPull(available.y)) // Swiping up

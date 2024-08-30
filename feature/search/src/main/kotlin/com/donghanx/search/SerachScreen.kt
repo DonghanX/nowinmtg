@@ -26,7 +26,7 @@ import com.donghanx.ui.SetInfoItem
 internal fun SearchScreen(
     onCloseClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel(),
 ) {
 
     Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -46,7 +46,7 @@ internal fun SearchScreen(
                         contentDescription = stringResource(id = DesignR.string.back),
                     )
                 }
-            }
+            },
         ) {
             when (val uiState = searchUiState) {
                 is SearchUiState.Success -> {

@@ -25,7 +25,7 @@ fun SetInfoItem(code: String, name: String, iconUrl: String, modifier: Modifier 
     Row(
         modifier = modifier.horizontalScroll(state = rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         AsyncImage(model = iconUrl, contentDescription = name, modifier = Modifier.size(24.dp))
 
@@ -49,7 +49,7 @@ private fun SetInfoItemPreview() {
     SetInfoItem(
         code = "soi",
         name = "Shadows over Innistrad",
-        iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400"
+        iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400",
     )
 }
 

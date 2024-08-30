@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 fun CardsGallery(
     cards: List<CardPreview>,
     onCardClick: (cardId: String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
@@ -47,7 +47,7 @@ fun CardsGallery(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(all = 4.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(cards, key = { it.id }) { card ->
                 AsyncImage(
@@ -63,7 +63,7 @@ fun CardsGallery(
                     modifier =
                         Modifier.fillMaxWidth()
                             .wrapContentHeight()
-                            .rippleClickable(onClick = { onCardClick(card.id) })
+                            .rippleClickable(onClick = { onCardClick(card.id) }),
                 )
             }
         }
@@ -74,7 +74,7 @@ fun CardsGallery(
         ScrollToTopButton(
             visible = shouldShowScrollToTopButton,
             onClick = { scope.launch { lazyGridState.animateScrollToItem(0) } },
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 }

@@ -35,7 +35,7 @@ internal class SetsViewModel
 constructor(
     private val setsRepository: SetsRepository,
     private val refreshSetsIfNeeded: RefreshSetsUseCase,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(SetsViewModelState(refreshing = false))
@@ -46,7 +46,7 @@ constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
-                initialValue = viewModelState.value.toUiState()
+                initialValue = viewModelState.value.toUiState(),
             )
 
     val setTypeQuery: StateFlow<String?> =
@@ -98,7 +98,7 @@ constructor(
         else
             filterAll(
                 { query.setType == null || it.setType == query.setType },
-                { query.dateRange.contains(it.releasedAt.epochMilliOfDate(RELEASE_DATE_OFFSET)) }
+                { query.dateRange.contains(it.releasedAt.epochMilliOfDate(RELEASE_DATE_OFFSET)) },
             )
     }
 
@@ -110,7 +110,7 @@ constructor(
                 is NetworkResult.Error ->
                     prevState.copy(
                         refreshing = false,
-                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1)
+                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1),
                     )
             }
         }
@@ -135,19 +135,19 @@ internal sealed interface SetsUiState {
     data class Success(
         val groupedSets: SetInfoMap,
         override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage()
+        override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : SetsUiState
 
     data class Empty(
         override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage()
+        override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : SetsUiState
 }
 
 private data class SetsViewModelState(
     val groupedSets: SetInfoMap = emptyMap(),
     val refreshing: Boolean,
-    val errorMessage: ErrorMessage = emptyErrorMessage()
+    val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {
     fun toUiState(): SetsUiState =
         when {
@@ -155,7 +155,7 @@ private data class SetsViewModelState(
                 SetsUiState.Success(
                     groupedSets = groupedSets,
                     refreshing = refreshing,
-                    errorMessage = errorMessage
+                    errorMessage = errorMessage,
                 )
             else -> SetsUiState.Empty(refreshing = refreshing, errorMessage = errorMessage)
         }
@@ -163,7 +163,7 @@ private data class SetsViewModelState(
 
 private data class SetsQuery(
     val setType: String? = null,
-    val dateRange: DateMillisRange = DateMillisRange.EMPTY
+    val dateRange: DateMillisRange = DateMillisRange.EMPTY,
 ) {
     fun isEmpty(): Boolean = setType == null && dateRange.isEmpty()
 

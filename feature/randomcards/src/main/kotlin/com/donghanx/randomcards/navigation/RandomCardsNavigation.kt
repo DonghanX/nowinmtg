@@ -14,12 +14,10 @@ fun NavGraphBuilder.randomCardsGraph(
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
     navigation(startDestination = RANDOM_CARDS_ROUTE, route = RANDOM_CARDS_GRAPH_ROUTE) {
-        composable(
-            route = RANDOM_CARDS_ROUTE,
-        ) {
+        composable(route = RANDOM_CARDS_ROUTE) {
             RandomCardsScreen(
                 onCardClick = { cardId -> onCardClick(cardId, RANDOM_CARDS_ROUTE) },
-                onShowSnackbar = onShowSnackbar
+                onShowSnackbar = onShowSnackbar,
             )
         }
 

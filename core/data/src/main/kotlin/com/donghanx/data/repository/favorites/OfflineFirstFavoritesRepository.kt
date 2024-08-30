@@ -18,7 +18,7 @@ class OfflineFirstFavoritesRepository
 @Inject
 constructor(
     private val favoritesDao: FavoritesDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : FavoritesRepository {
     override fun getFavoriteCards(): Flow<List<CardPreview>> =
         favoritesDao

@@ -48,13 +48,13 @@ data class ForeignName(
     @SerialName("multiverseid") val multiverseId: Int?,
     @SerialName("name") val name: String,
     @SerialName("text") val text: String?,
-    @SerialName("type") val type: String?
+    @SerialName("type") val type: String?,
 )
 
 @Serializable
 data class Legality(
     @SerialName("format") val format: String,
-    @SerialName("legality") val legality: String
+    @SerialName("legality") val legality: String,
 )
 
 @Serializable

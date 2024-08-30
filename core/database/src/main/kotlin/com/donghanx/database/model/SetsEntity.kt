@@ -17,7 +17,7 @@ data class SetEntity(
     val releasedAt: String,
     val scryfallUri: String,
     val searchUri: String,
-    val uri: String
+    val uri: String,
 )
 
 fun NetworkSet.asSetEntity(): SetEntity =
@@ -32,7 +32,7 @@ fun NetworkSet.asSetEntity(): SetEntity =
         releasedAt = releasedAt,
         scryfallUri = scryfallUri,
         searchUri = searchUri,
-        uri = uri
+        uri = uri,
     )
 
 fun SetEntity.asExternalModel(): SetInfo =
@@ -47,5 +47,5 @@ fun SetEntity.asExternalModel(): SetInfo =
         releasedAt = releasedAt,
         scryfallUri = scryfallUri,
         searchUri = searchUri,
-        uri = uri
+        uri = uri,
     )

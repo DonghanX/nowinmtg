@@ -26,7 +26,7 @@ internal class SearchViewModel
 constructor(
     private val setsRepository: SetsRepository,
     refreshSetsIfNeeded: RefreshSetsUseCase,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     val searchQuery = savedStateHandle.getStateFlow(SEARCH_QUERY_KEY, "")
@@ -41,7 +41,7 @@ constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
-                initialValue = SearchUiState.Empty(refreshing = true)
+                initialValue = SearchUiState.Empty(refreshing = true),
             )
 
     init {
@@ -65,12 +65,12 @@ internal sealed interface SearchUiState {
     data class Success(
         val searchedSets: List<SetInfo>,
         override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage()
+        override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : SearchUiState
 
     data class Empty(
         override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage()
+        override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : SearchUiState
 }
 

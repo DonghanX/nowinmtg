@@ -25,7 +25,7 @@ class OfflineFirstSetsRepository
 constructor(
     private val setsDao: SetsDao,
     private val setsRemoteDataSource: SetsRemoteDataSource,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
 ) : SetsRepository {
     override fun getAllSets(): Flow<List<SetInfo>> =
         setsDao.getAllSets().map { it.map(SetEntity::asExternalModel) }.flowOn(ioDispatcher)
@@ -37,11 +37,11 @@ constructor(
                 onSuccess = { sets ->
                     sets.syncWith(
                         entityConverter = NetworkSet::asSetEntity,
-                        modelActions = setsDao::upsertSets
+                        modelActions = setsDao::upsertSets,
                     )
                     NetworkResult.Success(Unit)
                 },
-                onError = { NetworkResult.Error(it) }
+                onError = { NetworkResult.Error(it) },
             )
             .flowOn(ioDispatcher)
 

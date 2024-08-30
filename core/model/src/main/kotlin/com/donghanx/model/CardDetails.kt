@@ -29,5 +29,5 @@ data class CardDetails(
     val type: String,
     val types: List<String>?,
     val variations: List<String>?,
-    val rulings: List<Ruling>?
+    val rulings: List<Ruling>?,
 )

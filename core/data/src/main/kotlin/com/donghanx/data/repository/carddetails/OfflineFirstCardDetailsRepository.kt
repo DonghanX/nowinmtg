@@ -22,7 +22,7 @@ class OfflineFirstCardDetailsRepository
 constructor(
     private val cardDetailsDao: CardDetailsDao,
     private val cardsRemoteDataSource: MtgCardsRemoteDataSource,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
 ) : CardDetailsRepository {
     override fun getCardDetailsById(cardId: String): Flow<CardDetails?> =
         cardDetailsDao.getCardDetailsById(cardId).map { it?.asExternalModel() }.flowOn(ioDispatcher)
@@ -34,11 +34,11 @@ constructor(
                 onSuccess = { cardDetails ->
                     cardDetails.syncWith(
                         entityConverter = NetworkCardDetails::asCardDetailsEntity,
-                        modelActions = cardDetailsDao::upsertCardDetails
+                        modelActions = cardDetailsDao::upsertCardDetails,
                     )
                     NetworkResult.Success(Unit)
                 },
-                onError = { NetworkResult.Error(it) }
+                onError = { NetworkResult.Error(it) },
             )
             .flowOn(ioDispatcher)
 }

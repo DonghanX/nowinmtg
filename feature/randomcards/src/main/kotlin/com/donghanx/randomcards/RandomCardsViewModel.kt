@@ -23,9 +23,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 internal class RandomCardsViewModel
 @Inject
-constructor(
-    private val randomCardsRepository: RandomCardsRepository,
-) : ViewModel() {
+constructor(private val randomCardsRepository: RandomCardsRepository) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(RandomCardsViewModelState(refreshing = true))
 
@@ -35,7 +33,7 @@ constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
-                initialValue = viewModelState.value.toUiState()
+                initialValue = viewModelState.value.toUiState(),
             )
 
     init {
@@ -78,7 +76,7 @@ constructor(
                 is NetworkResult.Error ->
                     prevState.copy(
                         refreshing = false,
-                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1)
+                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1),
                     )
             }
         }
@@ -94,19 +92,19 @@ internal sealed interface RandomCardsUiState {
     data class Success(
         val cards: List<CardPreview>,
         override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage()
+        override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : RandomCardsUiState
 
     data class Empty(
         override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage()
+        override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : RandomCardsUiState
 }
 
 private data class RandomCardsViewModelState(
     val randomCards: List<CardPreview> = emptyList(),
     val refreshing: Boolean,
-    val errorMessage: ErrorMessage = emptyErrorMessage()
+    val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {
     fun toUiState(): RandomCardsUiState =
         when {
@@ -114,7 +112,7 @@ private data class RandomCardsViewModelState(
                 RandomCardsUiState.Success(
                     cards = randomCards,
                     refreshing = refreshing,
-                    errorMessage = errorMessage
+                    errorMessage = errorMessage,
                 )
             else -> RandomCardsUiState.Empty(refreshing = refreshing, errorMessage = errorMessage)
         }

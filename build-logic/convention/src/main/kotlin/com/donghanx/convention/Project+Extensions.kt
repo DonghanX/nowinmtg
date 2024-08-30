@@ -60,9 +60,7 @@ private fun Project.configureKotlin() {
     }
 }
 
-internal fun Project.configureAndroidCompose(
-    commonExtension: CommonExtensionType,
-) {
+internal fun Project.configureAndroidCompose(commonExtension: CommonExtensionType) {
     commonExtension.apply {
         buildFeatures { compose = true }
 

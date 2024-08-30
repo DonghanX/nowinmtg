@@ -11,7 +11,7 @@ data class FavoriteCardEntity(
     val name: String,
     val imageUrl: String?,
     val set: String,
-    val setName: String
+    val setName: String,
 )
 
 fun CardDetails.asFavoriteCardEntity(): FavoriteCardEntity =

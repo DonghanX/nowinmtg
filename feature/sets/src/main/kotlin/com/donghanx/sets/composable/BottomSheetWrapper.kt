@@ -21,19 +21,16 @@ import com.donghanx.sets.R
 internal fun BottomSheetContentWrapper(
     onViewResultsClick: () -> Unit,
     onResetClick: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         content()
 
-        Button(
-            onClick = onViewResultsClick,
-            modifier = Modifier.fillMaxWidth().height(40.dp),
-        ) {
+        Button(onClick = onViewResultsClick, modifier = Modifier.fillMaxWidth().height(40.dp)) {
             Text(text = stringResource(id = R.string.view_results), fontSize = 16.sp)
         }
 

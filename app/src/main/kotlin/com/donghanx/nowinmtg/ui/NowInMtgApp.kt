@@ -51,7 +51,7 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
                         navigationIconContentDescription = stringResource(DesignR.string.search),
                         showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
                         shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
-                        onNavigationIconClick = appState.navController::navigateToSearch
+                        onNavigationIconClick = appState.navController::navigateToSearch,
                     )
                 }
             },
@@ -60,17 +60,17 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
                     BottomNavigationBar(
                         topLevelDestinations = appState.topLevelDestinations,
                         currentDestination = appState.currentDestination,
-                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) }
+                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) },
                     )
                 }
-            }
+            },
         ) { paddingValues ->
             Row(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
                 if (appState.shouldShowLeftNavigationRail) {
                     LeftNavigationRail(
                         topLevelDestinations = appState.topLevelDestinations,
                         currentDestination = appState.currentDestination,
-                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) }
+                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) },
                     )
 
                     Spacer(modifier = Modifier.width(width = 8.dp))
@@ -79,7 +79,7 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
                     navController = appState.navController,
                     onShowSnackbar = { message ->
                         snackbarHostState.showSnackbar(message = message, withDismissAction = true)
-                    }
+                    },
                 )
             }
         }
@@ -90,7 +90,7 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
 private fun BottomNavigationBar(
     topLevelDestinations: List<TopLevelDestination>,
     currentDestination: NavDestination?,
-    onNavItemClick: (route: String) -> Unit
+    onNavItemClick: (route: String) -> Unit,
 ) {
     NavigationBar(containerColor = Color.Transparent) {
         topLevelDestinations.forEach { destination ->
@@ -100,16 +100,16 @@ private fun BottomNavigationBar(
                 selectedIcon = {
                     Icon(
                         painter = painterResource(id = destination.selectedIconResId),
-                        contentDescription = stringResource(id = destination.labelResId)
+                        contentDescription = stringResource(id = destination.labelResId),
                     )
                 },
                 unSelectedIcon = {
                     Icon(
                         painter = painterResource(id = destination.unselectedIconResId),
-                        contentDescription = stringResource(id = destination.labelResId)
+                        contentDescription = stringResource(id = destination.labelResId),
                     )
                 },
-                label = { Text(text = stringResource(id = destination.labelResId)) }
+                label = { Text(text = stringResource(id = destination.labelResId)) },
             )
         }
     }
@@ -119,11 +119,11 @@ private fun BottomNavigationBar(
 private fun LeftNavigationRail(
     topLevelDestinations: List<TopLevelDestination>,
     currentDestination: NavDestination?,
-    onNavItemClick: (route: String) -> Unit
+    onNavItemClick: (route: String) -> Unit,
 ) {
     NavigationRail(
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
     ) {
         topLevelDestinations.forEach { destination ->
             NowInMtgNavigationRailItem(
@@ -132,15 +132,15 @@ private fun LeftNavigationRail(
                 selectedIcon = {
                     Icon(
                         painter = painterResource(id = destination.selectedIconResId),
-                        contentDescription = stringResource(id = destination.labelResId)
+                        contentDescription = stringResource(id = destination.labelResId),
                     )
                 },
                 unSelectedIcon = {
                     Icon(
                         painter = painterResource(id = destination.unselectedIconResId),
-                        contentDescription = stringResource(id = destination.labelResId)
+                        contentDescription = stringResource(id = destination.labelResId),
                     )
-                }
+                },
             ) {
                 Text(text = stringResource(id = destination.labelResId))
             }

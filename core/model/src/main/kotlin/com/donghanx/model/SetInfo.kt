@@ -11,5 +11,5 @@ data class SetInfo(
     val releasedAt: String,
     val scryfallUri: String,
     val searchUri: String,
-    val uri: String
+    val uri: String,
 )

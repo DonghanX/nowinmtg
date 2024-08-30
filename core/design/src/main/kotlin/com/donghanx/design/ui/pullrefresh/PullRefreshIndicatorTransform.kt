@@ -33,10 +33,7 @@ import androidx.compose.ui.platform.inspectable
  * @sample androidx.compose.material.samples.PullRefreshIndicatorTransformSample
  */
 // TODO: Consider whether the state parameter should be replaced with lambdas.
-fun Modifier.pullRefreshIndicatorTransform(
-    state: PullRefreshState,
-    scale: Boolean = false,
-) =
+fun Modifier.pullRefreshIndicatorTransform(state: PullRefreshState, scale: Boolean = false) =
     inspectable(
         inspectorInfo =
             debugInspectorInfo {
@@ -62,7 +59,7 @@ fun Modifier.pullRefreshIndicatorTransform(
                     top = 0f,
                     left = -Float.MAX_VALUE,
                     right = Float.MAX_VALUE,
-                    bottom = Float.MAX_VALUE
+                    bottom = Float.MAX_VALUE,
                 ) {
                     this@drawWithContent.drawContent()
                 }

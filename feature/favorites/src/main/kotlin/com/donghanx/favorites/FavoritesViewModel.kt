@@ -26,7 +26,7 @@ internal class FavoritesViewModel @Inject constructor(favoritesRepository: Favor
                 scope = viewModelScope,
                 started =
                     SharingStarted.WhileSubscribed(stopTimeoutMillis = DEFAULT_STOP_TIME_MILLIS),
-                initialValue = FavoritesUiState.Empty
+                initialValue = FavoritesUiState.Empty,
             )
 }
 

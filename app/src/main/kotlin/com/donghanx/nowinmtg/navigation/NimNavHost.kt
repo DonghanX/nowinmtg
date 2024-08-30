@@ -17,12 +17,12 @@ fun NimNavHost(
     navController: NavHostController,
     onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
-    startDestination: String = RANDOM_CARDS_GRAPH_ROUTE
+    startDestination: String = RANDOM_CARDS_GRAPH_ROUTE,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
     ) {
         randomCardsGraph(
             onCardClick = { cardId, parentRoute ->
@@ -33,9 +33,9 @@ fun NimNavHost(
                 cardDetailsScreen(
                     parentRoute = from,
                     onBackClick = navController::popBackStack,
-                    onShowSnackbar = onShowSnackbar
+                    onShowSnackbar = onShowSnackbar,
                 )
-            }
+            },
         )
         setsScreen(onShowSnackbar = onShowSnackbar)
         searchScreen(onCloseClick = navController::popBackStack)
@@ -47,9 +47,9 @@ fun NimNavHost(
                 cardDetailsScreen(
                     parentRoute = parentRoute,
                     onBackClick = navController::popBackStack,
-                    onShowSnackbar = onShowSnackbar
+                    onShowSnackbar = onShowSnackbar,
                 )
-            }
+            },
         )
     }
 }
