@@ -50,7 +50,7 @@ internal fun CardDetailsView(cardDetails: CardDetails, modifier: Modifier = Modi
                 contentDescription = cardDetails.name,
                 modifier = Modifier.weight(0.5F).aspectRatio(ratio = 5F / 7F),
                 placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
 
             CardBasicInfo(cardDetails, modifier.weight(weight = 0.5F))
@@ -73,21 +73,17 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
             text = cardDetails.name,
             textAlign = TextAlign.Center,
             fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
 
         Text(
             text = "${cardDetails.setName} (${cardDetails.set})",
             textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
         )
         Divider()
 
-        Text(
-            text = cardDetails.type,
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp,
-        )
+        Text(text = cardDetails.type, textAlign = TextAlign.Center, fontSize = 16.sp)
         Divider()
 
         if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
@@ -101,19 +97,11 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
 
         // TODO: parse manaCost string to a visualized form
         cardDetails.manaCost?.let { manaCost ->
-            Text(
-                text = manaCost,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-            )
+            Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp)
             Divider()
         }
 
-        Text(
-            text = cardDetails.rarity,
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp,
-        )
+        Text(text = cardDetails.rarity, textAlign = TextAlign.Center, fontSize = 16.sp)
         Divider()
 
         cardDetails.artist?.let { artist ->
@@ -121,13 +109,13 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                 Text(
                     text = stringResource(id = R.string.illustrated_by),
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
                 )
                 Text(
                     text = artist,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
-                    fontStyle = FontStyle.Italic
+                    fontStyle = FontStyle.Italic,
                 )
             }
         }
@@ -139,7 +127,7 @@ private fun CardDescription(cardDetails: CardDetails, modifier: Modifier = Modif
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         cardDetails.text?.let { cardText ->
             ExpandableCard(headerTitle = stringResource(id = R.string.card_text)) {
@@ -153,7 +141,7 @@ private fun CardDescription(cardDetails: CardDetails, modifier: Modifier = Modif
                     text = cardFlavor,
                     textAlign = TextAlign.Start,
                     fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
             }
         }

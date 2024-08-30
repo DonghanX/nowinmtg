@@ -23,7 +23,7 @@ class NowInMtgApplication : Application(), ImageLoaderFactory {
                 OkHttpClient.Builder()
                     .sslSocketFactory(
                         clientCertificates.sslSocketFactory(),
-                        clientCertificates.trustManager
+                        clientCertificates.trustManager,
                     )
                     .build()
             }

@@ -42,13 +42,13 @@ import kotlinx.coroutines.launch
 internal fun SetsScreen(
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SetsViewModel = hiltViewModel()
+    viewModel: SetsViewModel = hiltViewModel(),
 ) {
     val setsUiState by viewModel.setsUiState.collectAsStateWithLifecycle()
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = setsUiState.refreshing,
-            onRefresh = { viewModel.refreshSets(forceRefresh = true) }
+            onRefresh = { viewModel.refreshSets(forceRefresh = true) },
         )
 
     Box(modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState)) {
@@ -61,7 +61,7 @@ internal fun SetsScreen(
                 selectedSetType = selectedSetType,
                 onSetTypeChanged = viewModel::onSelectedSetTypeChanged,
                 selectedDateMillisRange = DateMillisRange(selectedStartMillis, selectedEndMillis),
-                onDateRangeSelected = viewModel::onDateRangeSelected
+                onDateRangeSelected = viewModel::onDateRangeSelected,
             )
 
             when (val uiState = setsUiState) {
@@ -75,7 +75,7 @@ internal fun SetsScreen(
         PullRefreshIndicator(
             modifier = Modifier.align(Alignment.TopCenter),
             refreshing = setsUiState.refreshing,
-            state = pullRefreshState
+            state = pullRefreshState,
         )
 
         LaunchedEffect(setsUiState.errorMessage) {
@@ -96,13 +96,13 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>) {
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             groupedSets.forEach { (yearReleased, sets) ->
                 stickyHeader(key = yearReleased) {
                     StickyYearReleased(
                         yearReleased = yearReleased,
-                        modifier = Modifier.padding(horizontal = 6.dp)
+                        modifier = Modifier.padding(horizontal = 6.dp),
                     )
                 }
 
@@ -111,7 +111,7 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>) {
                         code = it.code,
                         name = it.name,
                         iconUrl = it.iconSvgUri,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp)
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
                     )
                 }
             }
@@ -123,7 +123,7 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>) {
         ScrollToTopButton(
             visible = shouldShowScrollToTopButton,
             onClick = { scope.launch { lazyListState.animateScrollToItem(0) } },
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 }
@@ -142,13 +142,13 @@ private fun SetsFilterRow(
                 .fillMaxWidth()
                 .padding(horizontal = 6.dp)
                 .horizontalScroll(state = rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(space = 6.dp)
+        horizontalArrangement = Arrangement.spacedBy(space = 6.dp),
     ) {
         SetTypeFilter(selectedSetType = selectedSetType, onSetTypeChanged = onSetTypeChanged)
 
         ReleaseDateFilter(
             selectedDateMillisRange = selectedDateMillisRange,
-            onDateRangeSelected = onDateRangeSelected
+            onDateRangeSelected = onDateRangeSelected,
         )
     }
 }

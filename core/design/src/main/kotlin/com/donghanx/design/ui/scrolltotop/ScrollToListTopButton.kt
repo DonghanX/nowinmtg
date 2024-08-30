@@ -14,7 +14,7 @@ fun ScrollToTopButton(
     visible: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    text: String = stringResource(id = R.string.scroll_to_top)
+    text: String = stringResource(id = R.string.scroll_to_top),
 ) {
     AnimatedVisibility(visible = visible, modifier = modifier) {
         Button(onClick = onClick) { Text(text = text) }

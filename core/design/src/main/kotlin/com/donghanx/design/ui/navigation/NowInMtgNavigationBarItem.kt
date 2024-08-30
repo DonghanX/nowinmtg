@@ -11,13 +11,13 @@ fun RowScope.NowInMtgNavigationBarItem(
     onClick: () -> Unit,
     selectedIcon: @Composable () -> Unit,
     unSelectedIcon: @Composable () -> Unit,
-    label: @Composable () -> Unit
+    label: @Composable () -> Unit,
 ) {
     NavigationBarItem(
         selected = selected,
         onClick = onClick,
         icon = if (selected) selectedIcon else unSelectedIcon,
-        label = label
+        label = label,
     )
 }
 
@@ -27,12 +27,12 @@ fun NowInMtgNavigationRailItem(
     onClick: () -> Unit,
     selectedIcon: @Composable () -> Unit,
     unSelectedIcon: @Composable () -> Unit,
-    label: @Composable () -> Unit
+    label: @Composable () -> Unit,
 ) {
     NavigationRailItem(
         selected = selected,
         onClick = onClick,
         icon = if (selected) selectedIcon else unSelectedIcon,
-        label = label
+        label = label,
     )
 }

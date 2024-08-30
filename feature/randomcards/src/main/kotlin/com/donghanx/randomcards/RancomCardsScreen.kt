@@ -21,18 +21,18 @@ internal fun RandomCardsScreen(
     onCardClick: (cardId: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: RandomCardsViewModel = hiltViewModel()
+    viewModel: RandomCardsViewModel = hiltViewModel(),
 ) {
     val randomCardsUiState by viewModel.randomCardsUiState.collectAsStateWithLifecycle()
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = randomCardsUiState.refreshing,
-            onRefresh = { viewModel.refreshRandomCards() }
+            onRefresh = { viewModel.refreshRandomCards() },
         )
 
     Box(
         modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         when (val uiState = randomCardsUiState) {
             is RandomCardsUiState.Success -> {
@@ -45,7 +45,7 @@ internal fun RandomCardsScreen(
         PullRefreshIndicator(
             modifier = Modifier.align(Alignment.TopCenter),
             refreshing = randomCardsUiState.refreshing,
-            state = pullRefreshState
+            state = pullRefreshState,
         )
 
         LaunchedEffect(randomCardsUiState.errorMessage) {

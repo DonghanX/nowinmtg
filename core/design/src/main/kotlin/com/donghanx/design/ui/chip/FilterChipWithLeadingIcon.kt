@@ -13,13 +13,13 @@ fun FilterChipWithLeadingIcon(
     label: String,
     onClick: () -> Unit,
     leadingIcon: @Composable () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     FilterChip(
         selected = selected,
         onClick = onClick,
         label = { Text(text = label) },
         leadingIcon = if (selected) leadingIcon else null,
-        modifier = modifier
+        modifier = modifier,
     )
 }

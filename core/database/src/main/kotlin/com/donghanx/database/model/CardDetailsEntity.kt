@@ -34,7 +34,7 @@ data class CardDetailsEntity(
     val type: String,
     val types: List<String>?,
     val variations: List<String>?,
-    val rulings: List<Ruling>?
+    val rulings: List<Ruling>?,
 )
 
 fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
@@ -65,7 +65,7 @@ fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
         type = type,
         types = types,
         variations = variations,
-        rulings = rulings
+        rulings = rulings,
     )
 
 fun CardDetailsEntity.asExternalModel(): CardDetails =
@@ -96,5 +96,5 @@ fun CardDetailsEntity.asExternalModel(): CardDetails =
         type = type,
         types = types,
         variations = variations,
-        rulings = rulings
+        rulings = rulings,
     )

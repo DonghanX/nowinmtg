@@ -3,10 +3,7 @@ package com.donghanx.model.network
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class NetworkSets(
-    @SerialName("data") val data: List<NetworkSet>,
-)
+@Serializable data class NetworkSets(@SerialName("data") val data: List<NetworkSet>)
 
 @Serializable
 data class NetworkSet(
@@ -20,5 +17,5 @@ data class NetworkSet(
     @SerialName("released_at") val releasedAt: String,
     @SerialName("scryfall_uri") val scryfallUri: String,
     @SerialName("search_uri") val searchUri: String,
-    @SerialName("uri") val uri: String
+    @SerialName("uri") val uri: String,
 )

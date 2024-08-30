@@ -12,6 +12,6 @@ class SetsListPreviewParameterProvider : PreviewParameterProvider<Map<Int, List<
                 listOf(MockUtils.soiExpansion, MockUtils.xlnExpansion).groupBy {
                     LocalDate.parse(it.releasedAt).year
                 },
-                emptyMap()
+                emptyMap(),
             )
 }

@@ -33,10 +33,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SetTypeFilter(
-    selectedSetType: String?,
-    onSetTypeChanged: (setType: String?) -> Unit,
-) {
+internal fun SetTypeFilter(selectedSetType: String?, onSetTypeChanged: (setType: String?) -> Unit) {
     val scope = rememberCoroutineScope()
     val (showBottomSheet, onShowBottomSheetChange) = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -48,7 +45,7 @@ internal fun SetTypeFilter(
         bottomSheetState = bottomSheetState,
         selected = selectedSetType != null,
         showBottomSheet = showBottomSheet,
-        onShowBottomSheetChange = onShowBottomSheetChange
+        onShowBottomSheetChange = onShowBottomSheetChange,
     ) {
         SetTypesSelector(
             initialSelectedType = selectedSetType,
@@ -58,7 +55,7 @@ internal fun SetTypeFilter(
                 scope
                     .launch { bottomSheetState.hide() }
                     .invokeOnCompletion { onShowBottomSheetChange(false) }
-            }
+            },
         )
     }
 }
@@ -69,12 +66,12 @@ private fun SetTypesSelector(
     initialSelectedType: String?,
     setTypes: Set<String>,
     onSetTypeChanged: (setType: String?) -> Unit,
-    onHideBottomSheet: () -> Unit
+    onHideBottomSheet: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         var selectedType by remember { mutableStateOf(initialSelectedType) }
 
@@ -86,7 +83,7 @@ private fun SetTypesSelector(
             onResetClick = {
                 onSetTypeChanged(null)
                 onHideBottomSheet()
-            }
+            },
         ) {
             FlowRow(horizontalArrangement = Arrangement.Start) {
                 setTypes.forEach { setType ->
@@ -100,10 +97,10 @@ private fun SetTypesSelector(
                             Icon(
                                 imageVector = Icons.Filled.Done,
                                 contentDescription = null,
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                modifier = Modifier.size(FilterChipDefaults.IconSize),
                             )
                         },
-                        modifier = Modifier.padding(horizontal = 4.dp)
+                        modifier = Modifier.padding(horizontal = 4.dp),
                     )
                 }
             }
@@ -113,6 +110,6 @@ private fun SetTypesSelector(
 
 private fun String.toReadableSetTypeLabel(
     oldDelimiter: String = "_",
-    newDelimiter: String = " "
+    newDelimiter: String = " ",
 ): String =
     split(oldDelimiter).joinToString(separator = newDelimiter) { prevStr -> prevStr.capitalize() }

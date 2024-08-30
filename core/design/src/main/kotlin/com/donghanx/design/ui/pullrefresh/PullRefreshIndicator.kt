@@ -86,7 +86,7 @@ fun PullRefreshIndicator(
     ) {
         Crossfade(
             targetState = refreshing,
-            animationSpec = tween(durationMillis = CrossfadeDurationMs)
+            animationSpec = tween(durationMillis = CrossfadeDurationMs),
         ) { refreshing ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 val spinnerSize = (ArcRadius + StrokeWidth).times(2)
@@ -107,11 +107,7 @@ fun PullRefreshIndicator(
 
 /** Modifier.size MUST be specified. */
 @Composable
-private fun CircularArrowIndicator(
-    state: PullRefreshState,
-    color: Color,
-    modifier: Modifier,
-) {
+private fun CircularArrowIndicator(state: PullRefreshState, color: Color, modifier: Modifier) {
     val path = remember { Path().apply { fillType = PathFillType.EvenOdd } }
 
     val targetAlpha by
@@ -131,7 +127,7 @@ private fun CircularArrowIndicator(
                     size.center.x - arcRadius,
                     size.center.y - arcRadius,
                     size.center.x + arcRadius,
-                    size.center.y + arcRadius
+                    size.center.y + arcRadius,
                 )
             drawArc(
                 color = color,
@@ -141,7 +137,7 @@ private fun CircularArrowIndicator(
                 useCenter = false,
                 topLeft = arcBounds.topLeft,
                 size = arcBounds.size,
-                style = Stroke(width = StrokeWidth.toPx(), cap = StrokeCap.Square)
+                style = Stroke(width = StrokeWidth.toPx(), cap = StrokeCap.Square),
             )
             drawArrow(path, arcBounds, color, alpha, values)
         }

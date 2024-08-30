@@ -15,7 +15,7 @@ fun <T> Flow<T>.asResultFlow(): Flow<NetworkResult<T>> =
 
 fun <T, R> Flow<NetworkResult<T>>.foldResult(
     onSuccess: suspend (data: T) -> R,
-    onError: suspend (exception: Throwable?) -> R
+    onError: suspend (exception: Throwable?) -> R,
 ): Flow<R> = map { result ->
     when (result) {
         is NetworkResult.Success -> onSuccess(result.data)

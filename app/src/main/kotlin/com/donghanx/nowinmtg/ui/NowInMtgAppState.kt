@@ -18,7 +18,7 @@ import com.donghanx.sets.navigation.SETS_ROUTE
 @Composable
 fun rememberNowInMtgAppState(
     navController: NavHostController = rememberNavController(),
-    windowSizeClass: WindowSizeClass
+    windowSizeClass: WindowSizeClass,
 ): NowInMtgAppState = remember {
     NowInMtgAppState(navController = navController, windowSizeClass = windowSizeClass)
 }
@@ -26,7 +26,7 @@ fun rememberNowInMtgAppState(
 @Stable
 class NowInMtgAppState(
     val navController: NavHostController,
-    private val windowSizeClass: WindowSizeClass
+    private val windowSizeClass: WindowSizeClass,
 ) {
 
     val currentDestination: NavDestination?
@@ -46,7 +46,7 @@ class NowInMtgAppState(
         listOf(
             TopLevelDestination.RandomCards,
             TopLevelDestination.Sets,
-            TopLevelDestination.Favorites
+            TopLevelDestination.Favorites,
         )
 
     val shouldShowBottomBar: Boolean

@@ -36,18 +36,18 @@ object MockUtils {
                     Ruling(
                         date = "2016-04-08",
                         text =
-                            "Archangel Avacyn’s delayed triggered ability triggers at the beginning of the next upkeep regardless of whose turn it is."
+                            "Archangel Avacyn’s delayed triggered ability triggers at the beginning of the next upkeep regardless of whose turn it is.",
                     ),
                     Ruling(
                         date = "2016-04-08",
                         text =
-                            "Archangel Avacyn’s delayed triggered ability won’t cause it to transform back into Archangel Avacyn if it has already transformed into Avacyn, the Purifier, perhaps because several creatures died in one turn."
+                            "Archangel Avacyn’s delayed triggered ability won’t cause it to transform back into Archangel Avacyn if it has already transformed into Avacyn, the Purifier, perhaps because several creatures died in one turn.",
                     ),
                     Ruling(
                         date = "2016-04-08",
                         text =
-                            "For more information on double-faced cards, see the Shadows over Innistrad mechanics article(http://magic.wizards.com/en/articles/archive/feature/shadows-over-innistrad-mechanics)."
-                    )
+                            "For more information on double-faced cards, see the Shadows over Innistrad mechanics article(http://magic.wizards.com/en/articles/archive/feature/shadows-over-innistrad-mechanics).",
+                    ),
                 ),
             //            foreignNames =
             //                listOf(
@@ -90,7 +90,7 @@ object MockUtils {
             id = "ad53597a-4448-5cbd-82bf-11d163b0c14f",
             flavor = null,
             setName = "Shadows over Innistrad",
-            variations = null
+            variations = null,
         )
 
     val cardDetailsIncomplete: CardDetails =
@@ -121,7 +121,7 @@ object MockUtils {
             flavor = null,
             setName = "Shadows over Innistrad",
             variations = null,
-            rulings = null
+            rulings = null,
         )
 
     val soiExpansion =
@@ -137,7 +137,7 @@ object MockUtils {
             scryfallUri = "https://scryfall.com/sets/soi",
             searchUri =
                 "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Asoi&unique=prints",
-            uri = "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743"
+            uri = "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743",
         )
 
     val xlnExpansion =
@@ -153,6 +153,6 @@ object MockUtils {
             scryfallUri = "https://scryfall.com/sets/xln",
             searchUri =
                 "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Axln&unique=prints",
-            uri = "https://api.scryfall.com/sets/fe0dad85-54bc-4151-9200-d68da84dd0f2"
+            uri = "https://api.scryfall.com/sets/fe0dad85-54bc-4151-9200-d68da84dd0f2",
         )
 }

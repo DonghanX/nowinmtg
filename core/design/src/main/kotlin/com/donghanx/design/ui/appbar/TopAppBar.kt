@@ -28,7 +28,7 @@ fun NowInMtgTopAppBar(
     shouldAdjustNavigationRail: Boolean,
     modifier: Modifier = Modifier,
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
-    onNavigationIconClick: () -> Unit = {}
+    onNavigationIconClick: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
         title = { Text(text = stringResource(titleResId), fontWeight = FontWeight.Bold) },
@@ -41,12 +41,12 @@ fun NowInMtgTopAppBar(
                     IconButton(onClick = onNavigationIconClick) {
                         Icon(
                             imageVector = navigationIcon,
-                            contentDescription = navigationIconContentDescription
+                            contentDescription = navigationIconContentDescription,
                         )
                     }
                 }
             }
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }

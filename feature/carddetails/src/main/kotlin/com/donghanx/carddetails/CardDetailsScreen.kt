@@ -35,31 +35,31 @@ internal fun CardDetailsScreen(
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CardDetailsViewModel = hiltViewModel()
+    viewModel: CardDetailsViewModel = hiltViewModel(),
 ) {
     val cardDetailsUiState by viewModel.cardDetailsUiState.collectAsStateWithLifecycle()
 
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = cardDetailsUiState.refreshing,
-            onRefresh = { viewModel.refreshCardDetails() }
+            onRefresh = { viewModel.refreshCardDetails() },
         )
 
     Box(
         modifier = modifier.fillMaxSize().pullRefresh(state = pullRefreshState),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Column {
             val isCardFavorite by viewModel.isCardFavorite.collectAsStateWithLifecycle()
             CardDetailsTopBar(
                 isCardFavorite = isCardFavorite,
                 onBackClick = onBackClick,
-                onFavoritesClick = { viewModel.onFavoriteClick() }
+                onFavoritesClick = { viewModel.onFavoriteClick() },
             )
 
             Box(
                 modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState()),
-                contentAlignment = Alignment.TopCenter
+                contentAlignment = Alignment.TopCenter,
             ) {
                 when (val uiState = cardDetailsUiState) {
                     is CardDetailsUiState.Success -> {
@@ -76,7 +76,7 @@ internal fun CardDetailsScreen(
         PullRefreshIndicator(
             refreshing = cardDetailsUiState.refreshing,
             state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
+            modifier = Modifier.align(Alignment.TopCenter),
         )
 
         LaunchedEffect(cardDetailsUiState.errorMessage) {
@@ -92,7 +92,7 @@ private fun CardDetailsTopBar(
     isCardFavorite: Boolean,
     onBackClick: () -> Unit,
     onFavoritesClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -102,7 +102,7 @@ private fun CardDetailsTopBar(
         IconButton(onClick = onBackClick) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
-                contentDescription = stringResource(id = DesignR.string.back)
+                contentDescription = stringResource(id = DesignR.string.back),
             )
         }
 
@@ -110,7 +110,7 @@ private fun CardDetailsTopBar(
             Icon(
                 imageVector =
                     if (isCardFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                contentDescription = stringResource(id = DesignR.string.favorites)
+                contentDescription = stringResource(id = DesignR.string.favorites),
             )
         }
     }

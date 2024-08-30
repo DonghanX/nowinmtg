@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 fun ExpandableCard(
     headerTitle: String,
     modifier: Modifier = Modifier,
-    expandedContent: @Composable () -> Unit
+    expandedContent: @Composable () -> Unit,
 ) {
     val (expanded, setExpanded) = remember { mutableStateOf(true) }
 
@@ -33,7 +33,7 @@ fun ExpandableCard(
         modifier =
             modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 8.dp).clickable(
                 interactionSource = MutableInteractionSource(),
-                indication = null
+                indication = null,
             ) {
                 setExpanded(!expanded)
             }
@@ -41,7 +41,7 @@ fun ExpandableCard(
         AnimatedContent(
             targetState = expanded,
             modifier = Modifier.padding(all = 8.dp),
-            label = "Expandable Card"
+            label = "Expandable Card",
         ) { expanded ->
             if (!expanded)
                 Row {

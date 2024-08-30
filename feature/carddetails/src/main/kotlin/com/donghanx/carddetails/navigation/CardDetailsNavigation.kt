@@ -20,7 +20,7 @@ fun NavController.navigateToCardDetails(cardId: String, parentRoute: String) {
 fun NavGraphBuilder.cardDetailsScreen(
     parentRoute: String,
     onBackClick: () -> Unit,
-    onShowSnackbar: suspend (message: String) -> Unit
+    onShowSnackbar: suspend (message: String) -> Unit,
 ) {
     composable(
         route = "${cardDetailsRoute(parentRoute)}/{$CARD_ID_ARGS}",
@@ -31,7 +31,7 @@ fun NavGraphBuilder.cardDetailsScreen(
         exitTransition = {
             fadeOut(animationSpec = tween(durationMillis = 300, easing = LinearEasing)) +
                 slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End)
-        }
+        },
     ) {
         CardDetailsScreen(onBackClick = onBackClick, onShowSnackbar = onShowSnackbar)
     }

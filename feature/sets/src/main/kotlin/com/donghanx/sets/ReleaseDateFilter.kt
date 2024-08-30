@@ -35,7 +35,7 @@ internal fun ReleaseDateFilter(
         bottomSheetState = bottomSheetState,
         selected = selectedDateMillisRange.isNotEmpty(),
         showBottomSheet = showBottomSheet,
-        onShowBottomSheetChange = onShowBottomSheetChange
+        onShowBottomSheetChange = onShowBottomSheetChange,
     ) {
         ReleaseDatePicker(
             initialDateMillisRange = selectedDateMillisRange,
@@ -44,7 +44,7 @@ internal fun ReleaseDateFilter(
                 scope
                     .launch { bottomSheetState.hide() }
                     .invokeOnCompletion { onShowBottomSheetChange(false) }
-            }
+            },
         )
     }
 }
@@ -54,7 +54,7 @@ internal fun ReleaseDateFilter(
 private fun ReleaseDatePicker(
     initialDateMillisRange: DateMillisRange,
     onDateRangeSelected: (startDateMillis: Long?, endDateMillis: Long?) -> Unit,
-    onHideBottomSheet: () -> Unit
+    onHideBottomSheet: () -> Unit,
 ) {
 
     val dateRangePickerState =
@@ -62,7 +62,7 @@ private fun ReleaseDatePicker(
             initialDisplayMode = DisplayMode.Input,
             initialSelectedStartDateMillis =
                 remember { initialDateMillisRange.startDateMillisOrDefault() },
-            initialSelectedEndDateMillis = initialDateMillisRange.endMillis
+            initialSelectedEndDateMillis = initialDateMillisRange.endMillis,
         )
 
     BottomSheetContentWrapper(
@@ -75,7 +75,7 @@ private fun ReleaseDatePicker(
         onResetClick = {
             onDateRangeSelected(null, null)
             onHideBottomSheet()
-        }
+        },
     ) {
         DateRangePicker(state = dateRangePickerState, showModeToggle = false)
     }

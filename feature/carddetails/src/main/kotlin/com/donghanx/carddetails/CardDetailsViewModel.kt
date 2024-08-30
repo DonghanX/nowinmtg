@@ -32,7 +32,7 @@ internal class CardDetailsViewModel
 constructor(
     private val cardDetailsRepository: CardDetailsRepository,
     private val favoritesRepository: FavoritesRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val cardId: StateFlow<String?> =
@@ -48,7 +48,7 @@ constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
-                initialValue = viewModelState.value.toUiState()
+                initialValue = viewModelState.value.toUiState(),
             )
 
     val isCardFavorite: StateFlow<Boolean> =
@@ -57,7 +57,7 @@ constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
-                initialValue = false
+                initialValue = false,
             )
 
     init {
@@ -108,7 +108,7 @@ constructor(
                 is NetworkResult.Error ->
                     prevState.copy(
                         refreshing = false,
-                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1)
+                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1),
                     )
             }
         }
@@ -124,19 +124,19 @@ internal sealed interface CardDetailsUiState {
     data class Success(
         val cardDetails: CardDetails,
         override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage()
+        override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : CardDetailsUiState
 
     data class NoCardDetails(
         override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage()
+        override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : CardDetailsUiState
 }
 
 private data class CardDetailsViewModelState(
     val cardDetails: CardDetails? = null,
     val refreshing: Boolean,
-    val errorMessage: ErrorMessage = emptyErrorMessage()
+    val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {
     fun toUiState(): CardDetailsUiState =
         when {
@@ -144,12 +144,12 @@ private data class CardDetailsViewModelState(
                 CardDetailsUiState.Success(
                     cardDetails = cardDetails,
                     refreshing = refreshing,
-                    errorMessage = errorMessage
+                    errorMessage = errorMessage,
                 )
             else ->
                 CardDetailsUiState.NoCardDetails(
                     refreshing = refreshing,
-                    errorMessage = errorMessage
+                    errorMessage = errorMessage,
                 )
         }
 }

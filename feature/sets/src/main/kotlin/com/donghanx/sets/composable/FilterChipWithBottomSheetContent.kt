@@ -19,7 +19,7 @@ internal fun FilterChipWithBottomSheetContent(
     selected: Boolean,
     showBottomSheet: Boolean,
     onShowBottomSheetChange: (Boolean) -> Unit,
-    bottomSheetContent: @Composable () -> Unit
+    bottomSheetContent: @Composable () -> Unit,
 ) {
     FilterChip(label = label, selected = selected, onClick = { onShowBottomSheetChange(true) })
 
@@ -27,7 +27,7 @@ internal fun FilterChipWithBottomSheetContent(
         ModalBottomSheet(
             onDismissRequest = { onShowBottomSheetChange(false) },
             sheetState = bottomSheetState,
-            windowInsets = WindowInsets.ime
+            windowInsets = WindowInsets.ime,
         ) {
             Box(modifier = Modifier.navigationBarsPadding()) { bottomSheetContent() }
         }

@@ -11,7 +11,7 @@ import com.donghanx.ui.CardsGallery
 internal fun FavoritesScreen(
     onCardClick: (cardId: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: FavoritesViewModel = hiltViewModel()
+    viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val favoritesUiState by viewModel.favoritesUiState.collectAsStateWithLifecycle()
 
@@ -20,7 +20,7 @@ internal fun FavoritesScreen(
             CardsGallery(
                 cards = uiState.favoriteCards,
                 onCardClick = onCardClick,
-                modifier = modifier
+                modifier = modifier,
             )
         is FavoritesUiState.Empty -> EmptyFavoritesView()
     }

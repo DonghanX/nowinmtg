@@ -12,7 +12,7 @@ fun Modifier.rippleClickable(onClick: () -> Unit): Modifier {
         clickable(
             onClick = onClick,
             interactionSource = remember { MutableInteractionSource() },
-            indication = rememberRipple()
+            indication = rememberRipple(),
         )
     }
 }

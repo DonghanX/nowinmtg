@@ -24,12 +24,12 @@ internal fun EmptyFavoritesView(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Icon(
             imageVector = Icons.Outlined.FavoriteBorder,
             contentDescription = stringResource(id = R.string.no_favorites),
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(48.dp),
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -37,7 +37,7 @@ internal fun EmptyFavoritesView(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(id = R.string.no_favorite_cards),
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
     }
 }

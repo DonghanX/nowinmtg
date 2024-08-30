@@ -11,5 +11,5 @@ data class NetworkCard(
     @SerialName("name") val name: String,
     @SerialName("imageUrl") val imageUrl: String?,
     @SerialName("text") val text: String?,
-    @SerialName("Types") val types: List<String>?
+    @SerialName("Types") val types: List<String>?,
 )

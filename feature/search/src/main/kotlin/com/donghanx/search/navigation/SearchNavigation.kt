@@ -12,9 +12,7 @@ fun NavController.navigateToSearch() {
     navigate(route = SEARCH_ROUTE) { launchSingleTop = true }
 }
 
-fun NavGraphBuilder.searchScreen(
-    onCloseClick: () -> Unit,
-) {
+fun NavGraphBuilder.searchScreen(onCloseClick: () -> Unit) {
     composable(
         route = SEARCH_ROUTE,
         enterTransition = {
@@ -22,7 +20,7 @@ fun NavGraphBuilder.searchScreen(
         },
         exitTransition = {
             slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Down)
-        }
+        },
     ) {
         SearchScreen(onCloseClick = onCloseClick)
     }
