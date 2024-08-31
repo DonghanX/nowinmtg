@@ -14,12 +14,7 @@ data class RandomCardEntity(
 )
 
 fun NetworkCard.asRandomCardEntity(): RandomCardEntity =
-    RandomCardEntity(
-        multiverseId = multiverseId,
-        name = name,
-        imageUrl = imageUrl,
-        types = types,
-    )
+    RandomCardEntity(multiverseId = multiverseId, name = name, imageUrl = imageUrl, types = types)
 
 fun RandomCardEntity.asExternalModel(): CardPreview =
     CardPreview(id = multiverseId, name = name, imageUrl = imageUrl)

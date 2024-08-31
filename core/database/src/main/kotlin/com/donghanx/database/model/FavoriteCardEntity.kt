@@ -15,7 +15,13 @@ data class FavoriteCardEntity(
 )
 
 fun CardDetails.asFavoriteCardEntity(): FavoriteCardEntity =
-    FavoriteCardEntity(multiverseId = multiverseId, name = name, imageUrl = imageUrl, set = set, setName = setName)
+    FavoriteCardEntity(
+        multiverseId = multiverseId,
+        name = name,
+        imageUrl = imageUrl,
+        set = set,
+        setName = setName,
+    )
 
 fun FavoriteCardEntity.asExternalModel(): CardPreview =
     CardPreview(id = multiverseId, name = name, imageUrl = imageUrl)

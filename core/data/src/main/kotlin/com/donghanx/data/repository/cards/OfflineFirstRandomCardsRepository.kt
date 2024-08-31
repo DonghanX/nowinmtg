@@ -37,11 +37,10 @@ constructor(
             .asResultFlow()
             .foldResult(
                 onSuccess = { randomCards ->
-                    randomCards
-                        .syncWith(
-                            entityConverter = NetworkCard::asRandomCardEntity,
-                            modelActions = randomCardsDao::deleteAllAndInsertRandomCards,
-                        )
+                    randomCards.syncWith(
+                        entityConverter = NetworkCard::asRandomCardEntity,
+                        modelActions = randomCardsDao::deleteAllAndInsertRandomCards,
+                    )
 
                     NetworkResult.Success(Unit)
                 },
