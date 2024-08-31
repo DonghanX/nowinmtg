@@ -9,7 +9,7 @@ const val RANDOM_CARDS_GRAPH_ROUTE = "RandomCardsGraph"
 const val RANDOM_CARDS_ROUTE = "RandomCards"
 
 fun NavGraphBuilder.randomCardsGraph(
-    onCardClick: (cardId: String, parentRoute: String) -> Unit,
+    onCardClick: (cardId: Int, parentRoute: String) -> Unit,
     nestedGraphs: NavGraphBuilder.(parentRoute: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {

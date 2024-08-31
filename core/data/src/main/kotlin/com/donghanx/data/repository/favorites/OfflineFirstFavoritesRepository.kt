@@ -30,7 +30,7 @@ constructor(
         withContext(ioDispatcher) {
             val favoriteCardEntity = cardDetails.asFavoriteCardEntity()
             with(favoritesDao) {
-                if (isCardFavorite(favoriteCardEntity.id)) {
+                if (isCardFavorite(favoriteCardEntity.multiverseId)) {
                     deleteFavoriteCard(favoriteCardEntity)
                 } else {
                     upsertFavoriteCard(favoriteCardEntity)
@@ -39,6 +39,6 @@ constructor(
         }
     }
 
-    override fun observeIsCardFavorite(cardId: String): Flow<Boolean> =
+    override fun observeIsCardFavorite(cardId: Int): Flow<Boolean> =
         favoritesDao.observeIsCardFavorite(cardId)
 }

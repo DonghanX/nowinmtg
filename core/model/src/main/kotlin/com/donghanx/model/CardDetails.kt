@@ -3,8 +3,7 @@ package com.donghanx.model
 import com.donghanx.model.network.Ruling
 
 data class CardDetails(
-    val id: String,
-    val multiverseId: String?,
+    val multiverseId: Int,
     val artist: String?,
     val cmc: Double,
     val colorIdentity: List<String>?,

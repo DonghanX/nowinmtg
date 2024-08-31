@@ -18,7 +18,7 @@ import com.donghanx.database.model.SetEntity
             SetEntity::class,
             FavoriteCardEntity::class,
         ],
-    version = 1,
+    version = 2,
 )
 @TypeConverters(StringListTypeConverters::class, RulingsConverter::class)
 abstract class NimDatabase : RoomDatabase() {

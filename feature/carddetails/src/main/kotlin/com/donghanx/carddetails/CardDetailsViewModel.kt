@@ -35,10 +35,10 @@ constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val cardId: StateFlow<String?> =
+    private val cardId: StateFlow<Int?> =
         savedStateHandle.getStateFlow(key = CARD_ID_ARGS, initialValue = null)
 
-    private val validCardId: Flow<String> = cardId.filterNotNull()
+    private val validCardId: Flow<Int> = cardId.filterNotNull()
 
     private val viewModelState = MutableStateFlow(CardDetailsViewModelState(refreshing = true))
 

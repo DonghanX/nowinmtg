@@ -6,10 +6,11 @@ import com.donghanx.model.SetInfo
 import com.donghanx.model.network.Ruling
 
 object MockUtils {
-    val emptyCards = List(5) { CardPreview(id = it.toString(), name = "", imageUrl = "") }
+    val emptyCards = List(5) { CardPreview(id = it, name = "", imageUrl = "") }
 
     val cardDetailsAvacyn: CardDetails =
         CardDetails(
+            multiverseId = 409741,
             name = "Archangel Avacyn",
             manaCost = "{3}{W}{W}",
             cmc = 5.0,
@@ -28,7 +29,6 @@ object MockUtils {
             power = "4",
             toughness = "4",
             layout = "double-faced",
-            multiverseId = "409741",
             imageUrl =
                 "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=409741&type=card",
             rulings =
@@ -87,7 +87,6 @@ object MockUtils {
             originalText =
                 "Flash\nFlying, vigilance\nWhen Archangel Avacyn enters the battlefield, creatures you control gain indestructible until end of turn.\nWhen a non-Angel creature you control dies, transform Archangel Avacyn at the beginning of the next upkeep.",
             originalType = "Legendary Creature — Angel",
-            id = "ad53597a-4448-5cbd-82bf-11d163b0c14f",
             flavor = null,
             setName = "Shadows over Innistrad",
             variations = null,
@@ -95,6 +94,7 @@ object MockUtils {
 
     val cardDetailsIncomplete: CardDetails =
         CardDetails(
+            multiverseId = 409741,
             name = "",
             manaCost = null,
             cmc = 5.0,
@@ -112,12 +112,10 @@ object MockUtils {
             power = null,
             toughness = null,
             layout = "double-faced",
-            multiverseId = null,
             imageUrl = null,
             printings = listOf("SOI"),
             originalText = null,
             originalType = null,
-            id = "ad53597a-4448-5cbd-82bf-11d163b0c14f",
             flavor = null,
             setName = "Shadows over Innistrad",
             variations = null,

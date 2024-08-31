@@ -8,7 +8,7 @@ interface RandomCardsRepository {
 
     fun getRandomCards(): Flow<List<CardPreview>>
 
-    fun refreshRandomCards(shouldContainImageUrl: Boolean): Flow<NetworkResult<Unit>>
+    fun refreshRandomCards(): Flow<NetworkResult<Unit>>
 
     suspend fun shouldFetchInitialCards(): Boolean
 }

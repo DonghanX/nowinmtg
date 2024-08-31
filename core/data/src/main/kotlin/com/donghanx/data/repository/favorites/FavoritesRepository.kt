@@ -10,5 +10,5 @@ interface FavoritesRepository {
 
     suspend fun favoriteCardOrUndo(cardDetails: CardDetails)
 
-    fun observeIsCardFavorite(cardId: String): Flow<Boolean>
+    fun observeIsCardFavorite(cardId: Int): Flow<Boolean>
 }
