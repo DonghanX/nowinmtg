@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val Project.libs: VersionCatalog
     get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-private typealias CommonExtensionType = CommonExtension<*, *, *, *, *>
+private typealias CommonExtensionType = CommonExtension<*, *, *, *, *, *>
 
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtensionType) {
     with(commonExtension) {
