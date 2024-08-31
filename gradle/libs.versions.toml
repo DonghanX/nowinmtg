@@ -1,6 +1,6 @@
 [versions]
 kotlin = "1.9.10"
-agp = "8.1.1"
+agp = "8.6.0"
 androidx-compose-bom = "2023.10.01"
 activity-compose = "1.8.1"
 android-compose-compiler = "1.5.3"
