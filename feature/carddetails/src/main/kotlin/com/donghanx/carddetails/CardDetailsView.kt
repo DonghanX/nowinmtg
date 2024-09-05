@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,59 +60,61 @@ internal fun CardDetailsView(cardDetails: CardDetails, modifier: Modifier = Modi
 
 @Composable
 private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(horizontal = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = cardDetails.name,
-            textAlign = TextAlign.Center,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-        )
-
-        Text(
-            text = "${cardDetails.setName} (${cardDetails.set})",
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Medium,
-        )
-        Divider()
-
-        Text(text = cardDetails.typeLine, textAlign = TextAlign.Center, fontSize = 16.sp)
-        Divider()
-
-        if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
+    SelectionContainer(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(horizontal = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Text(
-                text = "${cardDetails.power}/${cardDetails.toughness}",
+                text = cardDetails.name,
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Text(
+                text = "${cardDetails.setName} (${cardDetails.set})",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
             )
             Divider()
-        }
 
-        // TODO: parse manaCost string to a visualized form
-        cardDetails.manaCost?.let { manaCost ->
-            Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp)
+            Text(text = cardDetails.typeLine, textAlign = TextAlign.Center, fontSize = 16.sp)
             Divider()
-        }
 
-        Text(text = cardDetails.rarity, textAlign = TextAlign.Center, fontSize = 16.sp)
-        Divider()
-
-        cardDetails.artist?.let { artist ->
-            Column {
+            if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
                 Text(
-                    text = stringResource(id = R.string.illustrated_by),
+                    text = "${cardDetails.power}/${cardDetails.toughness}",
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp,
                 )
-                Text(
-                    text = artist,
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
-                    fontStyle = FontStyle.Italic,
-                )
+                Divider()
+            }
+
+            // TODO: parse manaCost string to a visualized form
+            cardDetails.manaCost?.let { manaCost ->
+                Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp)
+                Divider()
+            }
+
+            Text(text = cardDetails.rarity, textAlign = TextAlign.Center, fontSize = 16.sp)
+            Divider()
+
+            cardDetails.artist?.let { artist ->
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.illustrated_by),
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp,
+                    )
+                    Text(
+                        text = artist,
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp,
+                        fontStyle = FontStyle.Italic,
+                    )
+                }
             }
         }
     }

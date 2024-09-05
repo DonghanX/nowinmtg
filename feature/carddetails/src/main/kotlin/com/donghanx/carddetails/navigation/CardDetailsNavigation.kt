@@ -11,11 +11,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.donghanx.carddetails.CardDetailsScreen
+import com.donghanx.common.INVALID_ID
 
 const val CARD_DETAILS_ROUTE = "CardDetails"
 internal const val CARD_ID_ARGS = "CardId"
 internal const val MULTIVERSE_ID_ARGS = "MultiverseId"
-internal const val INVALID_ID = -1
 
 fun NavController.navigateToCardDetails(cardId: String, parentRoute: String) {
     navigate(route = "${cardDetailsRoute(parentRoute)}/?$CARD_ID_ARGS=$cardId") {

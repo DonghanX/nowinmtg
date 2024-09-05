@@ -35,11 +35,14 @@ constructor(
             .flowOn(ioDispatcher)
 
     override fun refreshCardDetailsById(cardId: String): Flow<NetworkResult<Unit>> =
-        flow { emit(cardsRemoteDataSource.getCardDetailsByCardId(cardId)) }.reflectChanges()
+        flow { emit(cardsRemoteDataSource.getCardDetailsByCardId(cardId)) }
+            .reflectChanges()
+            .flowOn(ioDispatcher)
 
     override fun refreshCardDetailsByMultiverseId(multiverseId: Int): Flow<NetworkResult<Unit>> =
         flow { emit(cardsRemoteDataSource.getCardDetailsByMultiverseId(multiverseId)) }
             .reflectChanges()
+            .flowOn(ioDispatcher)
 
     private fun Flow<NetworkCardDetails>.reflectChanges(): Flow<NetworkResult<Unit>> =
         asResultFlow()
@@ -53,5 +56,4 @@ constructor(
                 },
                 onError = { NetworkResult.Error(it) },
             )
-            .flowOn(ioDispatcher)
 }
