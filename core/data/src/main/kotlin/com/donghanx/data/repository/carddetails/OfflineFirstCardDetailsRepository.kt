@@ -24,12 +24,25 @@ constructor(
     private val cardsRemoteDataSource: MtgCardsRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher,
 ) : CardDetailsRepository {
-    override fun getCardDetailsById(cardId: Int): Flow<CardDetails?> =
+
+    override fun getCardDetailsById(cardId: String): Flow<CardDetails?> =
         cardDetailsDao.getCardDetailsById(cardId).map { it?.asExternalModel() }.flowOn(ioDispatcher)
 
-    override fun refreshCardDetails(cardId: Int): Flow<NetworkResult<Unit>> =
-        flow { emit(cardsRemoteDataSource.getCardDetailsById(cardId)) }
-            .asResultFlow()
+    override fun getCardDetailsByMultiverseId(multiverseId: Int): Flow<CardDetails?> =
+        cardDetailsDao
+            .getCardDetailsByMultiverseId(multiverseId)
+            .map { it?.asExternalModel() }
+            .flowOn(ioDispatcher)
+
+    override fun refreshCardDetailsById(cardId: String): Flow<NetworkResult<Unit>> =
+        flow { emit(cardsRemoteDataSource.getCardDetailsByCardId(cardId)) }.reflectChanges()
+
+    override fun refreshCardDetailsByMultiverseId(multiverseId: Int): Flow<NetworkResult<Unit>> =
+        flow { emit(cardsRemoteDataSource.getCardDetailsByMultiverseId(multiverseId)) }
+            .reflectChanges()
+
+    private fun Flow<NetworkCardDetails>.reflectChanges(): Flow<NetworkResult<Unit>> =
+        asResultFlow()
             .foldResult(
                 onSuccess = { cardDetails ->
                     cardDetails.syncWith(

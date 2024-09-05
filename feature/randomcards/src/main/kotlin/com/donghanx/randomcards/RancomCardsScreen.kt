@@ -18,7 +18,7 @@ import com.donghanx.ui.CardsGallery
 
 @Composable
 internal fun RandomCardsScreen(
-    onCardClick: (cardId: Int) -> Unit,
+    onCardClick: (multiverseId: Int) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RandomCardsViewModel = hiltViewModel(),
@@ -36,7 +36,7 @@ internal fun RandomCardsScreen(
     ) {
         when (val uiState = randomCardsUiState) {
             is RandomCardsUiState.Success -> {
-                CardsGallery(uiState.cards, onCardClick = onCardClick)
+                CardsGallery(uiState.cards, onCardClick = { onCardClick(it.id.toInt()) })
             }
             // TODO: add a placeholder composable for empty cards
             is RandomCardsUiState.Empty -> Unit

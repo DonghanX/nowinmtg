@@ -5,7 +5,11 @@ import com.donghanx.model.CardDetails
 import kotlinx.coroutines.flow.Flow
 
 interface CardDetailsRepository {
-    fun getCardDetailsById(cardId: Int): Flow<CardDetails?>
+    fun getCardDetailsById(cardId: String): Flow<CardDetails?>
 
-    fun refreshCardDetails(cardId: Int): Flow<NetworkResult<Unit>>
+    fun getCardDetailsByMultiverseId(multiverseId: Int): Flow<CardDetails?>
+
+    fun refreshCardDetailsById(cardId: String): Flow<NetworkResult<Unit>>
+
+    fun refreshCardDetailsByMultiverseId(multiverseId: Int): Flow<NetworkResult<Unit>>
 }

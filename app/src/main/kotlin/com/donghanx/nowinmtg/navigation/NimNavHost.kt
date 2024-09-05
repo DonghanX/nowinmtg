@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.donghanx.carddetails.navigation.cardDetailsScreen
 import com.donghanx.carddetails.navigation.navigateToCardDetails
+import com.donghanx.carddetails.navigation.navigateToCardDetailsWithMultiverseId
 import com.donghanx.favorites.navigation.favoriteGraph
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_GRAPH_ROUTE
 import com.donghanx.randomcards.navigation.randomCardsGraph
@@ -25,8 +26,8 @@ fun NimNavHost(
         modifier = modifier,
     ) {
         randomCardsGraph(
-            onCardClick = { cardId, parentRoute ->
-                navController.navigateToCardDetails(cardId = cardId, parentRoute = parentRoute)
+            onCardClick = { multiverseId, parentRoute ->
+                navController.navigateToCardDetailsWithMultiverseId(multiverseId, parentRoute)
             },
             onShowSnackbar = onShowSnackbar,
             nestedGraphs = { from ->

@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.donghanx.carddetails.navigation.CARD_ID_ARGS
+import com.donghanx.carddetails.navigation.INVALID_ID
+import com.donghanx.carddetails.navigation.MULTIVERSE_ID_ARGS
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
@@ -18,8 +20,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -35,10 +39,10 @@ constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val cardId: StateFlow<Int?> =
+    private val cardIdFlow: StateFlow<String?> =
         savedStateHandle.getStateFlow(key = CARD_ID_ARGS, initialValue = null)
-
-    private val validCardId: Flow<Int> = cardId.filterNotNull()
+    private val multiverseIdFlow: StateFlow<Int> =
+        savedStateHandle.getStateFlow(key = MULTIVERSE_ID_ARGS, initialValue = INVALID_ID)
 
     private val viewModelState = MutableStateFlow(CardDetailsViewModelState(refreshing = true))
 
@@ -52,8 +56,11 @@ constructor(
             )
 
     val isCardFavorite: StateFlow<Boolean> =
-        validCardId
-            .flatMapLatest { cardId -> favoritesRepository.observeIsCardFavorite(cardId) }
+        flatMapValidCardIdFlow(
+                flatMapById = favoritesRepository::observeIsCardFavoriteByCardId,
+                flatMapByMultiverseId = favoritesRepository::observeIsCardFavoriteByMultiverseId,
+            )
+            .filterNotNull()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
@@ -61,18 +68,16 @@ constructor(
             )
 
     init {
+        refreshCardDetails()
         observeCardDetails()
     }
 
     private fun observeCardDetails() {
-        refreshCardDetails()
-
         viewModelScope.launch {
-            validCardId
-                .flatMapLatest { cardId ->
-                    // Populates the card details using the offline-stored data if exists
-                    cardDetailsRepository.getCardDetailsById(cardId)
-                }
+            flatMapValidCardIdFlow(
+                    flatMapById = cardDetailsRepository::getCardDetailsById,
+                    flatMapByMultiverseId = cardDetailsRepository::getCardDetailsByMultiverseId,
+                )
                 .onEach { cardDetails ->
                     viewModelState.update { it.copy(cardDetails = cardDetails, refreshing = false) }
                 }
@@ -84,12 +89,29 @@ constructor(
         viewModelState.update { it.copy(refreshing = true) }
 
         viewModelScope.launch {
-            validCardId
-                .flatMapLatest { cardId -> cardDetailsRepository.refreshCardDetails(cardId) }
+            flatMapValidCardIdFlow(
+                    flatMapById = cardDetailsRepository::refreshCardDetailsById,
+                    flatMapByMultiverseId = cardDetailsRepository::refreshCardDetailsByMultiverseId,
+                )
+                .filterNotNull()
                 .onEach { it.updateViewModelState() }
                 .collect()
         }
     }
+
+    // TODO: move to domain layer
+    private fun <T> flatMapValidCardIdFlow(
+        flatMapById: (cardId: String) -> Flow<T?>,
+        flatMapByMultiverseId: (multiverseId: Int) -> Flow<T?>,
+    ): Flow<T?> =
+        combine(cardIdFlow, multiverseIdFlow) { cardId, multiverseId -> cardId to multiverseId }
+            .flatMapLatest { (currentCardId, currentMultiverseId) ->
+                when {
+                    currentCardId != null -> flatMapById(currentCardId)
+                    currentMultiverseId != INVALID_ID -> flatMapByMultiverseId(currentMultiverseId)
+                    else -> flowOf(null)
+                }
+            }
 
     fun onFavoriteClick() {
         viewModelScope.launch {

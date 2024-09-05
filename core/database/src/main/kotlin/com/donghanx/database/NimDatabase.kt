@@ -3,7 +3,6 @@ package com.donghanx.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.donghanx.database.converter.RulingsConverter
 import com.donghanx.database.converter.StringListTypeConverters
 import com.donghanx.database.model.CardDetailsEntity
 import com.donghanx.database.model.FavoriteCardEntity
@@ -18,9 +17,9 @@ import com.donghanx.database.model.SetEntity
             SetEntity::class,
             FavoriteCardEntity::class,
         ],
-    version = 2,
+    version = 3,
 )
-@TypeConverters(StringListTypeConverters::class, RulingsConverter::class)
+@TypeConverters(StringListTypeConverters::class)
 abstract class NimDatabase : RoomDatabase() {
 
     abstract fun randomCardsDao(): RandomCardsDao

@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,12 +18,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -38,20 +32,21 @@ import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
-import com.donghanx.model.network.Ruling
 
 @Composable
 internal fun CardDetailsView(cardDetails: CardDetails, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 4.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            AsyncImage(
-                model =
-                    ImageRequest.Builder(LocalContext.current).data(cardDetails.imageUrl).build(),
-                contentDescription = cardDetails.name,
-                modifier = Modifier.weight(0.5F).aspectRatio(ratio = 5F / 7F),
-                placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
-                contentScale = ContentScale.Crop,
-            )
+            // TODO: Accommodate different window size
+            cardDetails.imageUris?.let { imageUris ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current).data(imageUris.png).build(),
+                    contentDescription = cardDetails.name,
+                    modifier = Modifier.weight(0.5F).aspectRatio(ratio = 5F / 7F),
+                    placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
+                    contentScale = ContentScale.Crop,
+                )
+            }
 
             CardBasicInfo(cardDetails, modifier.weight(weight = 0.5F))
         }
@@ -83,7 +78,7 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
         )
         Divider()
 
-        Text(text = cardDetails.type, textAlign = TextAlign.Center, fontSize = 16.sp)
+        Text(text = cardDetails.typeLine, textAlign = TextAlign.Center, fontSize = 16.sp)
         Divider()
 
         if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
@@ -146,32 +141,32 @@ private fun CardDescription(cardDetails: CardDetails, modifier: Modifier = Modif
             }
         }
 
-        cardDetails.rulings?.let { rulings ->
-            ExpandableCard(headerTitle = stringResource(id = R.string.rulings)) {
-                CardRulings(rulings = rulings)
-            }
-        }
+        //        cardDetails.rulings?.let { rulings ->
+        //            ExpandableCard(headerTitle = stringResource(id = R.string.rulings)) {
+        //                CardRulings(rulings = rulings)
+        //            }
+        //        }
     }
 }
 
-@Composable
-private fun CardRulings(rulings: List<Ruling>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier.heightIn(max = 500.dp)) {
-        itemsIndexed(rulings) { index, currRuling ->
-            Text(
-                text =
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Medium)) {
-                            append(currRuling.date)
-                        }
-                        append(": ${currRuling.text}")
-                        if (index != rulings.lastIndex) append('\n')
-                    },
-                textAlign = TextAlign.Start,
-            )
-        }
-    }
-}
+// @Composable
+// private fun CardRulings(rulings: List<Ruling>, modifier: Modifier = Modifier) {
+//    LazyColumn(modifier = modifier.heightIn(max = 500.dp)) {
+//        itemsIndexed(rulings) { index, currRuling ->
+//            Text(
+//                text =
+//                    buildAnnotatedString {
+//                        withStyle(style = SpanStyle(fontWeight = FontWeight.Medium)) {
+//                            append(currRuling.date)
+//                        }
+//                        append(": ${currRuling.text}")
+//                        if (index != rulings.lastIndex) append('\n')
+//                    },
+//                textAlign = TextAlign.Start,
+//            )
+//        }
+//    }
+// }
 
 @Preview(showBackground = true)
 @Composable
@@ -183,5 +178,5 @@ private fun CardDetailsViewPreview(
 
 class CardDetailsPreviewParameterProvider : PreviewParameterProvider<CardDetails> {
     override val values: Sequence<CardDetails>
-        get() = sequenceOf(MockUtils.cardDetailsAvacyn, MockUtils.cardDetailsIncomplete)
+        get() = sequenceOf(MockUtils.cardDetailsProgenitus, MockUtils.cardDetailsIncomplete)
 }

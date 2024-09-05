@@ -9,7 +9,7 @@ import com.donghanx.ui.CardsGallery
 
 @Composable
 internal fun FavoritesScreen(
-    onCardClick: (cardId: Int) -> Unit,
+    onCardClick: (cardId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
@@ -19,7 +19,7 @@ internal fun FavoritesScreen(
         is FavoritesUiState.Success ->
             CardsGallery(
                 cards = uiState.favoriteCards,
-                onCardClick = onCardClick,
+                onCardClick = { onCardClick(it.id) },
                 modifier = modifier,
             )
         is FavoritesUiState.Empty -> EmptyFavoritesView()

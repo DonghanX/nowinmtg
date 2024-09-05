@@ -16,9 +16,12 @@ interface FavoritesDao {
 
     @Delete suspend fun deleteFavoriteCard(favoriteCardEntity: FavoriteCardEntity)
 
-    @Query("SELECT EXISTS(SELECT * FROM favorite_card WHERE multiverseId = :cardId)")
-    fun observeIsCardFavorite(cardId: Int): Flow<Boolean>
+    @Query("SELECT EXISTS(SELECT * FROM favorite_card WHERE id = :cardId)")
+    fun observeIsCardFavoriteByCardId(cardId: String): Flow<Boolean>
 
-    @Query("SELECT EXISTS(SELECT * FROM favorite_card WHERE multiverseId = :cardId)")
-    suspend fun isCardFavorite(cardId: Int): Boolean
+    @Query("SELECT EXISTS(SELECT * FROM favorite_card WHERE multiverseId = :multiverseId)")
+    fun observeIsCardFavoriteByMultiverseId(multiverseId: Int): Flow<Boolean>
+
+    @Query("SELECT EXISTS(SELECT * FROM favorite_card WHERE id = :cardId)")
+    suspend fun isCardFavorite(cardId: String): Boolean
 }
