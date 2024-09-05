@@ -2,7 +2,6 @@ package com.donghanx.model
 
 import com.donghanx.model.network.ImageUris
 
-// TODO: add rulings
 data class CardDetails(
     val id: String,
     val multiverseId: Int?,

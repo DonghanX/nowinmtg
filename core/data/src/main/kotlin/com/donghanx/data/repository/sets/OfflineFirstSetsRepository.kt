@@ -3,7 +3,7 @@ package com.donghanx.data.repository.sets
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asResultFlow
 import com.donghanx.common.foldResult
-import com.donghanx.data.sync.syncWith
+import com.donghanx.data.sync.syncListWith
 import com.donghanx.database.SetsDao
 import com.donghanx.database.model.SetEntity
 import com.donghanx.database.model.asExternalModel
@@ -35,7 +35,7 @@ constructor(
             .asResultFlow()
             .foldResult(
                 onSuccess = { sets ->
-                    sets.syncWith(
+                    sets.syncListWith(
                         entityConverter = NetworkSet::asSetEntity,
                         modelActions = setsDao::upsertSets,
                     )

@@ -3,13 +3,18 @@ package com.donghanx.data.repository.carddetails
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asResultFlow
 import com.donghanx.common.foldResult
+import com.donghanx.data.sync.syncListWith
 import com.donghanx.data.sync.syncWith
 import com.donghanx.database.CardDetailsDao
+import com.donghanx.database.RulingsDao
+import com.donghanx.database.model.RulingsEntity
 import com.donghanx.database.model.asCardDetailsEntity
 import com.donghanx.database.model.asExternalModel
+import com.donghanx.database.model.asRulingsEntity
 import com.donghanx.model.CardDetails
+import com.donghanx.model.Ruling
 import com.donghanx.model.network.NetworkCardDetails
-import com.donghanx.network.MtgCardsRemoteDataSource
+import com.donghanx.network.CardsRemoteDataSource
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +26,8 @@ class OfflineFirstCardDetailsRepository
 @Inject
 constructor(
     private val cardDetailsDao: CardDetailsDao,
-    private val cardsRemoteDataSource: MtgCardsRemoteDataSource,
+    private val rulingsDao: RulingsDao,
+    private val cardsRemoteDataSource: CardsRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher,
 ) : CardDetailsRepository {
 
@@ -36,15 +42,36 @@ constructor(
 
     override fun refreshCardDetailsById(cardId: String): Flow<NetworkResult<Unit>> =
         flow { emit(cardsRemoteDataSource.getCardDetailsByCardId(cardId)) }
-            .reflectChanges()
+            .reflectCardDetailsChanges()
             .flowOn(ioDispatcher)
 
     override fun refreshCardDetailsByMultiverseId(multiverseId: Int): Flow<NetworkResult<Unit>> =
         flow { emit(cardsRemoteDataSource.getCardDetailsByMultiverseId(multiverseId)) }
-            .reflectChanges()
+            .reflectCardDetailsChanges()
             .flowOn(ioDispatcher)
 
-    private fun Flow<NetworkCardDetails>.reflectChanges(): Flow<NetworkResult<Unit>> =
+    override fun getCardRulingsById(cardId: String): Flow<List<Ruling>> =
+        rulingsDao
+            .getRulingsByCardId(cardId)
+            .map { it.map(RulingsEntity::asExternalModel) }
+            .flowOn(ioDispatcher)
+
+    override fun refreshCardRulingsById(cardId: String): Flow<NetworkResult<Unit>> =
+        flow { emit(cardsRemoteDataSource.getCardRulingsById(cardId)) }
+            .asResultFlow()
+            .foldResult(
+                onSuccess = { rulings ->
+                    rulings.syncListWith(
+                        entityConverter = { it.asRulingsEntity(cardId) },
+                        modelActions = rulingsDao::upsertRulings,
+                    )
+                    NetworkResult.Success(Unit)
+                },
+                onError = { NetworkResult.Error(it) },
+            )
+            .flowOn(ioDispatcher)
+
+    private fun Flow<NetworkCardDetails>.reflectCardDetailsChanges(): Flow<NetworkResult<Unit>> =
         asResultFlow()
             .foldResult(
                 onSuccess = { cardDetails ->

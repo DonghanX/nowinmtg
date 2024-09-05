@@ -10,17 +10,22 @@ import com.donghanx.common.INVALID_ID
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
+import com.donghanx.data.repository.carddetails.CardDetailsRepository
 import com.donghanx.data.repository.favorites.FavoritesRepository
 import com.donghanx.domain.ObserveCardDetailsUseCase
 import com.donghanx.domain.ObserveIsCardFavoriteUseCase
 import com.donghanx.domain.RefreshCardDetailsUseCase
 import com.donghanx.model.CardDetails
+import com.donghanx.model.Ruling
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -32,6 +37,7 @@ internal class CardDetailsViewModel
 @Inject
 constructor(
     private val favoritesRepository: FavoritesRepository,
+    private val cardDetailsRepository: CardDetailsRepository,
     private val refreshCardDetailsUseCase: RefreshCardDetailsUseCase,
     private val observeCardDetailsUseCase: ObserveCardDetailsUseCase,
     observeIsCardFavoriteUseCase: ObserveIsCardFavoriteUseCase,
@@ -73,6 +79,12 @@ constructor(
                 .onEach { cardDetails ->
                     viewModelState.update { it.copy(cardDetails = cardDetails, refreshing = false) }
                 }
+                .filterNotNull()
+                .flatMapLatest { cardDetails ->
+                    // query the associated rulings by the card ID
+                    observeCardRulings(cardDetails.id)
+                    cardDetailsRepository.refreshCardRulingsById(cardDetails.id)
+                }
                 .collect()
         }
     }
@@ -83,6 +95,18 @@ constructor(
         viewModelScope.launch {
             refreshCardDetailsUseCase(cardIdFlow, multiverseIdFlow)
                 .onEach { it.updateViewModelState() }
+                .collect()
+        }
+    }
+
+    private fun observeCardRulings(cardId: String) {
+        viewModelScope.launch {
+            cardDetailsRepository
+                .getCardRulingsById(cardId)
+                .filter { it.isNotEmpty() }
+                .onEach {
+                    // TODO: emit the rulings to the UI layer
+                }
                 .collect()
         }
     }
@@ -119,6 +143,7 @@ internal sealed interface CardDetailsUiState {
 
     data class Success(
         val cardDetails: CardDetails,
+        val rulings: List<Ruling>,
         override val refreshing: Boolean,
         override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : CardDetailsUiState
@@ -131,6 +156,7 @@ internal sealed interface CardDetailsUiState {
 
 private data class CardDetailsViewModelState(
     val cardDetails: CardDetails? = null,
+    val rulings: List<Ruling> = emptyList(),
     val refreshing: Boolean,
     val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {
@@ -139,6 +165,7 @@ private data class CardDetailsViewModelState(
             cardDetails != null ->
                 CardDetailsUiState.Success(
                     cardDetails = cardDetails,
+                    rulings = rulings,
                     refreshing = refreshing,
                     errorMessage = errorMessage,
                 )

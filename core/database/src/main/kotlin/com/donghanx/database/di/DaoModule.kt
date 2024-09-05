@@ -4,6 +4,7 @@ import com.donghanx.database.CardDetailsDao
 import com.donghanx.database.FavoritesDao
 import com.donghanx.database.NimDatabase
 import com.donghanx.database.RandomCardsDao
+import com.donghanx.database.RulingsDao
 import com.donghanx.database.SetsDao
 import com.donghanx.database.TransactionRunnerDao
 import dagger.Module
@@ -27,6 +28,8 @@ object DaoModule {
 
     @Provides
     fun provideFavoritesDao(nimDatabase: NimDatabase): FavoritesDao = nimDatabase.favoriteDao()
+
+    @Provides fun provideRulingsDao(nimDatabase: NimDatabase): RulingsDao = nimDatabase.rulingsDao()
 
     @Provides
     fun provideTransactionRunner(nimDatabase: NimDatabase): TransactionRunnerDao =

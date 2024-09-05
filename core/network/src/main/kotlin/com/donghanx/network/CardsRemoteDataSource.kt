@@ -3,6 +3,8 @@ package com.donghanx.network
 import com.donghanx.model.network.NetworkCard
 import com.donghanx.model.network.NetworkCardDetails
 import com.donghanx.model.network.NetworkCards
+import com.donghanx.model.network.NetworkRuling
+import com.donghanx.model.network.NetworkRulings
 import com.donghanx.network.client.MtgHttpClient
 import com.donghanx.network.client.ScryfallHttpClient
 import io.ktor.client.call.body
@@ -13,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MtgCardsRemoteDataSource
+class CardsRemoteDataSource
 @Inject
 constructor(
     private val mtgHttpClient: MtgHttpClient,
@@ -37,4 +39,11 @@ constructor(
 
     suspend fun getCardDetailsByMultiverseId(multiverseId: Int): NetworkCardDetails =
         scryfallHttpClient().get { url(path = "/cards/multiverse/$multiverseId") }.body()
+
+    suspend fun getCardRulingsById(cardId: String): List<NetworkRuling> =
+        scryfallHttpClient()
+            .get { url(path = "/cards/$cardId/rulings") }
+            .body<NetworkRulings>()
+            .rulings
+            .orEmpty()
 }

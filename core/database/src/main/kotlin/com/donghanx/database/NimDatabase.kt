@@ -7,6 +7,7 @@ import com.donghanx.database.converter.StringListTypeConverters
 import com.donghanx.database.model.CardDetailsEntity
 import com.donghanx.database.model.FavoriteCardEntity
 import com.donghanx.database.model.RandomCardEntity
+import com.donghanx.database.model.RulingsEntity
 import com.donghanx.database.model.SetEntity
 
 @Database(
@@ -16,8 +17,9 @@ import com.donghanx.database.model.SetEntity
             CardDetailsEntity::class,
             SetEntity::class,
             FavoriteCardEntity::class,
+            RulingsEntity::class,
         ],
-    version = 3,
+    version = 4,
 )
 @TypeConverters(StringListTypeConverters::class)
 abstract class NimDatabase : RoomDatabase() {
@@ -29,6 +31,8 @@ abstract class NimDatabase : RoomDatabase() {
     abstract fun setsDao(): SetsDao
 
     abstract fun favoriteDao(): FavoritesDao
+
+    abstract fun rulingsDao(): RulingsDao
 
     abstract fun transactionRunnerDao(): TransactionRunnerDao
 }

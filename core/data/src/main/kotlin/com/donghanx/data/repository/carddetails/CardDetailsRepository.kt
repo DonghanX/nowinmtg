@@ -2,6 +2,7 @@ package com.donghanx.data.repository.carddetails
 
 import com.donghanx.common.NetworkResult
 import com.donghanx.model.CardDetails
+import com.donghanx.model.Ruling
 import kotlinx.coroutines.flow.Flow
 
 interface CardDetailsRepository {
@@ -12,4 +13,8 @@ interface CardDetailsRepository {
     fun refreshCardDetailsById(cardId: String): Flow<NetworkResult<Unit>>
 
     fun refreshCardDetailsByMultiverseId(multiverseId: Int): Flow<NetworkResult<Unit>>
+
+    fun getCardRulingsById(cardId: String): Flow<List<Ruling>>
+
+    fun refreshCardRulingsById(cardId: String): Flow<NetworkResult<Unit>>
 }
