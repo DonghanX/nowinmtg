@@ -23,9 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -75,15 +72,11 @@ constructor(
 
     private fun observeCardDetails() {
         viewModelScope.launch {
-            observeCardDetailsUseCase(cardIdFlow, multiverseIdFlow)
-                .onEach { cardDetails ->
-                    viewModelState.update { it.copy(cardDetails = cardDetails, refreshing = false) }
-                }
-                .filterNotNull()
-                .flatMapLatest { cardDetails ->
-                    // query the associated rulings by the card ID
-                    observeCardRulings(cardDetails.id)
-                    cardDetailsRepository.refreshCardRulingsById(cardDetails.id)
+            observeCardDetailsUseCase(cardIdFlow = cardIdFlow, multiverseIdFlow = multiverseIdFlow)
+                .onEach { (cardDetails, rulings) ->
+                    viewModelState.update {
+                        it.copy(cardDetails = cardDetails, rulings = rulings, refreshing = false)
+                    }
                 }
                 .collect()
         }
@@ -95,16 +88,6 @@ constructor(
         viewModelScope.launch {
             refreshCardDetailsUseCase(cardIdFlow, multiverseIdFlow)
                 .onEach { it.updateViewModelState() }
-                .collect()
-        }
-    }
-
-    private fun observeCardRulings(cardId: String) {
-        viewModelScope.launch {
-            cardDetailsRepository
-                .getCardRulingsById(cardId)
-                .filter { it.isNotEmpty() }
-                .onEach { rulings -> viewModelState.update { it.copy(rulings = rulings) } }
                 .collect()
         }
     }

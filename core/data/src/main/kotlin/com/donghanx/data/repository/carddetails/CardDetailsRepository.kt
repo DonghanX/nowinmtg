@@ -14,7 +14,7 @@ interface CardDetailsRepository {
 
     fun refreshCardDetailsByMultiverseId(multiverseId: Int): Flow<NetworkResult<Unit>>
 
-    fun getCardRulingsById(cardId: String): Flow<List<Ruling>>
+    suspend fun oneshotGetCardRulingsById(cardId: String): List<Ruling>
 
     fun refreshCardRulingsById(cardId: String): Flow<NetworkResult<Unit>>
 }

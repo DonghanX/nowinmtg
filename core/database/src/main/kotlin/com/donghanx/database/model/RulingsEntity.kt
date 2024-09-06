@@ -6,16 +6,10 @@ import com.donghanx.model.Ruling
 import com.donghanx.model.network.NetworkRuling
 
 @Entity(tableName = "rulings")
-data class RulingsEntity(
-    @PrimaryKey(autoGenerate = true) val rulingId: Long = 0L,
-    val cardId: String,
-    val comment: String,
-    val publishedAt: String,
-    val source: String,
-)
+data class RulingsEntity(@PrimaryKey val cardId: String, val rulings: List<NetworkRuling>)
 
-fun NetworkRuling.asRulingsEntity(cardId: String): RulingsEntity =
-    RulingsEntity(comment = comment, cardId = cardId, publishedAt = publishedAt, source = source)
+fun List<NetworkRuling>.asRulingsEntity(cardId: String): RulingsEntity =
+    RulingsEntity(cardId = cardId, rulings = this)
 
-fun RulingsEntity.asExternalModel(): Ruling =
-    Ruling(comment = comment, publishedAt = publishedAt, source = source)
+fun RulingsEntity.asExternalModel(): List<Ruling> =
+    rulings.map { Ruling(comment = it.comment, it.publishedAt, it.source) }

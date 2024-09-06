@@ -3,7 +3,6 @@ package com.donghanx.data.repository.carddetails
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asResultFlow
 import com.donghanx.common.foldResult
-import com.donghanx.data.sync.syncListWith
 import com.donghanx.data.sync.syncWith
 import com.donghanx.database.CardDetailsDao
 import com.donghanx.database.RulingsDao
@@ -50,21 +49,20 @@ constructor(
             .reflectCardDetailsChanges()
             .flowOn(ioDispatcher)
 
-    override fun getCardRulingsById(cardId: String): Flow<List<Ruling>> =
-        rulingsDao
-            .getRulingsByCardId(cardId)
-            .map { it.map(RulingsEntity::asExternalModel) }
-            .flowOn(ioDispatcher)
+    override suspend fun oneshotGetCardRulingsById(cardId: String): List<Ruling> =
+        rulingsDao.getRulingsByCardId(cardId).let(RulingsEntity::asExternalModel)
 
     override fun refreshCardRulingsById(cardId: String): Flow<NetworkResult<Unit>> =
         flow { emit(cardsRemoteDataSource.getCardRulingsById(cardId)) }
             .asResultFlow()
             .foldResult(
                 onSuccess = { rulings ->
-                    rulings.syncListWith(
-                        entityConverter = { it.asRulingsEntity(cardId) },
-                        modelActions = rulingsDao::upsertRulings,
-                    )
+                    rulings
+                        .takeIf { it.isNotEmpty() }
+                        ?.syncWith(
+                            entityConverter = { it.asRulingsEntity(cardId) },
+                            modelActions = rulingsDao::upsertRuling,
+                        )
                     NetworkResult.Success(Unit)
                 },
                 onError = { NetworkResult.Error(it) },
