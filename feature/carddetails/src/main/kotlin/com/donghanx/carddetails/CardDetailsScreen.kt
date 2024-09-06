@@ -42,7 +42,7 @@ internal fun CardDetailsScreen(
     val pullRefreshState =
         rememberPullRefreshState(
             refreshing = cardDetailsUiState.refreshing,
-            onRefresh = { viewModel.refreshCardDetails() },
+            onRefresh = viewModel::refreshCardDetails,
         )
 
     Box(
@@ -63,7 +63,10 @@ internal fun CardDetailsScreen(
             ) {
                 when (val uiState = cardDetailsUiState) {
                     is CardDetailsUiState.Success -> {
-                        CardDetailsView(cardDetails = uiState.cardDetails)
+                        CardDetailsView(
+                            cardDetails = uiState.cardDetails,
+                            rulings = uiState.rulings,
+                        )
                     }
                     is CardDetailsUiState.NoCardDetails -> {
                         // TODO: use a more intuitive placeholder view instead

@@ -2,6 +2,7 @@ package com.donghanx.mock
 
 import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
+import com.donghanx.model.Ruling
 import com.donghanx.model.SetInfo
 import com.donghanx.model.network.ImageUris
 
@@ -59,6 +60,22 @@ object MockUtils {
             imageUris = null,
             flavor = null,
             setName = "Shadows over Innistrad",
+        )
+
+    val rulingsProgenitus =
+        listOf(
+            Ruling(
+                comment =
+                    "Protection from everything” means the following: Progenitus can’t be blocked, Progenitus can’t be enchanted or equipped, Progenitus can’t be the target of spells or abilities, and all damage that would be dealt to Progenitus is prevented.",
+                publishedAt = "2009-02-01",
+                source = "wotc",
+            ),
+            Ruling(
+                comment =
+                    "Progenitus can still be affected by effects that don’t target it or deal damage to it (such as Day of Judgment).",
+                publishedAt = "2009-02-01",
+                source = "wotc",
+            ),
         )
 
     val soiExpansion =

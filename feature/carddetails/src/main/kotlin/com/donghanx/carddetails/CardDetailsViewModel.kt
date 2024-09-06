@@ -104,9 +104,7 @@ constructor(
             cardDetailsRepository
                 .getCardRulingsById(cardId)
                 .filter { it.isNotEmpty() }
-                .onEach {
-                    // TODO: emit the rulings to the UI layer
-                }
+                .onEach { rulings -> viewModelState.update { it.copy(rulings = rulings) } }
                 .collect()
         }
     }
