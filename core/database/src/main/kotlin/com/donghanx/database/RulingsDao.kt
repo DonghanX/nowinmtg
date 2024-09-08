@@ -10,5 +10,5 @@ interface RulingsDao {
     @Upsert fun upsertRuling(ruling: RulingsEntity)
 
     @Query("SELECT * FROM rulings WHERE cardId = :cardId ")
-    suspend fun getRulingsByCardId(cardId: String): RulingsEntity
+    suspend fun getRulingsByCardId(cardId: String): RulingsEntity?
 }

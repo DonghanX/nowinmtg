@@ -50,7 +50,7 @@ constructor(
             .flowOn(ioDispatcher)
 
     override suspend fun oneshotGetCardRulingsById(cardId: String): List<Ruling> =
-        rulingsDao.getRulingsByCardId(cardId).let(RulingsEntity::asExternalModel)
+        rulingsDao.getRulingsByCardId(cardId)?.let(RulingsEntity::asExternalModel).orEmpty()
 
     override fun refreshCardRulingsById(cardId: String): Flow<NetworkResult<Unit>> =
         flow { emit(cardsRemoteDataSource.getCardRulingsById(cardId)) }

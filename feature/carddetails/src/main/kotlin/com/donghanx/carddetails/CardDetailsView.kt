@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.mock.MockUtils
@@ -47,25 +49,25 @@ internal fun CardDetailsView(
     rulings: List<Ruling>,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxSize().padding(horizontal = 4.dp)) {
+    Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // TODO: Accommodate different window size
             cardDetails.imageUris?.let { imageUris ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current).data(imageUris.png).build(),
                     contentDescription = cardDetails.name,
-                    modifier = Modifier.weight(0.5F).aspectRatio(ratio = 5F / 7F),
+                    modifier = Modifier.weight(0.45F).aspectRatio(ratio = 5F / 7F),
                     placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
                     contentScale = ContentScale.Crop,
                 )
             }
 
-            CardBasicInfo(cardDetails, modifier.weight(weight = 0.5F))
+            CardBasicInfo(cardDetails, modifier.weight(0.55F))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        CardDescription(cardDetails, rulings)
+        CardDescription(cardDetails = cardDetails, rulings = rulings)
     }
 }
 
@@ -89,10 +91,10 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Medium,
             )
-            Divider()
+            LightHorizontalDivider()
 
             Text(text = cardDetails.typeLine, textAlign = TextAlign.Center, fontSize = 16.sp)
-            Divider()
+            LightHorizontalDivider()
 
             if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
                 Text(
@@ -100,25 +102,32 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp,
                 )
-                Divider()
+                LightHorizontalDivider()
             }
 
             // TODO: parse manaCost string to a visualized form
             cardDetails.manaCost?.let { manaCost ->
                 Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp)
-                Divider()
+                LightHorizontalDivider()
             }
 
-            Text(text = cardDetails.rarity, textAlign = TextAlign.Center, fontSize = 16.sp)
-            Divider()
+            Text(
+                text = cardDetails.rarity.capitalize(),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+            )
+            LightHorizontalDivider()
 
             cardDetails.artist?.let { artist ->
-                Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = stringResource(id = R.string.illustrated_by),
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
                     )
+
+                    Divider(modifier = Modifier.width(2.dp))
+
                     Text(
                         text = artist,
                         textAlign = TextAlign.Center,
@@ -186,6 +195,11 @@ private fun CardRulings(rulings: List<Ruling>, modifier: Modifier = Modifier) {
             )
         }
     }
+}
+
+@Composable
+private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
+    Divider(modifier = modifier, thickness = 0.5.dp)
 }
 
 @Preview(showBackground = true)
