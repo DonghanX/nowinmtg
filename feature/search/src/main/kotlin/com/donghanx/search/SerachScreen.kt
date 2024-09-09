@@ -10,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,19 +35,25 @@ internal fun SearchScreen(
         val searchUiState by viewModel.searchUiState.collectAsStateWithLifecycle()
 
         SearchBar(
-            query = searchQuery,
-            onQueryChange = viewModel::onSearchQueryChanged,
-            onSearch = {},
-            active = searchQuery.isNotEmpty(),
-            onActiveChange = {},
-            trailingIcon = {
-                IconButton(onClick = onCloseClick) {
-                    Icon(
-                        imageVector = Icons.Rounded.Close,
-                        contentDescription = stringResource(id = DesignR.string.back),
-                    )
-                }
+            inputField = {
+                SearchBarDefaults.InputField(
+                    query = searchQuery,
+                    onQueryChange = viewModel::onSearchQueryChanged,
+                    onSearch = {},
+                    expanded = searchQuery.isNotEmpty(),
+                    onExpandedChange = {},
+                    trailingIcon = {
+                        IconButton(onClick = onCloseClick) {
+                            Icon(
+                                imageVector = Icons.Rounded.Close,
+                                contentDescription = stringResource(id = DesignR.string.back),
+                            )
+                        }
+                    },
+                )
             },
+            expanded = searchQuery.isNotEmpty(),
+            onExpandedChange = {},
         ) {
             when (val uiState = searchUiState) {
                 is SearchUiState.Success -> {

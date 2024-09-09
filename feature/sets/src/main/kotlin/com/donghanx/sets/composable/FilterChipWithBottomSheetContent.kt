@@ -27,7 +27,7 @@ internal fun FilterChipWithBottomSheetContent(
         ModalBottomSheet(
             onDismissRequest = { onShowBottomSheetChange(false) },
             sheetState = bottomSheetState,
-            windowInsets = WindowInsets.ime,
+            contentWindowInsets = { WindowInsets.ime },
         ) {
             Box(modifier = Modifier.navigationBarsPadding()) { bottomSheetContent() }
         }
