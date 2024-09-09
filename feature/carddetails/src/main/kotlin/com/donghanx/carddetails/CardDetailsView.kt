@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -56,13 +56,13 @@ internal fun CardDetailsView(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current).data(imageUris.png).build(),
                     contentDescription = cardDetails.name,
-                    modifier = Modifier.weight(0.45F).aspectRatio(ratio = 5F / 7F),
+                    modifier = Modifier.fillMaxWidth(fraction = 0.45F).aspectRatio(ratio = 5F / 7F),
                     placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
                     contentScale = ContentScale.Crop,
                 )
             }
 
-            CardBasicInfo(cardDetails, modifier.weight(0.55F))
+            CardBasicInfo(cardDetails, modifier.fillMaxWidth())
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -126,7 +126,7 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                         fontSize = 16.sp,
                     )
 
-                    Divider(modifier = Modifier.width(2.dp))
+                    HorizontalDivider(modifier = Modifier.width(2.dp))
 
                     Text(
                         text = artist,
@@ -199,7 +199,7 @@ private fun CardRulings(rulings: List<Ruling>, modifier: Modifier = Modifier) {
 
 @Composable
 private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
-    Divider(modifier = modifier, thickness = 0.5.dp)
+    HorizontalDivider(modifier = modifier, thickness = 0.5.dp)
 }
 
 @Preview(showBackground = true)

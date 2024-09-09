@@ -74,7 +74,7 @@ internal sealed interface SearchUiState {
     ) : SearchUiState
 }
 
+const val MIN_SEARCH_QUERY_LENGTH = 3
 private const val SEARCH_QUERY_KEY = "SearchQuery"
 private const val SEARCH_DEBOUNCE_MILLIS = 500L
-private const val MIN_SEARCH_QUERY_LENGTH = 3
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
