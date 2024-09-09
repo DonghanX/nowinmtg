@@ -4,22 +4,25 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.donghanx.carddetails.navigation.CARD_ID_ARGS
+import com.donghanx.carddetails.navigation.MULTIVERSE_ID_ARGS
 import com.donghanx.common.ErrorMessage
+import com.donghanx.common.INVALID_ID
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.carddetails.CardDetailsRepository
 import com.donghanx.data.repository.favorites.FavoritesRepository
+import com.donghanx.domain.ObserveCardDetailsUseCase
+import com.donghanx.domain.ObserveIsCardFavoriteUseCase
+import com.donghanx.domain.RefreshCardDetailsUseCase
 import com.donghanx.model.CardDetails
+import com.donghanx.model.Ruling
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -30,15 +33,18 @@ import kotlinx.coroutines.launch
 internal class CardDetailsViewModel
 @Inject
 constructor(
-    private val cardDetailsRepository: CardDetailsRepository,
     private val favoritesRepository: FavoritesRepository,
+    private val cardDetailsRepository: CardDetailsRepository,
+    private val refreshCardDetailsUseCase: RefreshCardDetailsUseCase,
+    private val observeCardDetailsUseCase: ObserveCardDetailsUseCase,
+    observeIsCardFavoriteUseCase: ObserveIsCardFavoriteUseCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val cardId: StateFlow<Int?> =
+    private val cardIdFlow: StateFlow<String?> =
         savedStateHandle.getStateFlow(key = CARD_ID_ARGS, initialValue = null)
-
-    private val validCardId: Flow<Int> = cardId.filterNotNull()
+    private val multiverseIdFlow: StateFlow<Int> =
+        savedStateHandle.getStateFlow(key = MULTIVERSE_ID_ARGS, initialValue = INVALID_ID)
 
     private val viewModelState = MutableStateFlow(CardDetailsViewModelState(refreshing = true))
 
@@ -52,8 +58,7 @@ constructor(
             )
 
     val isCardFavorite: StateFlow<Boolean> =
-        validCardId
-            .flatMapLatest { cardId -> favoritesRepository.observeIsCardFavorite(cardId) }
+        observeIsCardFavoriteUseCase(cardIdFlow, multiverseIdFlow)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
@@ -61,20 +66,17 @@ constructor(
             )
 
     init {
+        refreshCardDetails()
         observeCardDetails()
     }
 
     private fun observeCardDetails() {
-        refreshCardDetails()
-
         viewModelScope.launch {
-            validCardId
-                .flatMapLatest { cardId ->
-                    // Populates the card details using the offline-stored data if exists
-                    cardDetailsRepository.getCardDetailsById(cardId)
-                }
-                .onEach { cardDetails ->
-                    viewModelState.update { it.copy(cardDetails = cardDetails, refreshing = false) }
+            observeCardDetailsUseCase(cardIdFlow = cardIdFlow, multiverseIdFlow = multiverseIdFlow)
+                .onEach { (cardDetails, rulings) ->
+                    viewModelState.update {
+                        it.copy(cardDetails = cardDetails, rulings = rulings, refreshing = false)
+                    }
                 }
                 .collect()
         }
@@ -84,8 +86,7 @@ constructor(
         viewModelState.update { it.copy(refreshing = true) }
 
         viewModelScope.launch {
-            validCardId
-                .flatMapLatest { cardId -> cardDetailsRepository.refreshCardDetails(cardId) }
+            refreshCardDetailsUseCase(cardIdFlow, multiverseIdFlow)
                 .onEach { it.updateViewModelState() }
                 .collect()
         }
@@ -123,6 +124,7 @@ internal sealed interface CardDetailsUiState {
 
     data class Success(
         val cardDetails: CardDetails,
+        val rulings: List<Ruling>,
         override val refreshing: Boolean,
         override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : CardDetailsUiState
@@ -135,6 +137,7 @@ internal sealed interface CardDetailsUiState {
 
 private data class CardDetailsViewModelState(
     val cardDetails: CardDetails? = null,
+    val rulings: List<Ruling> = emptyList(),
     val refreshing: Boolean,
     val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {
@@ -143,6 +146,7 @@ private data class CardDetailsViewModelState(
             cardDetails != null ->
                 CardDetailsUiState.Success(
                     cardDetails = cardDetails,
+                    rulings = rulings,
                     refreshing = refreshing,
                     errorMessage = errorMessage,
                 )

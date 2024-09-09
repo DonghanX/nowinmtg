@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,96 +36,116 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
-import com.donghanx.model.network.Ruling
+import com.donghanx.model.Ruling
 
 @Composable
-internal fun CardDetailsView(cardDetails: CardDetails, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxSize().padding(horizontal = 4.dp)) {
+internal fun CardDetailsView(
+    cardDetails: CardDetails,
+    rulings: List<Ruling>,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            AsyncImage(
-                model =
-                    ImageRequest.Builder(LocalContext.current).data(cardDetails.imageUrl).build(),
-                contentDescription = cardDetails.name,
-                modifier = Modifier.weight(0.5F).aspectRatio(ratio = 5F / 7F),
-                placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
-                contentScale = ContentScale.Crop,
-            )
+            // TODO: Accommodate different window size
+            cardDetails.imageUris?.let { imageUris ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current).data(imageUris.png).build(),
+                    contentDescription = cardDetails.name,
+                    modifier = Modifier.weight(0.45F).aspectRatio(ratio = 5F / 7F),
+                    placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
+                    contentScale = ContentScale.Crop,
+                )
+            }
 
-            CardBasicInfo(cardDetails, modifier.weight(weight = 0.5F))
+            CardBasicInfo(cardDetails, modifier.weight(0.55F))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        CardDescription(cardDetails)
+        CardDescription(cardDetails = cardDetails, rulings = rulings)
     }
 }
 
 @Composable
 private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(horizontal = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = cardDetails.name,
-            textAlign = TextAlign.Center,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-        )
-
-        Text(
-            text = "${cardDetails.setName} (${cardDetails.set})",
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Medium,
-        )
-        Divider()
-
-        Text(text = cardDetails.type, textAlign = TextAlign.Center, fontSize = 16.sp)
-        Divider()
-
-        if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
+    SelectionContainer(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(horizontal = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Text(
-                text = "${cardDetails.power}/${cardDetails.toughness}",
+                text = cardDetails.name,
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
             )
-            Divider()
-        }
 
-        // TODO: parse manaCost string to a visualized form
-        cardDetails.manaCost?.let { manaCost ->
-            Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp)
-            Divider()
-        }
+            Text(
+                text = "${cardDetails.setName} (${cardDetails.set})",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+            )
+            LightHorizontalDivider()
 
-        Text(text = cardDetails.rarity, textAlign = TextAlign.Center, fontSize = 16.sp)
-        Divider()
+            Text(text = cardDetails.typeLine, textAlign = TextAlign.Center, fontSize = 16.sp)
+            LightHorizontalDivider()
 
-        cardDetails.artist?.let { artist ->
-            Column {
+            if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
                 Text(
-                    text = stringResource(id = R.string.illustrated_by),
+                    text = "${cardDetails.power}/${cardDetails.toughness}",
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp,
                 )
-                Text(
-                    text = artist,
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
-                    fontStyle = FontStyle.Italic,
-                )
+                LightHorizontalDivider()
+            }
+
+            // TODO: parse manaCost string to a visualized form
+            cardDetails.manaCost?.let { manaCost ->
+                Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp)
+                LightHorizontalDivider()
+            }
+
+            Text(
+                text = cardDetails.rarity.capitalize(),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+            )
+            LightHorizontalDivider()
+
+            cardDetails.artist?.let { artist ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = stringResource(id = R.string.illustrated_by),
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp,
+                    )
+
+                    Divider(modifier = Modifier.width(2.dp))
+
+                    Text(
+                        text = artist,
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp,
+                        fontStyle = FontStyle.Italic,
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun CardDescription(cardDetails: CardDetails, modifier: Modifier = Modifier) {
+private fun CardDescription(
+    cardDetails: CardDetails,
+    rulings: List<Ruling>,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -146,25 +168,27 @@ private fun CardDescription(cardDetails: CardDetails, modifier: Modifier = Modif
             }
         }
 
-        cardDetails.rulings?.let { rulings ->
-            ExpandableCard(headerTitle = stringResource(id = R.string.rulings)) {
-                CardRulings(rulings = rulings)
+        rulings
+            .takeIf { it.isNotEmpty() }
+            ?.let { rulings ->
+                ExpandableCard(headerTitle = stringResource(id = R.string.rulings)) {
+                    CardRulings(rulings = rulings)
+                }
             }
-        }
     }
 }
 
 @Composable
 private fun CardRulings(rulings: List<Ruling>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier.heightIn(max = 500.dp)) {
-        itemsIndexed(rulings) { index, currRuling ->
+        itemsIndexed(rulings) { index, ruling ->
             Text(
                 text =
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Medium)) {
-                            append(currRuling.date)
+                            append(ruling.publishedAt)
                         }
-                        append(": ${currRuling.text}")
+                        append(": ${ruling.comment}")
                         if (index != rulings.lastIndex) append('\n')
                     },
                 textAlign = TextAlign.Start,
@@ -173,15 +197,20 @@ private fun CardRulings(rulings: List<Ruling>, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
+    Divider(modifier = modifier, thickness = 0.5.dp)
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun CardDetailsViewPreview(
     @PreviewParameter(CardDetailsPreviewParameterProvider::class) cardDetails: CardDetails
 ) {
-    CardDetailsView(cardDetails = cardDetails)
+    CardDetailsView(cardDetails = cardDetails, rulings = MockUtils.rulingsProgenitus)
 }
 
 class CardDetailsPreviewParameterProvider : PreviewParameterProvider<CardDetails> {
     override val values: Sequence<CardDetails>
-        get() = sequenceOf(MockUtils.cardDetailsAvacyn, MockUtils.cardDetailsIncomplete)
+        get() = sequenceOf(MockUtils.cardDetailsProgenitus, MockUtils.cardDetailsIncomplete)
 }

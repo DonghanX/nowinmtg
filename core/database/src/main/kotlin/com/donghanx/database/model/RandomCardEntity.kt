@@ -17,4 +17,4 @@ fun NetworkCard.asRandomCardEntity(): RandomCardEntity =
     RandomCardEntity(multiverseId = multiverseId, name = name, imageUrl = imageUrl, types = types)
 
 fun RandomCardEntity.asExternalModel(): CardPreview =
-    CardPreview(id = multiverseId, name = name, imageUrl = imageUrl)
+    CardPreview(id = multiverseId.toString(), name = name, imageUrl = imageUrl)

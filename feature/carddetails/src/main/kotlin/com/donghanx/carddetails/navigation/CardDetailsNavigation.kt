@@ -11,12 +11,22 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.donghanx.carddetails.CardDetailsScreen
+import com.donghanx.common.INVALID_ID
 
 const val CARD_DETAILS_ROUTE = "CardDetails"
 internal const val CARD_ID_ARGS = "CardId"
+internal const val MULTIVERSE_ID_ARGS = "MultiverseId"
 
-fun NavController.navigateToCardDetails(cardId: Int, parentRoute: String) {
-    navigate(route = "${cardDetailsRoute(parentRoute)}/$cardId") { launchSingleTop = true }
+fun NavController.navigateToCardDetails(cardId: String, parentRoute: String) {
+    navigate(route = "${cardDetailsRoute(parentRoute)}/?$CARD_ID_ARGS=$cardId") {
+        launchSingleTop = true
+    }
+}
+
+fun NavController.navigateToCardDetailsWithMultiverseId(multiverseId: Int, parentRoute: String) {
+    navigate(route = "${cardDetailsRoute(parentRoute)}/?$MULTIVERSE_ID_ARGS=$multiverseId") {
+        launchSingleTop = true
+    }
 }
 
 fun NavGraphBuilder.cardDetailsScreen(
@@ -25,8 +35,19 @@ fun NavGraphBuilder.cardDetailsScreen(
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
     composable(
-        route = "${cardDetailsRoute(parentRoute)}/{$CARD_ID_ARGS}",
-        arguments = listOf(navArgument(CARD_ID_ARGS) { type = NavType.IntType }),
+        route =
+            "${cardDetailsRoute(parentRoute)}/?${optionalArgs(CARD_ID_ARGS)}&${optionalArgs(MULTIVERSE_ID_ARGS)}",
+        arguments =
+            listOf(
+                navArgument(CARD_ID_ARGS) {
+                    type = NavType.StringType
+                    nullable = true
+                },
+                navArgument(MULTIVERSE_ID_ARGS) {
+                    type = NavType.IntType
+                    defaultValue = INVALID_ID
+                },
+            ),
         enterTransition = {
             fadeIn(animationSpec = tween(durationMillis = 300, easing = LinearEasing)) +
                 slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start)
@@ -41,3 +62,5 @@ fun NavGraphBuilder.cardDetailsScreen(
 }
 
 private fun cardDetailsRoute(parentRoute: String): String = "${CARD_DETAILS_ROUTE}_$parentRoute"
+
+private fun optionalArgs(argsName: String): String = "$argsName={$argsName}"

@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CardsGallery(
     cards: List<CardPreview>,
-    onCardClick: (cardId: Int) -> Unit,
+    onCardClick: (CardPreview) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -63,7 +63,7 @@ fun CardsGallery(
                     modifier =
                         Modifier.fillMaxWidth()
                             .wrapContentHeight()
-                            .rippleClickable(onClick = { onCardClick(card.id) }),
+                            .rippleClickable(onClick = { onCardClick(card) }),
                 )
             }
         }

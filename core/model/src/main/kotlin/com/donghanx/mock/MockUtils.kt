@@ -2,124 +2,80 @@ package com.donghanx.mock
 
 import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
+import com.donghanx.model.Ruling
 import com.donghanx.model.SetInfo
-import com.donghanx.model.network.Ruling
+import com.donghanx.model.network.ImageUris
 
 object MockUtils {
-    val emptyCards = List(5) { CardPreview(id = it, name = "", imageUrl = "") }
+    val emptyCards = List(5) { CardPreview(id = it.toString(), name = "", imageUrl = "") }
 
-    val cardDetailsAvacyn: CardDetails =
+    val cardDetailsProgenitus: CardDetails =
         CardDetails(
-            multiverseId = 409741,
-            name = "Archangel Avacyn",
-            manaCost = "{3}{W}{W}",
-            cmc = 5.0,
-            colors = listOf("White"),
-            colorIdentity = listOf("R", "W"),
-            type = "Legendary Creature — Angel",
-            supertypes = listOf("Legendary"),
-            types = listOf("Creature"),
-            subtypes = listOf("Angel"),
-            rarity = "Mythic Rare",
-            set = "SOI",
+            id = "bcc764b0-3046-4bde-b424-c0f4e1a6169b",
+            multiverseId = 179496,
+            name = "Progenitus",
+            manaCost = "{W}{W}{U}{U}{B}{B}{R}{R}{G}{G}",
+            cmc = 10.0,
+            colors = listOf("B", "G", "R", "U", "W"),
+            colorIdentity = listOf("B", "G", "R", "U", "W"),
+            typeLine = "Legendary Creature — Hydra Avatar",
+            rarity = "mythic",
+            set = "con",
+            setName = "Conflux",
             text =
-                "Flash\nFlying, vigilance\nWhen Archangel Avacyn enters the battlefield, creatures you control gain indestructible until end of turn.\nWhen a non-Angel creature you control dies, transform Archangel Avacyn at the beginning of the next upkeep.",
-            artist = "James Ryman",
-            number = "5a",
-            power = "4",
-            toughness = "4",
-            layout = "double-faced",
-            imageUrl =
-                "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=409741&type=card",
-            rulings =
-                listOf(
-                    Ruling(
-                        date = "2016-04-08",
-                        text =
-                            "Archangel Avacyn’s delayed triggered ability triggers at the beginning of the next upkeep regardless of whose turn it is.",
-                    ),
-                    Ruling(
-                        date = "2016-04-08",
-                        text =
-                            "Archangel Avacyn’s delayed triggered ability won’t cause it to transform back into Archangel Avacyn if it has already transformed into Avacyn, the Purifier, perhaps because several creatures died in one turn.",
-                    ),
-                    Ruling(
-                        date = "2016-04-08",
-                        text =
-                            "For more information on double-faced cards, see the Shadows over Innistrad mechanics article(http://magic.wizards.com/en/articles/archive/feature/shadows-over-innistrad-mechanics).",
-                    ),
+                "Protection from everything\\nIf Progenitus would be put into a graveyard from anywhere, reveal Progenitus and shuffle it into its owner's library instead.",
+            artist = "Jaime Jones",
+            power = "10",
+            toughness = "10",
+            layout = "normal",
+            flavor = "The Soul of the World has returned.",
+            imageUris =
+                ImageUris(
+                    artCrop = "",
+                    borderCrop = "",
+                    large = "",
+                    normal = "",
+                    png = "",
+                    small = "",
                 ),
-            //            foreignNames =
-            //                listOf(
-            //                    ForeignName(
-            //                        name = "大天使艾维欣 // 净罪天使艾维欣",
-            //                        language = "Chinese Simplified",
-            //                        text =
-            //
-            // "闪现\\n飞行，警戒\\n当大天使艾维欣进战场时，由你操控的生物获得不灭异能直到回合结束。\\n当一个由你操控且非天使的生物死去，在下一个维持开始时，转化大天使艾维欣。",
-            //                        type = "传奇生物～天使",
-            //                        faceName = "大天使艾维欣",
-            //                        imageUrl =
-            //
-            // "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=410071&type=card",
-            //                        multiverseId = "410071",
-            //                        flavor = null
-            //                    ),
-            //                    ForeignName(
-            //                        name = "Archange Avacyn // Avacyn, la purificatrice",
-            //                        language = "French",
-            //                        text =
-            //                            "Flash\\nVol, vigilance\\nQuand l'Archange Avacyn arrive
-            // sur le champ de bataille, les créatures que vous contrôlez acquièrent
-            // l'indestructible jusqu'à la fin du tour.\\nQuand une créature non-Ange que vous
-            // contrôlez meurt, transformez l'Archange Avacyn au début du prochain entretien.",
-            //                        flavor = null,
-            //                        faceName = "Archange Avacyn",
-            //                        type = "Créature légendaire : ange",
-            //                        imageUrl =
-            //
-            // "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=411061&type=card",
-            //                        multiverseId = "411061"
-            //                    )
-            //                ),
-            //            legalities = null,
-            printings = listOf("SOI"),
-            originalText =
-                "Flash\nFlying, vigilance\nWhen Archangel Avacyn enters the battlefield, creatures you control gain indestructible until end of turn.\nWhen a non-Angel creature you control dies, transform Archangel Avacyn at the beginning of the next upkeep.",
-            originalType = "Legendary Creature — Angel",
-            flavor = null,
-            setName = "Shadows over Innistrad",
-            variations = null,
         )
 
     val cardDetailsIncomplete: CardDetails =
         CardDetails(
+            id = "bcc764b0-3046-4bde-b424-c0f4e1a6169b",
             multiverseId = 409741,
             name = "",
             manaCost = null,
             cmc = 5.0,
             colors = null,
             colorIdentity = null,
-            type = "Legendary Creature — Angel",
-            supertypes = null,
-            types = null,
-            subtypes = null,
+            typeLine = "Legendary Creature — Angel",
             rarity = "Mythic Rare",
             set = "SOI",
             text = null,
             artist = null,
-            number = "5a",
             power = null,
             toughness = null,
             layout = "double-faced",
-            imageUrl = null,
-            printings = listOf("SOI"),
-            originalText = null,
-            originalType = null,
+            imageUris = null,
             flavor = null,
             setName = "Shadows over Innistrad",
-            variations = null,
-            rulings = null,
+        )
+
+    val rulingsProgenitus =
+        listOf(
+            Ruling(
+                comment =
+                    "Protection from everything” means the following: Progenitus can’t be blocked, Progenitus can’t be enchanted or equipped, Progenitus can’t be the target of spells or abilities, and all damage that would be dealt to Progenitus is prevented.",
+                publishedAt = "2009-02-01",
+                source = "wotc",
+            ),
+            Ruling(
+                comment =
+                    "Progenitus can still be affected by effects that don’t target it or deal damage to it (such as Day of Judgment).",
+                publishedAt = "2009-02-01",
+                source = "wotc",
+            ),
         )
 
     val soiExpansion =
