@@ -55,6 +55,10 @@ private val LightColorScheme =
         onSecondary = Color.White,
         secondaryContainer = DarkGreen90,
         onSecondaryContainer = DarkGreen10,
+        // TODO: pick up a neutral color set for surface container
+        surfaceContainerLow = GreenGray90,
+        surfaceContainerHigh = GreenGray90,
+        surfaceContainerHighest = GreenGray90,
         tertiary = Teal40,
         onTertiary = Color.White,
         tertiaryContainer = Teal90,
