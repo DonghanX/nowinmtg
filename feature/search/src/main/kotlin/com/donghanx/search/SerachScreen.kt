@@ -40,7 +40,7 @@ internal fun SearchScreen(
                     query = searchQuery,
                     onQueryChange = viewModel::onSearchQueryChanged,
                     onSearch = {},
-                    expanded = searchQuery.isNotEmpty(),
+                    expanded = searchQuery.length >= MIN_SEARCH_QUERY_LENGTH,
                     onExpandedChange = {},
                     trailingIcon = {
                         IconButton(onClick = onCloseClick) {
@@ -52,7 +52,7 @@ internal fun SearchScreen(
                     },
                 )
             },
-            expanded = searchQuery.isNotEmpty(),
+            expanded = searchQuery.length >= MIN_SEARCH_QUERY_LENGTH,
             onExpandedChange = {},
         ) {
             when (val uiState = searchUiState) {
