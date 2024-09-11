@@ -1,6 +1,8 @@
 package com.donghanx.carddetails.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -50,11 +52,17 @@ fun NavGraphBuilder.cardDetailsScreen(
             ),
         enterTransition = {
             fadeIn(animationSpec = tween(durationMillis = 300, easing = LinearEasing)) +
-                slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start)
+                slideIntoContainer(
+                    animationSpec = tween(durationMillis = 300, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                )
         },
         exitTransition = {
             fadeOut(animationSpec = tween(durationMillis = 300, easing = LinearEasing)) +
-                slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End)
+                slideOutOfContainer(
+                    animationSpec = tween(300, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                )
         },
     ) {
         CardDetailsScreen(onBackClick = onBackClick, onShowSnackbar = onShowSnackbar)

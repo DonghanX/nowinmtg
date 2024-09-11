@@ -50,7 +50,7 @@ data class NetworkCardDetails(
     @SerialName("artist_ids") val artistIds: List<String>?,
     @SerialName("booster") val booster: Boolean,
     @SerialName("border_color") val borderColor: String,
-    @SerialName("card_back_id") val cardBackId: String,
+    @SerialName("card_back_id") val cardBackId: String?,
     @SerialName("collector_number") val collectorNumber: String,
     @SerialName("content_warning") val contentWarning: Boolean?,
     @SerialName("digital") val digital: Boolean,
