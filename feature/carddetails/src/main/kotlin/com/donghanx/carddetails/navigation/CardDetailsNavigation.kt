@@ -1,6 +1,8 @@
 package com.donghanx.carddetails.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.LinearEasing
@@ -31,10 +33,12 @@ fun NavController.navigateToCardDetailsWithMultiverseId(multiverseId: Int, paren
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.cardDetailsScreen(
     parentRoute: String,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
 ) {
     composable(
         route =
@@ -65,7 +69,12 @@ fun NavGraphBuilder.cardDetailsScreen(
                 )
         },
     ) {
-        CardDetailsScreen(onBackClick = onBackClick, onShowSnackbar = onShowSnackbar)
+        CardDetailsScreen(
+            onBackClick = onBackClick,
+            onShowSnackbar = onShowSnackbar,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = this@composable,
+        )
     }
 }
 

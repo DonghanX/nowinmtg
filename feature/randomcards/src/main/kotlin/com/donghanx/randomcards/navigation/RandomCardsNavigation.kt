@@ -1,5 +1,7 @@
 package com.donghanx.randomcards.navigation
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -8,8 +10,10 @@ import com.donghanx.randomcards.RandomCardsScreen
 const val RANDOM_CARDS_GRAPH_ROUTE = "RandomCardsGraph"
 const val RANDOM_CARDS_ROUTE = "RandomCards"
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.randomCardsGraph(
     onCardClick: (multiverseId: Int, parentRoute: String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
     nestedGraphs: NavGraphBuilder.(parentRoute: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
@@ -18,6 +22,8 @@ fun NavGraphBuilder.randomCardsGraph(
             RandomCardsScreen(
                 onCardClick = { multiverseId -> onCardClick(multiverseId, RANDOM_CARDS_ROUTE) },
                 onShowSnackbar = onShowSnackbar,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = this@composable,
             )
         }
 

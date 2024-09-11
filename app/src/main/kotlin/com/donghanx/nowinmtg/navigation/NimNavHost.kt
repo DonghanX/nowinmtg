@@ -1,5 +1,7 @@
 package com.donghanx.nowinmtg.navigation
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -16,6 +18,7 @@ import com.donghanx.randomcards.navigation.randomCardsGraph
 import com.donghanx.search.navigation.searchScreen
 import com.donghanx.sets.navigation.setsScreen
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NimNavHost(
     navController: NavHostController,
@@ -23,39 +26,44 @@ fun NimNavHost(
     modifier: Modifier = Modifier,
     startDestination: String = RANDOM_CARDS_GRAPH_ROUTE,
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        modifier = modifier,
-        enterTransition = { fadeIn(animationSpec = tween(300)) },
-        exitTransition = { fadeOut(animationSpec = tween(300)) },
-    ) {
-        randomCardsGraph(
-            onCardClick = { multiverseId, parentRoute ->
-                navController.navigateToCardDetailsWithMultiverseId(multiverseId, parentRoute)
-            },
-            onShowSnackbar = onShowSnackbar,
-            nestedGraphs = { from ->
-                cardDetailsScreen(
-                    parentRoute = from,
-                    onBackClick = navController::popBackStack,
-                    onShowSnackbar = onShowSnackbar,
-                )
-            },
-        )
-        setsScreen(onShowSnackbar = onShowSnackbar)
-        searchScreen(onCloseClick = navController::popBackStack)
-        favoriteGraph(
-            onCardClick = { cardId, parentRoute ->
-                navController.navigateToCardDetails(cardId = cardId, parentRoute = parentRoute)
-            },
-            nestedGraphs = { parentRoute ->
-                cardDetailsScreen(
-                    parentRoute = parentRoute,
-                    onBackClick = navController::popBackStack,
-                    onShowSnackbar = onShowSnackbar,
-                )
-            },
-        )
+    SharedTransitionLayout {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = modifier,
+            enterTransition = { fadeIn(animationSpec = tween(300)) },
+            exitTransition = { fadeOut(animationSpec = tween(300)) },
+        ) {
+            randomCardsGraph(
+                onCardClick = { multiverseId, parentRoute ->
+                    navController.navigateToCardDetailsWithMultiverseId(multiverseId, parentRoute)
+                },
+                onShowSnackbar = onShowSnackbar,
+                sharedTransitionScope = this@SharedTransitionLayout,
+                nestedGraphs = { from ->
+                    cardDetailsScreen(
+                        parentRoute = from,
+                        onBackClick = navController::popBackStack,
+                        onShowSnackbar = onShowSnackbar,
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                    )
+                },
+            )
+            setsScreen(onShowSnackbar = onShowSnackbar)
+            searchScreen(onCloseClick = navController::popBackStack)
+            favoriteGraph(
+                onCardClick = { cardId, parentRoute ->
+                    navController.navigateToCardDetails(cardId = cardId, parentRoute = parentRoute)
+                },
+                nestedGraphs = { parentRoute ->
+                    cardDetailsScreen(
+                        parentRoute = parentRoute,
+                        onBackClick = navController::popBackStack,
+                        onShowSnackbar = onShowSnackbar,
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                    )
+                },
+            )
+        }
     }
 }

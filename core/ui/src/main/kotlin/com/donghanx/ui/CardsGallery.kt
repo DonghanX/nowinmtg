@@ -1,5 +1,9 @@
 package com.donghanx.ui
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -31,10 +36,13 @@ import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.model.CardPreview
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CardsGallery(
     cards: List<CardPreview>,
-    onCardClick: (CardPreview) -> Unit,
+    onCardClick: (card:CardPreview) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -49,22 +57,30 @@ fun CardsGallery(
             verticalArrangement = Arrangement.spacedBy(6.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(cards, key = { it.id }) { card ->
-                AsyncImage(
-                    model =
-                        ImageRequest.Builder(LocalContext.current)
-                            .data(card.imageUrl)
-                            .precision(Precision.EXACT)
-                            .crossfade(true)
-                            .build(),
-                    contentDescription = card.name,
-                    contentScale = ContentScale.Fit,
-                    placeholder = painterResource(id = R.drawable.blank_card_placeholder),
-                    modifier =
-                        Modifier.fillMaxWidth()
-                            .wrapContentHeight()
-                            .rippleClickable(onClick = { onCardClick(card) }),
-                )
+            itemsIndexed(cards, key = { _, card -> card.id }) { index, card ->
+                with(sharedTransitionScope) {
+                    AsyncImage(
+                        model =
+                            ImageRequest.Builder(LocalContext.current)
+                                .data(card.imageUrl)
+                                .precision(Precision.EXACT)
+                                .crossfade(true)
+                                .build(),
+                        contentDescription = card.name,
+                        contentScale = ContentScale.Fit,
+                        placeholder = painterResource(id = R.drawable.blank_card_placeholder),
+                        modifier =
+                            Modifier.sharedElement(
+                                state = sharedTransitionScope.rememberSharedContentState(
+                                    key = "image-$index",
+                                ),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .fillMaxWidth()
+                                .wrapContentHeight()
+                                .rippleClickable(onClick = { onCardClick(card) }),
+                    )
+                }
             }
         }
 

@@ -1,5 +1,10 @@
 package com.donghanx.randomcards
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -14,11 +19,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.mock.MockUtils
 import com.donghanx.ui.CardsGallery
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun RandomCardsScreen(
     onCardClick: (multiverseId: Int) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     modifier: Modifier = Modifier,
     viewModel: RandomCardsViewModel = hiltViewModel(),
 ) {
@@ -31,7 +38,12 @@ internal fun RandomCardsScreen(
     ) {
         when (val uiState = randomCardsUiState) {
             is RandomCardsUiState.Success -> {
-                CardsGallery(uiState.cards, onCardClick = { onCardClick(it.id.toInt()) })
+                CardsGallery(
+                    uiState.cards,
+                    onCardClick = { onCardClick(it.id.toInt()) },
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedContentScope,
+                )
             }
             // TODO: add a placeholder composable for empty cards
             is RandomCardsUiState.Empty -> Unit
@@ -45,8 +57,18 @@ internal fun RandomCardsScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun CardsGalleryPreview() {
-    CardsGallery(cards = MockUtils.emptyCards, onCardClick = {})
+    SharedTransitionLayout {
+        AnimatedVisibility(visible = true) {
+            CardsGallery(
+                cards = MockUtils.emptyCards,
+                onCardClick = {},
+                sharedTransitionScope = this@SharedTransitionLayout,
+                animatedVisibilityScope = this@AnimatedVisibility,
+            )
+        }
+    }
 }
