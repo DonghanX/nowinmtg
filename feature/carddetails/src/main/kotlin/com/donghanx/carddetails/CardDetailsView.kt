@@ -1,5 +1,10 @@
 package com.donghanx.carddetails
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.donghanx.common.SHARED_TRANSITION_CARD_IMG
 import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.card.ExpandableCard
@@ -43,23 +49,39 @@ import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
 import com.donghanx.model.Ruling
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun CardDetailsView(
+    index: Int,
     cardDetails: CardDetails,
     rulings: List<Ruling>,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // TODO: Accommodate different window size
             cardDetails.imageUris?.let { imageUris ->
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(imageUris.png).build(),
-                    contentDescription = cardDetails.name,
-                    modifier = Modifier.fillMaxWidth(fraction = 0.45F).aspectRatio(ratio = 5F / 7F),
-                    placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
-                    contentScale = ContentScale.Crop,
-                )
+                with(sharedTransitionScope) {
+                    AsyncImage(
+                        model =
+                            ImageRequest.Builder(LocalContext.current).data(imageUris.png).build(),
+                        contentDescription = cardDetails.name,
+                        modifier =
+                            Modifier.sharedElement(
+                                    state =
+                                        sharedTransitionScope.rememberSharedContentState(
+                                            key = "$SHARED_TRANSITION_CARD_IMG-$index"
+                                        ),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                )
+                                .fillMaxWidth(fraction = 0.45F)
+                                .aspectRatio(ratio = 5F / 7F),
+                        placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
             }
 
             CardBasicInfo(cardDetails, modifier.fillMaxWidth())
@@ -202,12 +224,23 @@ private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(modifier = modifier, thickness = 0.5.dp)
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun CardDetailsViewPreview(
     @PreviewParameter(CardDetailsPreviewParameterProvider::class) cardDetails: CardDetails
 ) {
-    CardDetailsView(cardDetails = cardDetails, rulings = MockUtils.rulingsProgenitus)
+    SharedTransitionLayout {
+        AnimatedVisibility(visible = true) {
+            CardDetailsView(
+                index = 0,
+                cardDetails = cardDetails,
+                rulings = MockUtils.rulingsProgenitus,
+                sharedTransitionScope = this@SharedTransitionLayout,
+                animatedVisibilityScope = this@AnimatedVisibility,
+            )
+        }
+    }
 }
 
 class CardDetailsPreviewParameterProvider : PreviewParameterProvider<CardDetails> {

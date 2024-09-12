@@ -1,6 +1,5 @@
 package com.donghanx.ui
 
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
@@ -29,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Precision
+import com.donghanx.common.SHARED_TRANSITION_CARD_IMG
 import com.donghanx.design.R
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.rippleClickable
@@ -40,7 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CardsGallery(
     cards: List<CardPreview>,
-    onCardClick: (card:CardPreview) -> Unit,
+    onCardClick: (index: Int, card: CardPreview) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
@@ -71,14 +70,15 @@ fun CardsGallery(
                         placeholder = painterResource(id = R.drawable.blank_card_placeholder),
                         modifier =
                             Modifier.sharedElement(
-                                state = sharedTransitionScope.rememberSharedContentState(
-                                    key = "image-$index",
-                                ),
-                                animatedVisibilityScope = animatedVisibilityScope
-                            )
-                            .fillMaxWidth()
+                                    state =
+                                        sharedTransitionScope.rememberSharedContentState(
+                                            key = "$SHARED_TRANSITION_CARD_IMG-$index"
+                                        ),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                )
+                                .fillMaxWidth()
                                 .wrapContentHeight()
-                                .rippleClickable(onClick = { onCardClick(card) }),
+                                .rippleClickable(onClick = { onCardClick(index, card) }),
                     )
                 }
             }

@@ -13,7 +13,7 @@ import com.donghanx.ui.CardsGallery
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun FavoritesScreen(
-    onCardClick: (cardId: String) -> Unit,
+    onCardClick: (index: Int, cardId: String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
     modifier: Modifier = Modifier,
@@ -25,10 +25,10 @@ internal fun FavoritesScreen(
         is FavoritesUiState.Success ->
             CardsGallery(
                 cards = uiState.favoriteCards,
-                onCardClick = { onCardClick(it.id) },
+                onCardClick = { index, card -> onCardClick(index, card.id) },
                 modifier = modifier,
                 sharedTransitionScope = sharedTransitionScope,
-                animatedContentScope = animatedContentScope,
+                animatedVisibilityScope = animatedContentScope,
             )
         is FavoritesUiState.Empty -> EmptyFavoritesView()
     }

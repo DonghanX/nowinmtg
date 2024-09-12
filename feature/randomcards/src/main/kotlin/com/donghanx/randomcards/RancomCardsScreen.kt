@@ -22,7 +22,7 @@ import com.donghanx.ui.CardsGallery
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun RandomCardsScreen(
-    onCardClick: (multiverseId: Int) -> Unit,
+    onCardClick: (index: Int, multiverseId: Int) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
@@ -40,7 +40,7 @@ internal fun RandomCardsScreen(
             is RandomCardsUiState.Success -> {
                 CardsGallery(
                     uiState.cards,
-                    onCardClick = { onCardClick(it.id.toInt()) },
+                    onCardClick = { index, card -> onCardClick(index, card.id.toInt()) },
                     sharedTransitionScope = sharedTransitionScope,
                     animatedVisibilityScope = animatedContentScope,
                 )
@@ -65,7 +65,7 @@ private fun CardsGalleryPreview() {
         AnimatedVisibility(visible = true) {
             CardsGallery(
                 cards = MockUtils.emptyCards,
-                onCardClick = {},
+                onCardClick = { _, _ -> },
                 sharedTransitionScope = this@SharedTransitionLayout,
                 animatedVisibilityScope = this@AnimatedVisibility,
             )

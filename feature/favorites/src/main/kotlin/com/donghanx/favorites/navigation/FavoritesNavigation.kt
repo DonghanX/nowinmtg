@@ -12,14 +12,14 @@ const val FAVORITES_ROUTE = "Favorites"
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.favoriteGraph(
-    onCardClick: (cardId: String, parentRoute: String) -> Unit,
+    onCardClick: (index: Int, cardId: String, parentRoute: String) -> Unit,
     nestedGraphs: NavGraphBuilder.(parentRoute: String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
 ) {
     navigation(startDestination = FAVORITES_ROUTE, route = FAVORITES_GRAPH_ROUTE) {
         composable(route = FAVORITES_ROUTE) {
             FavoritesScreen(
-                onCardClick = { cardId -> onCardClick(cardId, FAVORITES_ROUTE) },
+                onCardClick = { index, cardId -> onCardClick(index, cardId, FAVORITES_ROUTE) },
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = this@composable,
             )

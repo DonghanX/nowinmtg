@@ -35,8 +35,12 @@ fun NimNavHost(
             exitTransition = { fadeOut(animationSpec = tween(300)) },
         ) {
             randomCardsGraph(
-                onCardClick = { multiverseId, parentRoute ->
-                    navController.navigateToCardDetailsWithMultiverseId(multiverseId, parentRoute)
+                onCardClick = { index, multiverseId, parentRoute ->
+                    navController.navigateToCardDetailsWithMultiverseId(
+                        index = index,
+                        multiverseId = multiverseId,
+                        parentRoute = parentRoute,
+                    )
                 },
                 onShowSnackbar = onShowSnackbar,
                 sharedTransitionScope = this@SharedTransitionLayout,
@@ -52,8 +56,12 @@ fun NimNavHost(
             setsScreen(onShowSnackbar = onShowSnackbar)
             searchScreen(onCloseClick = navController::popBackStack)
             favoriteGraph(
-                onCardClick = { cardId, parentRoute ->
-                    navController.navigateToCardDetails(cardId = cardId, parentRoute = parentRoute)
+                onCardClick = { index, cardId, parentRoute ->
+                    navController.navigateToCardDetails(
+                        index = index,
+                        cardId = cardId,
+                        parentRoute = parentRoute,
+                    )
                 },
                 nestedGraphs = { parentRoute ->
                     cardDetailsScreen(
@@ -63,6 +71,7 @@ fun NimNavHost(
                         sharedTransitionScope = this@SharedTransitionLayout,
                     )
                 },
+                sharedTransitionScope = this@SharedTransitionLayout,
             )
         }
     }

@@ -12,7 +12,7 @@ const val RANDOM_CARDS_ROUTE = "RandomCards"
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.randomCardsGraph(
-    onCardClick: (multiverseId: Int, parentRoute: String) -> Unit,
+    onCardClick: (index: Int, multiverseId: Int, parentRoute: String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     nestedGraphs: NavGraphBuilder.(parentRoute: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
@@ -20,7 +20,7 @@ fun NavGraphBuilder.randomCardsGraph(
     navigation(startDestination = RANDOM_CARDS_ROUTE, route = RANDOM_CARDS_GRAPH_ROUTE) {
         composable(route = RANDOM_CARDS_ROUTE) {
             RandomCardsScreen(
-                onCardClick = { multiverseId -> onCardClick(multiverseId, RANDOM_CARDS_ROUTE) },
+                onCardClick = { index, multiverseId -> onCardClick(index, multiverseId, RANDOM_CARDS_ROUTE) },
                 onShowSnackbar = onShowSnackbar,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = this@composable,

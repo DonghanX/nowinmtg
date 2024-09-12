@@ -18,17 +18,25 @@ import com.donghanx.carddetails.CardDetailsScreen
 import com.donghanx.common.INVALID_ID
 
 const val CARD_DETAILS_ROUTE = "CardDetails"
+internal const val CARD_INDEX_ARGS = "CardIndex"
 internal const val CARD_ID_ARGS = "CardId"
 internal const val MULTIVERSE_ID_ARGS = "MultiverseId"
 
-fun NavController.navigateToCardDetails(cardId: String, parentRoute: String) {
-    navigate(route = "${cardDetailsRoute(parentRoute)}/?$CARD_ID_ARGS=$cardId") {
+fun NavController.navigateToCardDetails(index: Int, cardId: String, parentRoute: String) {
+    navigate(route = "${cardDetailsRoute(parentRoute)}/$index?$CARD_ID_ARGS=$cardId") {
         launchSingleTop = true
     }
 }
 
-fun NavController.navigateToCardDetailsWithMultiverseId(multiverseId: Int, parentRoute: String) {
-    navigate(route = "${cardDetailsRoute(parentRoute)}/?$MULTIVERSE_ID_ARGS=$multiverseId") {
+fun NavController.navigateToCardDetailsWithMultiverseId(
+    index: Int,
+    multiverseId: Int,
+    parentRoute: String,
+) {
+    navigate(
+        route =
+            "${cardDetailsRoute(parentRoute)}/$index?$MULTIVERSE_ID_ARGS=$multiverseId"
+    ) {
         launchSingleTop = true
     }
 }
@@ -42,9 +50,13 @@ fun NavGraphBuilder.cardDetailsScreen(
 ) {
     composable(
         route =
-            "${cardDetailsRoute(parentRoute)}/?${optionalArgs(CARD_ID_ARGS)}&${optionalArgs(MULTIVERSE_ID_ARGS)}",
+            "${cardDetailsRoute(parentRoute)}/{$CARD_INDEX_ARGS}?${optionalArgs(CARD_ID_ARGS)}&${optionalArgs(MULTIVERSE_ID_ARGS)}",
         arguments =
             listOf(
+                navArgument(CARD_INDEX_ARGS) {
+                    type = NavType.IntType
+                    defaultValue = 0
+                },
                 navArgument(CARD_ID_ARGS) {
                     type = NavType.StringType
                     nullable = true
@@ -70,6 +82,7 @@ fun NavGraphBuilder.cardDetailsScreen(
         },
     ) {
         CardDetailsScreen(
+            index = it.arguments?.getInt(CARD_INDEX_ARGS) ?: 0,
             onBackClick = onBackClick,
             onShowSnackbar = onShowSnackbar,
             sharedTransitionScope = sharedTransitionScope,
