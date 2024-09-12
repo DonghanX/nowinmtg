@@ -20,7 +20,9 @@ fun NavGraphBuilder.randomCardsGraph(
     navigation(startDestination = RANDOM_CARDS_ROUTE, route = RANDOM_CARDS_GRAPH_ROUTE) {
         composable(route = RANDOM_CARDS_ROUTE) {
             RandomCardsScreen(
-                onCardClick = { index, multiverseId -> onCardClick(index, multiverseId, RANDOM_CARDS_ROUTE) },
+                onCardClick = { index, multiverseId ->
+                    onCardClick(index, multiverseId, RANDOM_CARDS_ROUTE)
+                },
                 onShowSnackbar = onShowSnackbar,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = this@composable,

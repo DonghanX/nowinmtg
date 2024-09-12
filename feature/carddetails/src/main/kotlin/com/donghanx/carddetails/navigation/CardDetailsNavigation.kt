@@ -33,10 +33,7 @@ fun NavController.navigateToCardDetailsWithMultiverseId(
     multiverseId: Int,
     parentRoute: String,
 ) {
-    navigate(
-        route =
-            "${cardDetailsRoute(parentRoute)}/$index?$MULTIVERSE_ID_ARGS=$multiverseId"
-    ) {
+    navigate(route = "${cardDetailsRoute(parentRoute)}/$index?$MULTIVERSE_ID_ARGS=$multiverseId") {
         launchSingleTop = true
     }
 }
