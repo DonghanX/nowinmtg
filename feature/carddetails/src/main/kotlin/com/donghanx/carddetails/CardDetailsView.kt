@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -63,22 +64,26 @@ internal fun CardDetailsView(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // TODO: Accommodate different window size
             cardDetails.imageUris?.let { imageUris ->
+                val sharedTransitionKey = remember(index) { "$SHARED_TRANSITION_CARD_IMG-$index" }
                 with(sharedTransitionScope) {
                     AsyncImage(
                         model =
-                            ImageRequest.Builder(LocalContext.current).data(imageUris.png).build(),
+                            ImageRequest.Builder(LocalContext.current)
+                                .data(imageUris.png)
+                                .placeholderMemoryCacheKey(sharedTransitionKey)
+                                .memoryCacheKey(sharedTransitionKey)
+                                .build(),
                         contentDescription = cardDetails.name,
                         modifier =
                             Modifier.sharedElement(
                                     state =
                                         sharedTransitionScope.rememberSharedContentState(
-                                            key = "$SHARED_TRANSITION_CARD_IMG-$index"
+                                            key = sharedTransitionKey
                                         ),
                                     animatedVisibilityScope = animatedVisibilityScope,
                                 )
                                 .fillMaxWidth(fraction = 0.45F)
                                 .aspectRatio(ratio = 5F / 7F),
-                        placeholder = painterResource(id = DesignR.drawable.blank_card_placeholder),
                         contentScale = ContentScale.Crop,
                     )
                 }

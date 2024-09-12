@@ -57,11 +57,14 @@ fun CardsGallery(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             itemsIndexed(cards, key = { _, card -> card.id }) { index, card ->
+                val sharedTransitionKey = remember(index) { "$SHARED_TRANSITION_CARD_IMG-$index" }
                 with(sharedTransitionScope) {
                     AsyncImage(
                         model =
                             ImageRequest.Builder(LocalContext.current)
                                 .data(card.imageUrl)
+                                .placeholderMemoryCacheKey(sharedTransitionKey)
+                                .memoryCacheKey(sharedTransitionKey)
                                 .precision(Precision.EXACT)
                                 .crossfade(true)
                                 .build(),
