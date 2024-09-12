@@ -79,6 +79,7 @@ fun NavGraphBuilder.cardDetailsScreen(
         },
     ) {
         CardDetailsScreen(
+            parentRoute = parentRoute,
             index = it.arguments?.getInt(CARD_INDEX_ARGS) ?: 0,
             onBackClick = onBackClick,
             onShowSnackbar = onShowSnackbar,

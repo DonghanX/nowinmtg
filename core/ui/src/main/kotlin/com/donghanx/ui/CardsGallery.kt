@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CardsGallery(
+    parentRoute: String,
     cards: List<CardPreview>,
     onCardClick: (index: Int, card: CardPreview) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
@@ -57,13 +58,13 @@ fun CardsGallery(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             itemsIndexed(cards, key = { _, card -> card.id }) { index, card ->
-                val sharedTransitionKey = remember(index) { "$SHARED_TRANSITION_CARD_IMG-$index" }
+                val sharedTransitionKey =
+                    remember(index) { "$parentRoute-$SHARED_TRANSITION_CARD_IMG-$index" }
                 with(sharedTransitionScope) {
                     AsyncImage(
                         model =
                             ImageRequest.Builder(LocalContext.current)
                                 .data(card.imageUrl)
-                                .placeholderMemoryCacheKey(sharedTransitionKey)
                                 .memoryCacheKey(sharedTransitionKey)
                                 .precision(Precision.EXACT)
                                 .crossfade(true)
@@ -75,7 +76,7 @@ fun CardsGallery(
                             Modifier.sharedElement(
                                     state =
                                         sharedTransitionScope.rememberSharedContentState(
-                                            key = "$SHARED_TRANSITION_CARD_IMG-$index"
+                                            key = sharedTransitionKey
                                         ),
                                     animatedVisibilityScope = animatedVisibilityScope,
                                 )

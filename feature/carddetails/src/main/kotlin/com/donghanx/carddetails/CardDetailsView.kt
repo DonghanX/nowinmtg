@@ -27,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -44,7 +43,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.donghanx.common.SHARED_TRANSITION_CARD_IMG
 import com.donghanx.common.extensions.capitalize
-import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
@@ -53,6 +51,7 @@ import com.donghanx.model.Ruling
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun CardDetailsView(
+    parentRoute: String,
     index: Int,
     cardDetails: CardDetails,
     rulings: List<Ruling>,
@@ -64,14 +63,14 @@ internal fun CardDetailsView(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // TODO: Accommodate different window size
             cardDetails.imageUris?.let { imageUris ->
-                val sharedTransitionKey = remember(index) { "$SHARED_TRANSITION_CARD_IMG-$index" }
+                val sharedTransitionKey =
+                    remember(index) { "$parentRoute-$SHARED_TRANSITION_CARD_IMG-$index" }
                 with(sharedTransitionScope) {
                     AsyncImage(
                         model =
                             ImageRequest.Builder(LocalContext.current)
                                 .data(imageUris.png)
                                 .placeholderMemoryCacheKey(sharedTransitionKey)
-                                .memoryCacheKey(sharedTransitionKey)
                                 .build(),
                         contentDescription = cardDetails.name,
                         modifier =
@@ -238,6 +237,7 @@ private fun CardDetailsViewPreview(
     SharedTransitionLayout {
         AnimatedVisibility(visible = true) {
             CardDetailsView(
+                parentRoute = "RandomCards",
                 index = 0,
                 cardDetails = cardDetails,
                 rulings = MockUtils.rulingsProgenitus,

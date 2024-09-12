@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.mock.MockUtils
+import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
 import com.donghanx.ui.CardsGallery
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
@@ -39,7 +40,8 @@ internal fun RandomCardsScreen(
         when (val uiState = randomCardsUiState) {
             is RandomCardsUiState.Success -> {
                 CardsGallery(
-                    uiState.cards,
+                    parentRoute = RANDOM_CARDS_ROUTE,
+                    cards = uiState.cards,
                     onCardClick = { index, card -> onCardClick(index, card.id.toInt()) },
                     sharedTransitionScope = sharedTransitionScope,
                     animatedVisibilityScope = animatedContentScope,
@@ -64,6 +66,7 @@ private fun CardsGalleryPreview() {
     SharedTransitionLayout {
         AnimatedVisibility(visible = true) {
             CardsGallery(
+                parentRoute = RANDOM_CARDS_ROUTE,
                 cards = MockUtils.emptyCards,
                 onCardClick = { _, _ -> },
                 sharedTransitionScope = this@SharedTransitionLayout,
