@@ -1,5 +1,7 @@
 package com.donghanx.nowinmtg.ui
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,52 +37,63 @@ import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.search.navigation.navigateToSearch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         val appState = rememberNowInMtgAppState(windowSizeClass = windowSizeClass)
         val snackbarHostState = remember { SnackbarHostState() }
-        Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            topBar = {
-                appState.currentTopLevelDestination?.let { topLevelDestination ->
-                    NowInMtgTopAppBar(
-                        titleResId = topLevelDestination.labelResId,
-                        navigationIcon = Icons.Rounded.Search,
-                        navigationIconContentDescription = stringResource(DesignR.string.search),
-                        showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
-                        shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
-                        onNavigationIconClick = appState.navController::navigateToSearch,
-                    )
-                }
-            },
-            bottomBar = {
-                if (appState.shouldShowBottomBar) {
-                    BottomNavigationBar(
-                        topLevelDestinations = appState.topLevelDestinations,
-                        currentDestination = appState.currentDestination,
-                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) },
-                    )
-                }
-            },
-        ) { paddingValues ->
-            Row(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-                if (appState.shouldShowLeftNavigationRail) {
-                    LeftNavigationRail(
-                        topLevelDestinations = appState.topLevelDestinations,
-                        currentDestination = appState.currentDestination,
-                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) },
-                    )
+        SharedTransitionLayout {
+            Scaffold(
+                snackbarHost = { SnackbarHost(snackbarHostState) },
+                topBar = {
+                    appState.currentTopLevelDestination?.let { topLevelDestination ->
+                        NowInMtgTopAppBar(
+                            titleResId = topLevelDestination.labelResId,
+                            navigationIcon = Icons.Rounded.Search,
+                            navigationIconContentDescription =
+                                stringResource(DesignR.string.search),
+                            showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
+                            shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
+                            onNavigationIconClick = appState.navController::navigateToSearch,
+                        )
+                    }
+                },
+                bottomBar = {
+                    if (appState.shouldShowBottomBar) {
+                        BottomNavigationBar(
+                            topLevelDestinations = appState.topLevelDestinations,
+                            currentDestination = appState.currentDestination,
+                            onNavItemClick = appState::navigateToTopLevelDestination,
+                            modifier =
+                                Modifier.renderInSharedTransitionScopeOverlay(zIndexInOverlay = 1F),
+                        )
+                    }
+                },
+            ) { paddingValues ->
+                Row(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                    if (appState.shouldShowLeftNavigationRail) {
+                        LeftNavigationRail(
+                            topLevelDestinations = appState.topLevelDestinations,
+                            currentDestination = appState.currentDestination,
+                            onNavItemClick = { route ->
+                                appState.navigateToTopLevelDestination(route)
+                            },
+                        )
 
-                    Spacer(modifier = Modifier.width(width = 8.dp))
+                        Spacer(modifier = Modifier.width(width = 8.dp))
+                    }
+                    NimNavHost(
+                        navController = appState.navController,
+                        sharedTransitionScope = this@SharedTransitionLayout,
+                        onShowSnackbar = { message ->
+                            snackbarHostState.showSnackbar(
+                                message = message,
+                                withDismissAction = true,
+                            )
+                        },
+                    )
                 }
-                NimNavHost(
-                    navController = appState.navController,
-                    onShowSnackbar = { message ->
-                        snackbarHostState.showSnackbar(message = message, withDismissAction = true)
-                    },
-                )
             }
         }
     }
@@ -91,8 +104,9 @@ private fun BottomNavigationBar(
     topLevelDestinations: List<TopLevelDestination>,
     currentDestination: NavDestination?,
     onNavItemClick: (route: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    NavigationBar(containerColor = Color.Transparent) {
+    NavigationBar(containerColor = Color.Transparent, modifier = modifier) {
         topLevelDestinations.forEach { destination ->
             NowInMtgNavigationBarItem(
                 selected = currentDestination.withinTopLevelDestinationInHierarchy(destination),
