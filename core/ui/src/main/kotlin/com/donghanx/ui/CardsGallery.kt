@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 fun CardsGallery(
     parentRoute: String,
     cards: List<CardPreview>,
-    onCardClick: (index: Int, card: CardPreview) -> Unit,
+    onCardClick: (cacheKey: String, card: CardPreview) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
@@ -59,7 +59,7 @@ fun CardsGallery(
         ) {
             itemsIndexed(cards, key = { _, card -> card.id }) { index, card ->
                 val sharedTransitionKey =
-                    remember(index) { "$parentRoute-$SHARED_TRANSITION_CARD_IMG-$index" }
+                    remember(index) { "$parentRoute-$SHARED_TRANSITION_CARD_IMG-${card.id}" }
                 with(sharedTransitionScope) {
                     AsyncImage(
                         model =
@@ -82,7 +82,9 @@ fun CardsGallery(
                                 )
                                 .fillMaxWidth()
                                 .wrapContentHeight()
-                                .rippleClickable(onClick = { onCardClick(index, card) }),
+                                .rippleClickable(
+                                    onClick = { onCardClick(sharedTransitionKey, card) }
+                                ),
                     )
                 }
             }

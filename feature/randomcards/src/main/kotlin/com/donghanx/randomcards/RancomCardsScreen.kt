@@ -23,7 +23,7 @@ import com.donghanx.ui.CardsGallery
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun RandomCardsScreen(
-    onCardClick: (index: Int, multiverseId: Int) -> Unit,
+    onCardClick: (cacheKey: String, multiverseId: Int) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,

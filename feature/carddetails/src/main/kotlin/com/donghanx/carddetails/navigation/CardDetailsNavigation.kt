@@ -18,22 +18,28 @@ import com.donghanx.carddetails.CardDetailsScreen
 import com.donghanx.common.INVALID_ID
 
 const val CARD_DETAILS_ROUTE = "CardDetails"
-internal const val CARD_INDEX_ARGS = "CardIndex"
+internal const val IMAGE_CACHE_KEY_ARGS = "ImageCacheKey"
 internal const val CARD_ID_ARGS = "CardId"
 internal const val MULTIVERSE_ID_ARGS = "MultiverseId"
 
-fun NavController.navigateToCardDetails(index: Int, cardId: String, parentRoute: String) {
-    navigate(route = "${cardDetailsRoute(parentRoute)}/$index?$CARD_ID_ARGS=$cardId") {
+fun NavController.navigateToCardDetails(
+    imageCacheKey: String,
+    cardId: String,
+    parentRoute: String,
+) {
+    navigate(route = "${cardDetailsRoute(parentRoute)}/$imageCacheKey?$CARD_ID_ARGS=$cardId") {
         launchSingleTop = true
     }
 }
 
 fun NavController.navigateToCardDetailsWithMultiverseId(
-    index: Int,
+    imageCacheKey: String,
     multiverseId: Int,
     parentRoute: String,
 ) {
-    navigate(route = "${cardDetailsRoute(parentRoute)}/$index?$MULTIVERSE_ID_ARGS=$multiverseId") {
+    navigate(
+        route = "${cardDetailsRoute(parentRoute)}/$imageCacheKey?$MULTIVERSE_ID_ARGS=$multiverseId"
+    ) {
         launchSingleTop = true
     }
 }
@@ -47,13 +53,10 @@ fun NavGraphBuilder.cardDetailsScreen(
 ) {
     composable(
         route =
-            "${cardDetailsRoute(parentRoute)}/{$CARD_INDEX_ARGS}?${optionalArgs(CARD_ID_ARGS)}&${optionalArgs(MULTIVERSE_ID_ARGS)}",
+            "${cardDetailsRoute(parentRoute)}/{$IMAGE_CACHE_KEY_ARGS}?${optionalArgs(CARD_ID_ARGS)}&${optionalArgs(MULTIVERSE_ID_ARGS)}",
         arguments =
             listOf(
-                navArgument(CARD_INDEX_ARGS) {
-                    type = NavType.IntType
-                    defaultValue = 0
-                },
+                navArgument(IMAGE_CACHE_KEY_ARGS) { type = NavType.StringType },
                 navArgument(CARD_ID_ARGS) {
                     type = NavType.StringType
                     nullable = true
@@ -79,8 +82,7 @@ fun NavGraphBuilder.cardDetailsScreen(
         },
     ) {
         CardDetailsScreen(
-            parentRoute = parentRoute,
-            index = it.arguments?.getInt(CARD_INDEX_ARGS) ?: 0,
+            cacheKey = it.arguments?.getString(IMAGE_CACHE_KEY_ARGS).orEmpty(),
             onBackClick = onBackClick,
             onShowSnackbar = onShowSnackbar,
             sharedTransitionScope = sharedTransitionScope,

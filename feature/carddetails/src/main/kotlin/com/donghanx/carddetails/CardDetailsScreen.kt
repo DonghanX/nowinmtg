@@ -35,8 +35,7 @@ import com.donghanx.design.R as DesignR
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun CardDetailsScreen(
-    parentRoute: String,
-    index: Int,
+    cacheKey: String,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
@@ -67,8 +66,7 @@ internal fun CardDetailsScreen(
                 when (val uiState = cardDetailsUiState) {
                     is CardDetailsUiState.Success -> {
                         CardDetailsView(
-                            parentRoute = parentRoute,
-                            index = index,
+                            cacheKey = cacheKey,
                             cardDetails = uiState.cardDetails,
                             rulings = uiState.rulings,
                             sharedTransitionScope = sharedTransitionScope,

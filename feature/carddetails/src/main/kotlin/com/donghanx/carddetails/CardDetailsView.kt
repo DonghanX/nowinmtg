@@ -22,7 +22,6 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -41,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.donghanx.common.SHARED_TRANSITION_CARD_IMG
 import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.mock.MockUtils
@@ -51,8 +49,7 @@ import com.donghanx.model.Ruling
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun CardDetailsView(
-    parentRoute: String,
-    index: Int,
+    cacheKey: String,
     cardDetails: CardDetails,
     rulings: List<Ruling>,
     sharedTransitionScope: SharedTransitionScope,
@@ -63,21 +60,19 @@ internal fun CardDetailsView(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // TODO: Accommodate different window size
             cardDetails.imageUris?.let { imageUris ->
-                val sharedTransitionKey =
-                    remember(index) { "$parentRoute-$SHARED_TRANSITION_CARD_IMG-$index" }
                 with(sharedTransitionScope) {
                     AsyncImage(
                         model =
                             ImageRequest.Builder(LocalContext.current)
                                 .data(imageUris.png)
-                                .placeholderMemoryCacheKey(sharedTransitionKey)
+                                .placeholderMemoryCacheKey(cacheKey)
                                 .build(),
                         contentDescription = cardDetails.name,
                         modifier =
                             Modifier.sharedElement(
                                     state =
                                         sharedTransitionScope.rememberSharedContentState(
-                                            key = sharedTransitionKey
+                                            key = cacheKey
                                         ),
                                     animatedVisibilityScope = animatedVisibilityScope,
                                 )
@@ -237,8 +232,7 @@ private fun CardDetailsViewPreview(
     SharedTransitionLayout {
         AnimatedVisibility(visible = true) {
             CardDetailsView(
-                parentRoute = "RandomCards",
-                index = 0,
+                cacheKey = "",
                 cardDetails = cardDetails,
                 rulings = MockUtils.rulingsProgenitus,
                 sharedTransitionScope = this@SharedTransitionLayout,
