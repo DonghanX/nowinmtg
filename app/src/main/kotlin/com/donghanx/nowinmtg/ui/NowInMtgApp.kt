@@ -56,6 +56,8 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
                             showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
                             shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
                             onNavigationIconClick = appState.navController::navigateToSearch,
+                            modifier =
+                                Modifier.renderInSharedTransitionScopeOverlay(zIndexInOverlay = 1F),
                         )
                     }
                 },

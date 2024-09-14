@@ -10,7 +10,6 @@ import com.donghanx.common.INVALID_ID
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
-import com.donghanx.data.repository.carddetails.CardDetailsRepository
 import com.donghanx.data.repository.favorites.FavoritesRepository
 import com.donghanx.domain.ObserveCardDetailsUseCase
 import com.donghanx.domain.ObserveIsCardFavoriteUseCase
@@ -34,7 +33,6 @@ internal class CardDetailsViewModel
 @Inject
 constructor(
     private val favoritesRepository: FavoritesRepository,
-    private val cardDetailsRepository: CardDetailsRepository,
     private val refreshCardDetailsUseCase: RefreshCardDetailsUseCase,
     private val observeCardDetailsUseCase: ObserveCardDetailsUseCase,
     observeIsCardFavoriteUseCase: ObserveIsCardFavoriteUseCase,

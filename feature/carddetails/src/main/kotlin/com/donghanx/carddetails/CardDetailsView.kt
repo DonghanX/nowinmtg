@@ -55,32 +55,20 @@ internal fun CardDetailsView(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
+    placeholderResId: Int? = null,
 ) {
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // TODO: Accommodate different window size
             cardDetails.imageUris?.let { imageUris ->
-                with(sharedTransitionScope) {
-                    AsyncImage(
-                        model =
-                            ImageRequest.Builder(LocalContext.current)
-                                .data(imageUris.png)
-                                .placeholderMemoryCacheKey(cacheKey)
-                                .build(),
-                        contentDescription = cardDetails.name,
-                        modifier =
-                            Modifier.sharedElement(
-                                    state =
-                                        sharedTransitionScope.rememberSharedContentState(
-                                            key = cacheKey
-                                        ),
-                                    animatedVisibilityScope = animatedVisibilityScope,
-                                )
-                                .fillMaxWidth(fraction = 0.45F)
-                                .aspectRatio(ratio = 5F / 7F),
-                        contentScale = ContentScale.Crop,
-                    )
-                }
+                CardImage(
+                    imageUrl = imageUris.png,
+                    cacheKey = cacheKey,
+                    contentDescription = cardDetails.name,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    placeholderResId = placeholderResId,
+                )
             }
 
             CardBasicInfo(cardDetails, modifier.fillMaxWidth())
@@ -89,6 +77,63 @@ internal fun CardDetailsView(
         Spacer(modifier = Modifier.height(16.dp))
 
         CardDescription(cardDetails = cardDetails, rulings = rulings)
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+internal fun EmptyCardDetailsView(
+    cacheKey: String,
+    previewImageUrl: String?,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier,
+    placeholderResId: Int? = null,
+) {
+    Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
+        previewImageUrl?.let { imageUrl ->
+            CardImage(
+                cacheKey = cacheKey,
+                imageUrl = imageUrl,
+                contentDescription = null,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
+                placeholderResId = placeholderResId,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun CardImage(
+    cacheKey: String,
+    imageUrl: String,
+    contentDescription: String?,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier,
+    placeholderResId: Int? = null,
+) {
+    with(sharedTransitionScope) {
+        AsyncImage(
+            model =
+                ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .placeholderMemoryCacheKey(cacheKey)
+                    .apply { placeholderResId?.let(::placeholder) }
+                    .build(),
+            contentDescription = contentDescription,
+            modifier =
+                modifier
+                    .sharedElement(
+                        state = sharedTransitionScope.rememberSharedContentState(key = cacheKey),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                    )
+                    .fillMaxWidth(fraction = 0.5F)
+                    .aspectRatio(ratio = 5F / 7F),
+            contentScale = ContentScale.Crop,
+        )
     }
 }
 
@@ -237,6 +282,7 @@ private fun CardDetailsViewPreview(
                 rulings = MockUtils.rulingsProgenitus,
                 sharedTransitionScope = this@SharedTransitionLayout,
                 animatedVisibilityScope = this@AnimatedVisibility,
+                placeholderResId = R.drawable.img_progenitus,
             )
         }
     }

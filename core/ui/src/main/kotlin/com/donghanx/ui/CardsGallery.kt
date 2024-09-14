@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -27,7 +27,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Precision
-import com.donghanx.common.SHARED_TRANSITION_CARD_IMG
+import com.donghanx.common.SHARED_CARD_CONTAINER_KEY
+import com.donghanx.common.SHARED_CARD_IMG_KEY
 import com.donghanx.design.R
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.rippleClickable
@@ -57,35 +58,40 @@ fun CardsGallery(
             verticalArrangement = Arrangement.spacedBy(6.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            itemsIndexed(cards, key = { _, card -> card.id }) { index, card ->
-                val sharedTransitionKey =
-                    remember(index) { "$parentRoute-$SHARED_TRANSITION_CARD_IMG-${card.id}" }
+            items(cards, key = { card -> card.id }) { card ->
+                val cacheKey = remember(card.id) { "$SHARED_CARD_IMG_KEY-$parentRoute-${card.id}" }
                 with(sharedTransitionScope) {
-                    AsyncImage(
-                        model =
-                            ImageRequest.Builder(LocalContext.current)
-                                .data(card.imageUrl)
-                                .memoryCacheKey(sharedTransitionKey)
-                                .precision(Precision.EXACT)
-                                .crossfade(true)
-                                .build(),
-                        contentDescription = card.name,
-                        contentScale = ContentScale.Fit,
-                        placeholder = painterResource(id = R.drawable.blank_card_placeholder),
+                    Box(
                         modifier =
-                            Modifier.sharedElement(
-                                    state =
-                                        sharedTransitionScope.rememberSharedContentState(
-                                            key = sharedTransitionKey
-                                        ),
-                                    animatedVisibilityScope = animatedVisibilityScope,
-                                )
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .rippleClickable(
-                                    onClick = { onCardClick(sharedTransitionKey, card) }
-                                ),
-                    )
+                            Modifier.sharedBounds(
+                                sharedContentState =
+                                    rememberSharedContentState(
+                                        key = "$SHARED_CARD_CONTAINER_KEY-$cacheKey"
+                                    ),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                            )
+                    ) {
+                        AsyncImage(
+                            model =
+                                ImageRequest.Builder(LocalContext.current)
+                                    .data(card.imageUrl)
+                                    .memoryCacheKey(cacheKey)
+                                    .precision(Precision.EXACT)
+                                    .crossfade(true)
+                                    .build(),
+                            contentDescription = card.name,
+                            contentScale = ContentScale.Fit,
+                            placeholder = painterResource(id = R.drawable.blank_card_placeholder),
+                            modifier =
+                                Modifier.sharedElement(
+                                        state = rememberSharedContentState(key = cacheKey),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                    )
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .rippleClickable(onClick = { onCardClick(cacheKey, card) }),
+                        )
+                    }
                 }
             }
         }

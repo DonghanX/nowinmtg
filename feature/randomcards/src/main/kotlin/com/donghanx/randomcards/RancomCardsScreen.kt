@@ -17,13 +17,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.mock.MockUtils
+import com.donghanx.model.CardPreview
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
 import com.donghanx.ui.CardsGallery
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun RandomCardsScreen(
-    onCardClick: (cacheKey: String, multiverseId: Int) -> Unit,
+    onCardClick: (cacheKey: String, card: CardPreview) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
@@ -42,7 +43,7 @@ internal fun RandomCardsScreen(
                 CardsGallery(
                     parentRoute = RANDOM_CARDS_ROUTE,
                     cards = uiState.cards,
-                    onCardClick = { index, card -> onCardClick(index, card.id.toInt()) },
+                    onCardClick = onCardClick,
                     sharedTransitionScope = sharedTransitionScope,
                     animatedVisibilityScope = animatedContentScope,
                 )

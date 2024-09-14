@@ -3,6 +3,8 @@ package com.donghanx.carddetails
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,12 +31,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.common.SHARED_CARD_CONTAINER_KEY
 import com.donghanx.design.R as DesignR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun CardDetailsScreen(
     cacheKey: String,
+    previewImageUrl: String?,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
@@ -45,37 +48,55 @@ internal fun CardDetailsScreen(
 ) {
     val cardDetailsUiState by viewModel.cardDetailsUiState.collectAsStateWithLifecycle()
 
-    PullToRefreshBox(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-        isRefreshing = cardDetailsUiState.refreshing,
-        onRefresh = viewModel::refreshCardDetails,
-    ) {
-        Column {
-            val isCardFavorite by viewModel.isCardFavorite.collectAsStateWithLifecycle()
-            CardDetailsTopBar(
-                isCardFavorite = isCardFavorite,
-                onBackClick = onBackClick,
-                onFavoritesClick = { viewModel.onFavoriteClick() },
-            )
+    with(sharedTransitionScope) {
+        PullToRefreshBox(
+            modifier =
+                modifier
+                    .sharedBounds(
+                        sharedContentState =
+                            rememberSharedContentState(
+                                key = "$SHARED_CARD_CONTAINER_KEY-$cacheKey"
+                            ),
+                        animatedVisibilityScope = animatedContentScope,
+                        exit = fadeOut(),
+                        enter = fadeIn(),
+                    )
+                    .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+            isRefreshing = cardDetailsUiState.refreshing,
+            onRefresh = viewModel::refreshCardDetails,
+        ) {
+            Column {
+                val isCardFavorite by viewModel.isCardFavorite.collectAsStateWithLifecycle()
+                CardDetailsTopBar(
+                    isCardFavorite = isCardFavorite,
+                    onBackClick = onBackClick,
+                    onFavoritesClick = { viewModel.onFavoriteClick() },
+                )
 
-            Box(
-                modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState()),
-                contentAlignment = Alignment.TopCenter,
-            ) {
-                when (val uiState = cardDetailsUiState) {
-                    is CardDetailsUiState.Success -> {
-                        CardDetailsView(
-                            cacheKey = cacheKey,
-                            cardDetails = uiState.cardDetails,
-                            rulings = uiState.rulings,
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedContentScope,
-                        )
-                    }
-                    is CardDetailsUiState.NoCardDetails -> {
-                        // TODO: use a more intuitive placeholder view instead
-                        CircularProgressIndicator()
+                Box(
+                    modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState()),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    when (val uiState = cardDetailsUiState) {
+                        is CardDetailsUiState.Success -> {
+                            CardDetailsView(
+                                cacheKey = cacheKey,
+                                cardDetails = uiState.cardDetails,
+                                rulings = uiState.rulings,
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedContentScope,
+                            )
+                        }
+
+                        is CardDetailsUiState.NoCardDetails -> {
+                            EmptyCardDetailsView(
+                                cacheKey = cacheKey,
+                                previewImageUrl = previewImageUrl,
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedContentScope,
+                            )
+                        }
                     }
                 }
             }

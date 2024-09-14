@@ -9,12 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.favorites.navigation.FAVORITES_ROUTE
+import com.donghanx.model.CardPreview
 import com.donghanx.ui.CardsGallery
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun FavoritesScreen(
-    onCardClick: (cacheKey: String, cardId: String) -> Unit,
+    onCardClick: (cacheKey: String, card: CardPreview) -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
     modifier: Modifier = Modifier,
@@ -27,7 +28,7 @@ internal fun FavoritesScreen(
             CardsGallery(
                 parentRoute = FAVORITES_ROUTE,
                 cards = uiState.favoriteCards,
-                onCardClick = { cacheKey, card -> onCardClick(cacheKey, card.id) },
+                onCardClick = onCardClick,
                 modifier = modifier,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedVisibilityScope = animatedContentScope,

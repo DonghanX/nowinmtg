@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import com.donghanx.carddetails.navigation.cardDetailsScreen
 import com.donghanx.carddetails.navigation.navigateToCardDetails
 import com.donghanx.carddetails.navigation.navigateToCardDetailsWithMultiverseId
+import com.donghanx.common.INVALID_ID
 import com.donghanx.favorites.navigation.favoriteGraph
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_GRAPH_ROUTE
 import com.donghanx.randomcards.navigation.randomCardsGraph
@@ -35,10 +36,11 @@ fun NimNavHost(
         exitTransition = { fadeOut(animationSpec = tween(300)) },
     ) {
         randomCardsGraph(
-            onCardClick = { cacheKey, multiverseId, parentRoute ->
+            onCardClick = { cacheKey, card, parentRoute ->
                 navController.navigateToCardDetailsWithMultiverseId(
                     imageCacheKey = cacheKey,
-                    multiverseId = multiverseId,
+                    previewImageUrl = card.imageUrl,
+                    multiverseId = card.id.toIntOrNull() ?: INVALID_ID,
                     parentRoute = parentRoute,
                 )
             },
@@ -56,10 +58,11 @@ fun NimNavHost(
         setsScreen(onShowSnackbar = onShowSnackbar)
         searchScreen(onCloseClick = navController::popBackStack)
         favoriteGraph(
-            onCardClick = { cacheKey, cardId, parentRoute ->
+            onCardClick = { cacheKey, card, parentRoute ->
                 navController.navigateToCardDetails(
                     imageCacheKey = cacheKey,
-                    cardId = cardId,
+                    previewImageUrl = card.imageUrl,
+                    cardId = card.id,
                     parentRoute = parentRoute,
                 )
             },
