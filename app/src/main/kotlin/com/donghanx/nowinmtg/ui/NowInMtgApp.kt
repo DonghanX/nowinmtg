@@ -1,7 +1,6 @@
 package com.donghanx.nowinmtg.ui
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,59 +42,46 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         val appState = rememberNowInMtgAppState(windowSizeClass = windowSizeClass)
         val snackbarHostState = remember { SnackbarHostState() }
-        SharedTransitionLayout {
-            Scaffold(
-                snackbarHost = { SnackbarHost(snackbarHostState) },
-                topBar = {
-                    appState.currentTopLevelDestination?.let { topLevelDestination ->
-                        NowInMtgTopAppBar(
-                            titleResId = topLevelDestination.labelResId,
-                            navigationIcon = Icons.Rounded.Search,
-                            navigationIconContentDescription =
-                                stringResource(DesignR.string.search),
-                            showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
-                            shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
-                            onNavigationIconClick = appState.navController::navigateToSearch,
-                            modifier =
-                                Modifier.renderInSharedTransitionScopeOverlay(zIndexInOverlay = 1F),
-                        )
-                    }
-                },
-                bottomBar = {
-                    if (appState.shouldShowBottomBar) {
-                        BottomNavigationBar(
-                            topLevelDestinations = appState.topLevelDestinations,
-                            currentDestination = appState.currentDestination,
-                            onNavItemClick = appState::navigateToTopLevelDestination,
-                            modifier =
-                                Modifier.renderInSharedTransitionScopeOverlay(zIndexInOverlay = 1F),
-                        )
-                    }
-                },
-            ) { paddingValues ->
-                Row(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-                    if (appState.shouldShowLeftNavigationRail) {
-                        LeftNavigationRail(
-                            topLevelDestinations = appState.topLevelDestinations,
-                            currentDestination = appState.currentDestination,
-                            onNavItemClick = { route ->
-                                appState.navigateToTopLevelDestination(route)
-                            },
-                        )
-
-                        Spacer(modifier = Modifier.width(width = 8.dp))
-                    }
-                    NimNavHost(
-                        navController = appState.navController,
-                        sharedTransitionScope = this@SharedTransitionLayout,
-                        onShowSnackbar = { message ->
-                            snackbarHostState.showSnackbar(
-                                message = message,
-                                withDismissAction = true,
-                            )
-                        },
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            topBar = {
+                appState.currentTopLevelDestination?.let { topLevelDestination ->
+                    NowInMtgTopAppBar(
+                        titleResId = topLevelDestination.labelResId,
+                        navigationIcon = Icons.Rounded.Search,
+                        navigationIconContentDescription = stringResource(DesignR.string.search),
+                        showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
+                        shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
+                        onNavigationIconClick = appState.navController::navigateToSearch,
                     )
                 }
+            },
+            bottomBar = {
+                if (appState.shouldShowBottomBar) {
+                    BottomNavigationBar(
+                        topLevelDestinations = appState.topLevelDestinations,
+                        currentDestination = appState.currentDestination,
+                        onNavItemClick = appState::navigateToTopLevelDestination,
+                    )
+                }
+            },
+        ) { paddingValues ->
+            Row(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                if (appState.shouldShowLeftNavigationRail) {
+                    LeftNavigationRail(
+                        topLevelDestinations = appState.topLevelDestinations,
+                        currentDestination = appState.currentDestination,
+                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) },
+                    )
+
+                    Spacer(modifier = Modifier.width(width = 8.dp))
+                }
+                NimNavHost(
+                    navController = appState.navController,
+                    onShowSnackbar = { message ->
+                        snackbarHostState.showSnackbar(message = message, withDismissAction = true)
+                    },
+                )
             }
         }
     }

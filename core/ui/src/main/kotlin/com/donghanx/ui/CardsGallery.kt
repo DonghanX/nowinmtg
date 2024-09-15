@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Precision
-import com.donghanx.common.SHARED_CARD_CONTAINER_KEY
 import com.donghanx.common.SHARED_CARD_IMG_KEY
 import com.donghanx.design.R
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
@@ -61,37 +60,26 @@ fun CardsGallery(
             items(cards, key = { card -> card.id }) { card ->
                 val cacheKey = remember(card.id) { "$SHARED_CARD_IMG_KEY-$parentRoute-${card.id}" }
                 with(sharedTransitionScope) {
-                    Box(
+                    AsyncImage(
+                        model =
+                            ImageRequest.Builder(LocalContext.current)
+                                .data(card.imageUrl)
+                                .memoryCacheKey(cacheKey)
+                                .precision(Precision.EXACT)
+                                .crossfade(true)
+                                .build(),
+                        contentDescription = card.name,
+                        contentScale = ContentScale.Fit,
+                        placeholder = painterResource(id = R.drawable.blank_card_placeholder),
                         modifier =
-                            Modifier.sharedBounds(
-                                sharedContentState =
-                                    rememberSharedContentState(
-                                        key = "$SHARED_CARD_CONTAINER_KEY-$cacheKey"
-                                    ),
-                                animatedVisibilityScope = animatedVisibilityScope,
-                            )
-                    ) {
-                        AsyncImage(
-                            model =
-                                ImageRequest.Builder(LocalContext.current)
-                                    .data(card.imageUrl)
-                                    .memoryCacheKey(cacheKey)
-                                    .precision(Precision.EXACT)
-                                    .crossfade(true)
-                                    .build(),
-                            contentDescription = card.name,
-                            contentScale = ContentScale.Fit,
-                            placeholder = painterResource(id = R.drawable.blank_card_placeholder),
-                            modifier =
-                                Modifier.sharedElement(
-                                        state = rememberSharedContentState(key = cacheKey),
-                                        animatedVisibilityScope = animatedVisibilityScope,
-                                    )
-                                    .fillMaxWidth()
-                                    .wrapContentHeight()
-                                    .rippleClickable(onClick = { onCardClick(cacheKey, card) }),
-                        )
-                    }
+                            Modifier.sharedElement(
+                                    state = rememberSharedContentState(key = cacheKey),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                )
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .rippleClickable(onClick = { onCardClick(cacheKey, card) }),
+                    )
                 }
             }
         }
