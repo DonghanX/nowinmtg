@@ -1,10 +1,8 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package com.donghanx.carddetails
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,20 +39,21 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.donghanx.common.extensions.capitalize
+import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
+import com.donghanx.design.composable.provider.LocalSharedTransitionScope
+import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
+import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
 import com.donghanx.model.Ruling
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun CardDetailsView(
     cardDetails: CardDetails?,
     rulings: List<Ruling>,
     previewImageUrl: String?,
     cacheKey: String,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     placeholderResId: Int? = null,
 ) {
@@ -65,8 +64,6 @@ internal fun CardDetailsView(
                 imageUrl = cardDetails?.imageUris?.png ?: previewImageUrl,
                 cacheKey = cacheKey,
                 contentDescription = cardDetails?.name,
-                sharedTransitionScope = sharedTransitionScope,
-                animatedVisibilityScope = animatedVisibilityScope,
                 placeholderResId = placeholderResId,
             )
 
@@ -79,18 +76,15 @@ internal fun CardDetailsView(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun CardImage(
     cacheKey: String,
     imageUrl: String?,
     contentDescription: String?,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     placeholderResId: Int? = null,
 ) {
-    with(sharedTransitionScope) {
+    with(LocalSharedTransitionScope.currentNotNull) {
         AsyncImage(
             model =
                 ImageRequest.Builder(LocalContext.current)
@@ -102,8 +96,8 @@ private fun CardImage(
             modifier =
                 modifier
                     .sharedElement(
-                        state = sharedTransitionScope.rememberSharedContentState(key = cacheKey),
-                        animatedVisibilityScope = animatedVisibilityScope,
+                        state = rememberSharedContentState(key = cacheKey),
+                        animatedVisibilityScope = LocalNavAnimatedVisibilityScope.currentNotNull,
                     )
                     .fillMaxWidth(fraction = 0.5F)
                     .aspectRatio(ratio = 5F / 7F),
@@ -243,24 +237,19 @@ private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(modifier = modifier, thickness = 0.5.dp)
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun CardDetailsViewPreview(
     @PreviewParameter(CardDetailsPreviewParameterProvider::class) cardDetails: CardDetails
 ) {
-    SharedTransitionLayout {
-        AnimatedVisibility(visible = true) {
-            CardDetailsView(
-                cacheKey = "",
-                cardDetails = cardDetails,
-                rulings = MockUtils.rulingsProgenitus,
-                previewImageUrl = null,
-                sharedTransitionScope = this@SharedTransitionLayout,
-                animatedVisibilityScope = this@AnimatedVisibility,
-                placeholderResId = R.drawable.img_progenitus,
-            )
-        }
+    SharedTransitionProviderWrapper {
+        CardDetailsView(
+            cacheKey = "",
+            cardDetails = cardDetails,
+            rulings = MockUtils.rulingsProgenitus,
+            previewImageUrl = null,
+            placeholderResId = R.drawable.img_progenitus,
+        )
     }
 }
 

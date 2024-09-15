@@ -1,8 +1,5 @@
 package com.donghanx.carddetails
 
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,15 +29,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.design.R as DesignR
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CardDetailsScreen(
     cacheKey: String,
     previewImageUrl: String?,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope,
     modifier: Modifier = Modifier,
     viewModel: CardDetailsViewModel = hiltViewModel(),
 ) {
@@ -78,8 +73,6 @@ internal fun CardDetailsScreen(
                     cardDetails = cardDetails,
                     rulings = rulings.orEmpty(),
                     previewImageUrl = previewImageUrl,
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedContentScope,
                 )
             }
         }

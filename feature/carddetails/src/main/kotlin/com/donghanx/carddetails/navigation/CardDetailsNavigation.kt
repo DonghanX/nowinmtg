@@ -1,14 +1,13 @@
 package com.donghanx.carddetails.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -17,6 +16,7 @@ import androidx.navigation.navArgument
 import com.donghanx.carddetails.CardDetailsScreen
 import com.donghanx.common.INVALID_ID
 import com.donghanx.common.extensions.encodeUrl
+import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 
 const val CARD_DETAILS_ROUTE = "CardDetails"
 internal const val IMAGE_CACHE_KEY_ARGS = "ImageCacheKey"
@@ -52,12 +52,10 @@ fun NavController.navigateToCardDetailsWithMultiverseId(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.cardDetailsScreen(
     parentRoute: String,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
 ) {
     composable(
         route = cardDetailsFullRoute(parentRoute),
@@ -92,14 +90,14 @@ fun NavGraphBuilder.cardDetailsScreen(
                 )
         },
     ) {
-        CardDetailsScreen(
-            cacheKey = it.arguments?.getString(IMAGE_CACHE_KEY_ARGS).orEmpty(),
-            previewImageUrl = it.arguments?.getString(PREVIEW_IMAGE_URL_ARGS).orEmpty(),
-            onBackClick = onBackClick,
-            onShowSnackbar = onShowSnackbar,
-            sharedTransitionScope = sharedTransitionScope,
-            animatedContentScope = this@composable,
-        )
+        CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+            CardDetailsScreen(
+                cacheKey = it.arguments?.getString(IMAGE_CACHE_KEY_ARGS).orEmpty(),
+                previewImageUrl = it.arguments?.getString(PREVIEW_IMAGE_URL_ARGS).orEmpty(),
+                onBackClick = onBackClick,
+                onShowSnackbar = onShowSnackbar,
+            )
+        }
     }
 }
 

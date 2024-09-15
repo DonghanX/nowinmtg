@@ -1,6 +1,5 @@
 package com.donghanx.nowinmtg.ui
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,15 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.design.ui.navigation.NowInMtgNavigationBarItem
 import com.donghanx.design.ui.navigation.NowInMtgNavigationRailItem
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.search.navigation.navigateToSearch
+import com.donghanx.design.R as DesignR
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {

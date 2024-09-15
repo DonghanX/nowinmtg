@@ -1,8 +1,6 @@
 package com.donghanx.ui
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +29,9 @@ import com.donghanx.common.SHARED_CARD_IMG_KEY
 import com.donghanx.design.R
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.rippleClickable
+import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
+import com.donghanx.design.composable.provider.LocalSharedTransitionScope
+import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.model.CardPreview
 import kotlinx.coroutines.launch
@@ -41,8 +42,6 @@ fun CardsGallery(
     parentRoute: String,
     cards: List<CardPreview>,
     onCardClick: (cacheKey: String, card: CardPreview) -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -58,8 +57,9 @@ fun CardsGallery(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(cards, key = { card -> card.id }) { card ->
+                // TODO: use a data class to represent the sharedTransitionKey
                 val cacheKey = remember(card.id) { "$SHARED_CARD_IMG_KEY-$parentRoute-${card.id}" }
-                with(sharedTransitionScope) {
+                with(LocalSharedTransitionScope.currentNotNull) {
                     AsyncImage(
                         model =
                             ImageRequest.Builder(LocalContext.current)
@@ -74,7 +74,8 @@ fun CardsGallery(
                         modifier =
                             Modifier.sharedElement(
                                     state = rememberSharedContentState(key = cacheKey),
-                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    animatedVisibilityScope =
+                                        LocalNavAnimatedVisibilityScope.currentNotNull,
                                 )
                                 .fillMaxWidth()
                                 .wrapContentHeight()

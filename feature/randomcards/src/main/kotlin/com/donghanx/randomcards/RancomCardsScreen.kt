@@ -1,10 +1,5 @@
 package com.donghanx.randomcards
 
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -16,18 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
 import com.donghanx.ui.CardsGallery
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RandomCardsScreen(
     onCardClick: (cacheKey: String, card: CardPreview) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope,
     modifier: Modifier = Modifier,
     viewModel: RandomCardsViewModel = hiltViewModel(),
 ) {
@@ -44,8 +38,6 @@ internal fun RandomCardsScreen(
                     parentRoute = RANDOM_CARDS_ROUTE,
                     cards = uiState.cards,
                     onCardClick = onCardClick,
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedContentScope,
                 )
             }
             // TODO: add a placeholder composable for empty cards
@@ -60,19 +52,14 @@ internal fun RandomCardsScreen(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun CardsGalleryPreview() {
-    SharedTransitionLayout {
-        AnimatedVisibility(visible = true) {
-            CardsGallery(
-                parentRoute = RANDOM_CARDS_ROUTE,
-                cards = MockUtils.emptyCards,
-                onCardClick = { _, _ -> },
-                sharedTransitionScope = this@SharedTransitionLayout,
-                animatedVisibilityScope = this@AnimatedVisibility,
-            )
-        }
+    SharedTransitionProviderWrapper {
+        CardsGallery(
+            parentRoute = RANDOM_CARDS_ROUTE,
+            cards = MockUtils.emptyCards,
+            onCardClick = { _, _ -> },
+        )
     }
 }
