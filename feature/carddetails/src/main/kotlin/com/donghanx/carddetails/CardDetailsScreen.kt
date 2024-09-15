@@ -23,6 +23,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -63,21 +64,23 @@ internal fun CardDetailsScreen(
                 modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState()),
                 contentAlignment = Alignment.TopCenter,
             ) {
-                when (val uiState = cardDetailsUiState) {
-                    is CardDetailsUiState.Success -> {
-                        CardDetailsView(
-                            cacheKey = cacheKey,
-                            cardDetails = uiState.cardDetails,
-                            rulings = uiState.rulings,
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedContentScope,
-                        )
+                val (cardDetails, rulings) =
+                    remember(cardDetailsUiState) {
+                        when (val detailsState = cardDetailsUiState) {
+                            is CardDetailsUiState.Success ->
+                                detailsState.cardDetails to detailsState.rulings
+                            is CardDetailsUiState.NoCardDetails -> null to null
+                        }
                     }
 
-                    is CardDetailsUiState.NoCardDetails -> {
-                        // TODO:
-                    }
-                }
+                CardDetailsView(
+                    cacheKey = cacheKey,
+                    cardDetails = cardDetails,
+                    rulings = rulings.orEmpty(),
+                    previewImageUrl = previewImageUrl,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedContentScope,
+                )
             }
         }
     }

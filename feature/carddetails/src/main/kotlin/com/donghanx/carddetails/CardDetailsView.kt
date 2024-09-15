@@ -49,9 +49,10 @@ import com.donghanx.model.Ruling
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun CardDetailsView(
-    cacheKey: String,
-    cardDetails: CardDetails,
+    cardDetails: CardDetails?,
     rulings: List<Ruling>,
+    previewImageUrl: String?,
+    cacheKey: String,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
@@ -60,47 +61,21 @@ internal fun CardDetailsView(
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // TODO: Accommodate different window size
-            cardDetails.imageUris?.let { imageUris ->
-                CardImage(
-                    imageUrl = imageUris.png,
-                    cacheKey = cacheKey,
-                    contentDescription = cardDetails.name,
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    placeholderResId = placeholderResId,
-                )
-            }
-
-            CardBasicInfo(cardDetails, modifier.fillMaxWidth())
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        CardDescription(cardDetails = cardDetails, rulings = rulings)
-    }
-}
-
-@OptIn(ExperimentalSharedTransitionApi::class)
-@Composable
-internal fun EmptyCardDetailsView(
-    cacheKey: String,
-    previewImageUrl: String?,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
-    modifier: Modifier = Modifier,
-    placeholderResId: Int? = null,
-) {
-    Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
-        previewImageUrl?.let { imageUrl ->
             CardImage(
+                imageUrl = cardDetails?.imageUris?.png ?: previewImageUrl,
                 cacheKey = cacheKey,
-                imageUrl = imageUrl,
-                contentDescription = null,
+                contentDescription = cardDetails?.name,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedVisibilityScope = animatedVisibilityScope,
                 placeholderResId = placeholderResId,
             )
+
+            cardDetails?.let { CardBasicInfo(cardDetails = it, modifier = modifier.fillMaxWidth()) }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        cardDetails?.let { CardDescription(cardDetails = it, rulings = rulings) }
     }
 }
 
@@ -108,7 +83,7 @@ internal fun EmptyCardDetailsView(
 @Composable
 private fun CardImage(
     cacheKey: String,
-    imageUrl: String,
+    imageUrl: String?,
     contentDescription: String?,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
@@ -280,6 +255,7 @@ private fun CardDetailsViewPreview(
                 cacheKey = "",
                 cardDetails = cardDetails,
                 rulings = MockUtils.rulingsProgenitus,
+                previewImageUrl = null,
                 sharedTransitionScope = this@SharedTransitionLayout,
                 animatedVisibilityScope = this@AnimatedVisibility,
                 placeholderResId = R.drawable.img_progenitus,
