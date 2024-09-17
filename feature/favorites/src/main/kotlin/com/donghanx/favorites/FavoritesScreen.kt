@@ -11,7 +11,7 @@ import com.donghanx.ui.CardsGallery
 
 @Composable
 internal fun FavoritesScreen(
-    onCardClick: (cacheKey: String, card: CardPreview) -> Unit,
+    onCardClick: (card: CardPreview) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FavoritesViewModel = hiltViewModel(),
 ) {

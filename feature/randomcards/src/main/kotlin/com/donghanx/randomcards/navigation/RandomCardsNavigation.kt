@@ -12,7 +12,7 @@ const val RANDOM_CARDS_GRAPH_ROUTE = "RandomCardsGraph"
 const val RANDOM_CARDS_ROUTE = "RandomCards"
 
 fun NavGraphBuilder.randomCardsGraph(
-    onCardClick: (cacheKey: String, card: CardPreview, parentRoute: String) -> Unit,
+    onCardClick: (card: CardPreview, parentRoute: String) -> Unit,
     nestedGraphs: NavGraphBuilder.(parentRoute: String) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
@@ -20,9 +20,7 @@ fun NavGraphBuilder.randomCardsGraph(
         composable(route = RANDOM_CARDS_ROUTE) {
             CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
                 RandomCardsScreen(
-                    onCardClick = { cacheKey, card ->
-                        onCardClick(cacheKey, card, RANDOM_CARDS_ROUTE)
-                    },
+                    onCardClick = { card -> onCardClick(card, RANDOM_CARDS_ROUTE) },
                     onShowSnackbar = onShowSnackbar,
                 )
             }

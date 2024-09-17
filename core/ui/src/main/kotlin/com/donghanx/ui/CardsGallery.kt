@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Precision
-import com.donghanx.common.SHARED_CARD_IMG_KEY
 import com.donghanx.design.R
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.rippleClickable
@@ -33,6 +32,7 @@ import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
+import com.donghanx.design.ui.shared.CardSharedElementKey
 import com.donghanx.model.CardPreview
 import kotlinx.coroutines.launch
 
@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 fun CardsGallery(
     parentRoute: String,
     cards: List<CardPreview>,
-    onCardClick: (cacheKey: String, card: CardPreview) -> Unit,
+    onCardClick: (card: CardPreview) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -57,14 +57,14 @@ fun CardsGallery(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(cards, key = { card -> card.id }) { card ->
-                // TODO: use a data class to represent the sharedTransitionKey
-                val cacheKey = remember(card.id) { "$SHARED_CARD_IMG_KEY-$parentRoute-${card.id}" }
+                val cacheKey =
+                    remember(card.id) { CardSharedElementKey(id = card.id, origin = parentRoute) }
                 with(LocalSharedTransitionScope.currentNotNull) {
                     AsyncImage(
                         model =
                             ImageRequest.Builder(LocalContext.current)
                                 .data(card.imageUrl)
-                                .memoryCacheKey(cacheKey)
+                                .memoryCacheKey(cacheKey.toMemoryCacheKey())
                                 .precision(Precision.EXACT)
                                 .crossfade(true)
                                 .build(),
@@ -79,7 +79,7 @@ fun CardsGallery(
                                 )
                                 .fillMaxWidth()
                                 .wrapContentHeight()
-                                .rippleClickable(onClick = { onCardClick(cacheKey, card) }),
+                                .rippleClickable(onClick = { onCardClick(card) }),
                     )
                 }
             }

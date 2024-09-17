@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -44,6 +45,7 @@ import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
 import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.ui.card.ExpandableCard
+import com.donghanx.design.ui.shared.CardSharedElementKey
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
 import com.donghanx.model.Ruling
@@ -53,7 +55,8 @@ internal fun CardDetailsView(
     cardDetails: CardDetails?,
     rulings: List<Ruling>,
     previewImageUrl: String?,
-    cacheKey: String,
+    cacheKeyId: String?,
+    parentRoute: String,
     modifier: Modifier = Modifier,
     placeholderResId: Int? = null,
 ) {
@@ -62,8 +65,9 @@ internal fun CardDetailsView(
             // TODO: Accommodate different window size
             CardImage(
                 imageUrl = cardDetails?.imageUris?.png ?: previewImageUrl,
-                cacheKey = cacheKey,
+                cacheKeyId = cacheKeyId,
                 contentDescription = cardDetails?.name,
+                parentRoute = parentRoute,
                 placeholderResId = placeholderResId,
             )
 
@@ -78,26 +82,34 @@ internal fun CardDetailsView(
 
 @Composable
 private fun CardImage(
-    cacheKey: String,
+    cacheKeyId: String?,
     imageUrl: String?,
     contentDescription: String?,
+    parentRoute: String,
     modifier: Modifier = Modifier,
     placeholderResId: Int? = null,
 ) {
     with(LocalSharedTransitionScope.currentNotNull) {
+        val cacheKey =
+            remember(cacheKeyId) { CardSharedElementKey(id = cacheKeyId, origin = parentRoute) }
         AsyncImage(
             model =
                 ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
-                    .placeholderMemoryCacheKey(cacheKey)
+                    .placeholderMemoryCacheKey(cacheKey.toMemoryCacheKey())
                     .apply { placeholderResId?.let(::placeholder) }
                     .build(),
             contentDescription = contentDescription,
             modifier =
                 modifier
-                    .sharedElement(
-                        state = rememberSharedContentState(key = cacheKey),
-                        animatedVisibilityScope = LocalNavAnimatedVisibilityScope.currentNotNull,
+                    .then(
+                        if (cacheKey.isValid())
+                            Modifier.sharedElement(
+                                state = rememberSharedContentState(key = cacheKey),
+                                animatedVisibilityScope =
+                                    LocalNavAnimatedVisibilityScope.currentNotNull,
+                            )
+                        else Modifier
                     )
                     .fillMaxWidth(fraction = 0.5F)
                     .aspectRatio(ratio = 5F / 7F),
@@ -244,9 +256,10 @@ private fun CardDetailsViewPreview(
 ) {
     SharedTransitionProviderWrapper {
         CardDetailsView(
-            cacheKey = "",
+            cacheKeyId = null,
             cardDetails = cardDetails,
             rulings = MockUtils.rulingsProgenitus,
+            parentRoute = "Favorites",
             previewImageUrl = null,
             placeholderResId = R.drawable.img_progenitus,
         )

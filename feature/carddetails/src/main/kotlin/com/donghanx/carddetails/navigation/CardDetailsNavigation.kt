@@ -7,7 +7,10 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -19,34 +22,31 @@ import com.donghanx.common.extensions.encodeUrl
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 
 const val CARD_DETAILS_ROUTE = "CardDetails"
-internal const val IMAGE_CACHE_KEY_ARGS = "ImageCacheKey"
 internal const val PREVIEW_IMAGE_URL_ARGS = "PreviewImageUrl"
 internal const val CARD_ID_ARGS = "CardId"
 internal const val MULTIVERSE_ID_ARGS = "MultiverseId"
 
 fun NavController.navigateToCardDetails(
-    imageCacheKey: String,
     cardId: String,
     previewImageUrl: String?,
     parentRoute: String,
 ) {
     navigate(
         route =
-            "${cardDetailsPrefixRoute(parentRoute)}/$imageCacheKey?$PREVIEW_IMAGE_URL_ARGS=${previewImageUrl?.encodeUrl()}&$CARD_ID_ARGS=$cardId"
+            "${cardDetailsPrefixRoute(parentRoute)}/?$PREVIEW_IMAGE_URL_ARGS=${previewImageUrl?.encodeUrl()}&$CARD_ID_ARGS=$cardId"
     ) {
         launchSingleTop = true
     }
 }
 
 fun NavController.navigateToCardDetailsWithMultiverseId(
-    imageCacheKey: String,
     previewImageUrl: String?,
     multiverseId: Int,
     parentRoute: String,
 ) {
     navigate(
         route =
-            "${cardDetailsPrefixRoute(parentRoute)}/$imageCacheKey?$PREVIEW_IMAGE_URL_ARGS=${previewImageUrl?.encodeUrl()}&$MULTIVERSE_ID_ARGS=$multiverseId"
+            "${cardDetailsPrefixRoute(parentRoute)}/?$PREVIEW_IMAGE_URL_ARGS=${previewImageUrl?.encodeUrl()}&$MULTIVERSE_ID_ARGS=$multiverseId"
     ) {
         launchSingleTop = true
     }
@@ -61,7 +61,6 @@ fun NavGraphBuilder.cardDetailsScreen(
         route = cardDetailsFullRoute(parentRoute),
         arguments =
             listOf(
-                navArgument(IMAGE_CACHE_KEY_ARGS) { type = NavType.StringType },
                 navArgument(PREVIEW_IMAGE_URL_ARGS) {
                     type = NavType.StringType
                     nullable = true
@@ -89,11 +88,13 @@ fun NavGraphBuilder.cardDetailsScreen(
                     towards = AnimatedContentTransitionScope.SlideDirection.End,
                 )
         },
-    ) {
+    ) { backStackEntry ->
         CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
             CardDetailsScreen(
-                cacheKey = it.arguments?.getString(IMAGE_CACHE_KEY_ARGS).orEmpty(),
-                previewImageUrl = it.arguments?.getString(PREVIEW_IMAGE_URL_ARGS).orEmpty(),
+                cacheKeyId = backStackEntry.rememberValidId(),
+                previewImageUrl =
+                    backStackEntry.arguments?.getString(PREVIEW_IMAGE_URL_ARGS).orEmpty(),
+                parentRoute = parentRoute,
                 onBackClick = onBackClick,
                 onShowSnackbar = onShowSnackbar,
             )
@@ -102,7 +103,7 @@ fun NavGraphBuilder.cardDetailsScreen(
 }
 
 private fun cardDetailsFullRoute(parentRoute: String): String =
-    "${cardDetailsPrefixRoute(parentRoute)}/{$IMAGE_CACHE_KEY_ARGS}?" +
+    "${cardDetailsPrefixRoute(parentRoute)}/?" +
         "${optionalArgs(PREVIEW_IMAGE_URL_ARGS)}&" +
         "${optionalArgs(CARD_ID_ARGS)}&" +
         optionalArgs(MULTIVERSE_ID_ARGS)
@@ -111,3 +112,13 @@ private fun cardDetailsPrefixRoute(parentRoute: String): String =
     "${CARD_DETAILS_ROUTE}_$parentRoute"
 
 private fun optionalArgs(argsName: String): String = "$argsName={$argsName}"
+
+@Composable
+private fun NavBackStackEntry.rememberValidId(): String? =
+    remember(arguments) {
+        val arguments = arguments ?: return@remember null
+        with(arguments) {
+            getString(CARD_ID_ARGS)
+                ?: getInt(MULTIVERSE_ID_ARGS).takeIf { it != INVALID_ID }?.toString()
+        }
+    }
