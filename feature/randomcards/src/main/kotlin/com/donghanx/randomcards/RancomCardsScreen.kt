@@ -11,13 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
 import com.donghanx.mock.MockUtils
+import com.donghanx.model.CardPreview
+import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
 import com.donghanx.ui.CardsGallery
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RandomCardsScreen(
-    onCardClick: (multiverseId: Int) -> Unit,
+    onCardClick: (card: CardPreview) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RandomCardsViewModel = hiltViewModel(),
@@ -31,7 +34,11 @@ internal fun RandomCardsScreen(
     ) {
         when (val uiState = randomCardsUiState) {
             is RandomCardsUiState.Success -> {
-                CardsGallery(uiState.cards, onCardClick = { onCardClick(it.id.toInt()) })
+                CardsGallery(
+                    parentRoute = RANDOM_CARDS_ROUTE,
+                    cards = uiState.cards,
+                    onCardClick = onCardClick,
+                )
             }
             // TODO: add a placeholder composable for empty cards
             is RandomCardsUiState.Empty -> Unit
@@ -48,5 +55,11 @@ internal fun RandomCardsScreen(
 @Preview(showBackground = true)
 @Composable
 private fun CardsGalleryPreview() {
-    CardsGallery(cards = MockUtils.emptyCards, onCardClick = {})
+    SharedTransitionProviderWrapper {
+        CardsGallery(
+            parentRoute = RANDOM_CARDS_ROUTE,
+            cards = MockUtils.emptyCards,
+            onCardClick = {},
+        )
+    }
 }

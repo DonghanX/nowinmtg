@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,6 +20,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,6 +32,9 @@ import com.donghanx.design.R as DesignR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CardDetailsScreen(
+    cacheKeyId: String?,
+    previewImageUrl: String?,
+    parentRoute: String,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
@@ -57,25 +60,29 @@ internal fun CardDetailsScreen(
                 modifier = Modifier.fillMaxSize().verticalScroll(state = rememberScrollState()),
                 contentAlignment = Alignment.TopCenter,
             ) {
-                when (val uiState = cardDetailsUiState) {
-                    is CardDetailsUiState.Success -> {
-                        CardDetailsView(
-                            cardDetails = uiState.cardDetails,
-                            rulings = uiState.rulings,
-                        )
+                val (cardDetails, rulings) =
+                    remember(cardDetailsUiState) {
+                        when (val detailsState = cardDetailsUiState) {
+                            is CardDetailsUiState.Success ->
+                                detailsState.cardDetails to detailsState.rulings
+                            is CardDetailsUiState.NoCardDetails -> null to null
+                        }
                     }
-                    is CardDetailsUiState.NoCardDetails -> {
-                        // TODO: use a more intuitive placeholder view instead
-                        CircularProgressIndicator()
-                    }
-                }
+
+                CardDetailsView(
+                    cacheKeyId = cacheKeyId,
+                    cardDetails = cardDetails,
+                    rulings = rulings.orEmpty(),
+                    previewImageUrl = previewImageUrl,
+                    parentRoute = parentRoute,
+                )
             }
         }
+    }
 
-        LaunchedEffect(cardDetailsUiState.errorMessage) {
-            if (cardDetailsUiState.hasError()) {
-                onShowSnackbar(cardDetailsUiState.errorMessage())
-            }
+    LaunchedEffect(cardDetailsUiState.errorMessage) {
+        if (cardDetailsUiState.hasError()) {
+            onShowSnackbar(cardDetailsUiState.errorMessage())
         }
     }
 }

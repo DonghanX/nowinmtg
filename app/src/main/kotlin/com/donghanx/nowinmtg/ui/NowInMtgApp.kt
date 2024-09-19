@@ -60,7 +60,7 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
                     BottomNavigationBar(
                         topLevelDestinations = appState.topLevelDestinations,
                         currentDestination = appState.currentDestination,
-                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) },
+                        onNavItemClick = appState::navigateToTopLevelDestination,
                     )
                 }
             },
@@ -91,26 +91,29 @@ private fun BottomNavigationBar(
     topLevelDestinations: List<TopLevelDestination>,
     currentDestination: NavDestination?,
     onNavItemClick: (route: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    NavigationBar(containerColor = Color.Transparent) {
-        topLevelDestinations.forEach { destination ->
-            NowInMtgNavigationBarItem(
-                selected = currentDestination.withinTopLevelDestinationInHierarchy(destination),
-                onClick = { onNavItemClick(destination.route) },
-                selectedIcon = {
-                    Icon(
-                        painter = painterResource(id = destination.selectedIconResId),
-                        contentDescription = stringResource(id = destination.labelResId),
-                    )
-                },
-                unSelectedIcon = {
-                    Icon(
-                        painter = painterResource(id = destination.unselectedIconResId),
-                        contentDescription = stringResource(id = destination.labelResId),
-                    )
-                },
-                label = { Text(text = stringResource(id = destination.labelResId)) },
-            )
+    Surface(modifier = modifier) {
+        NavigationBar(containerColor = Color.Transparent) {
+            topLevelDestinations.forEach { destination ->
+                NowInMtgNavigationBarItem(
+                    selected = currentDestination.withinTopLevelDestinationInHierarchy(destination),
+                    onClick = { onNavItemClick(destination.route) },
+                    selectedIcon = {
+                        Icon(
+                            painter = painterResource(id = destination.selectedIconResId),
+                            contentDescription = stringResource(id = destination.labelResId),
+                        )
+                    },
+                    unSelectedIcon = {
+                        Icon(
+                            painter = painterResource(id = destination.unselectedIconResId),
+                            contentDescription = stringResource(id = destination.labelResId),
+                        )
+                    },
+                    label = { Text(text = stringResource(id = destination.labelResId)) },
+                )
+            }
         }
     }
 }
