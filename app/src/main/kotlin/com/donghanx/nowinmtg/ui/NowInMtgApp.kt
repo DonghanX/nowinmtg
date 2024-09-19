@@ -27,13 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.design.ui.navigation.NowInMtgNavigationBarItem
 import com.donghanx.design.ui.navigation.NowInMtgNavigationRailItem
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.search.navigation.navigateToSearch
-import com.donghanx.design.R as DesignR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
