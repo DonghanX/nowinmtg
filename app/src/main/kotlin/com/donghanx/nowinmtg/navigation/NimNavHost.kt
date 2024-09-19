@@ -39,9 +39,8 @@ fun NimNavHost(
                 exitTransition = { fadeOut(animationSpec = tween(300)) },
             ) {
                 randomCardsGraph(
-                    onCardClick = { cacheKey, card, parentRoute ->
+                    onCardClick = { card, parentRoute ->
                         navController.navigateToCardDetailsWithMultiverseId(
-                            imageCacheKey = cacheKey,
                             previewImageUrl = card.imageUrl,
                             multiverseId = card.id.toIntOrNull() ?: INVALID_ID,
                             parentRoute = parentRoute,
@@ -59,9 +58,8 @@ fun NimNavHost(
                 setsScreen(onShowSnackbar = onShowSnackbar)
                 searchScreen(onCloseClick = navController::popBackStack)
                 favoriteGraph(
-                    onCardClick = { cacheKey, card, parentRoute ->
+                    onCardClick = { card, parentRoute ->
                         navController.navigateToCardDetails(
-                            imageCacheKey = cacheKey,
                             previewImageUrl = card.imageUrl,
                             cardId = card.id,
                             parentRoute = parentRoute,

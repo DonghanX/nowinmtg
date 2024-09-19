@@ -20,7 +20,7 @@ import com.donghanx.ui.CardsGallery
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RandomCardsScreen(
-    onCardClick: (cacheKey: String, card: CardPreview) -> Unit,
+    onCardClick: (card: CardPreview) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RandomCardsViewModel = hiltViewModel(),
@@ -59,7 +59,7 @@ private fun CardsGalleryPreview() {
         CardsGallery(
             parentRoute = RANDOM_CARDS_ROUTE,
             cards = MockUtils.emptyCards,
-            onCardClick = { _, _ -> },
+            onCardClick = {},
         )
     }
 }

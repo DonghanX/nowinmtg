@@ -32,8 +32,9 @@ import com.donghanx.design.R as DesignR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CardDetailsScreen(
-    cacheKey: String,
+    cacheKeyId: String?,
     previewImageUrl: String?,
+    parentRoute: String,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
@@ -69,10 +70,11 @@ internal fun CardDetailsScreen(
                     }
 
                 CardDetailsView(
-                    cacheKey = cacheKey,
+                    cacheKeyId = cacheKeyId,
                     cardDetails = cardDetails,
                     rulings = rulings.orEmpty(),
                     previewImageUrl = previewImageUrl,
+                    parentRoute = parentRoute,
                 )
             }
         }
