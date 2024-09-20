@@ -1,6 +1,7 @@
 package com.donghanx.sets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SetsScreen(
+    onSetClick: (SetInfo) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SetsViewModel = hiltViewModel(),
@@ -64,7 +66,8 @@ internal fun SetsScreen(
             )
 
             when (val uiState = setsUiState) {
-                is SetsUiState.Success -> SetsList(groupedSets = uiState.groupedSets)
+                is SetsUiState.Success ->
+                    SetsList(groupedSets = uiState.groupedSets, onSetClick = onSetClick)
 
                 // TODO: add a placeholder composable for empty sets
                 is SetsUiState.Empty -> Unit
@@ -81,7 +84,7 @@ internal fun SetsScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun SetsList(groupedSets: Map<Int, List<SetInfo>>) {
+private fun SetsList(groupedSets: Map<Int, List<SetInfo>>, onSetClick: (SetInfo) -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
@@ -104,7 +107,10 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>) {
                         code = it.code,
                         name = it.name,
                         iconUrl = it.iconSvgUri,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
+                        modifier =
+                            Modifier.fillMaxWidth().padding(horizontal = 6.dp).clickable {
+                                onSetClick(it)
+                            },
                     )
                 }
             }
@@ -151,5 +157,5 @@ private fun SetsFilterRow(
 private fun SetsListPreview(
     @PreviewParameter(SetsListPreviewParameterProvider::class) groupedSets: Map<Int, List<SetInfo>>
 ) {
-    SetsList(groupedSets = groupedSets)
+    SetsList(groupedSets = groupedSets, onSetClick = {})
 }
