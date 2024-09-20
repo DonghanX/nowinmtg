@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.donghanx.design.R as DesignR
 import com.donghanx.favorites.navigation.FAVORITES_GRAPH_ROUTE
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_GRAPH_ROUTE
-import com.donghanx.sets.navigation.SETS_ROUTE
+import com.donghanx.sets.navigation.SETS_GRAPH_ROUTE
 
 sealed class TopLevelDestination(
     val route: String,
@@ -23,7 +23,7 @@ sealed class TopLevelDestination(
 
     data object Sets :
         TopLevelDestination(
-            route = SETS_ROUTE,
+            route = SETS_GRAPH_ROUTE,
             selectedIconResId = DesignR.drawable.baseline_dataset_24,
             unselectedIconResId = DesignR.drawable.outline_dataset_24,
             labelResId = com.donghanx.sets.R.string.sets,

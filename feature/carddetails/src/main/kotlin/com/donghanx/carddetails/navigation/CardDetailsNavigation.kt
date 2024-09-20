@@ -21,8 +21,8 @@ import com.donghanx.common.INVALID_ID
 import com.donghanx.common.extensions.encodeUrl
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 
-const val CARD_DETAILS_ROUTE = "CardDetails"
-internal const val PREVIEW_IMAGE_URL_ARGS = "PreviewImageUrl"
+private const val CARD_DETAILS_ROUTE = "CardDetails"
+private const val PREVIEW_IMAGE_URL_ARGS = "PreviewImageUrl"
 internal const val CARD_ID_ARGS = "CardId"
 internal const val MULTIVERSE_ID_ARGS = "MultiverseId"
 

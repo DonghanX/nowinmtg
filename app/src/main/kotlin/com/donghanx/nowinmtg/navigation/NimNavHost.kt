@@ -19,6 +19,9 @@ import com.donghanx.favorites.navigation.favoriteGraph
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_GRAPH_ROUTE
 import com.donghanx.randomcards.navigation.randomCardsGraph
 import com.donghanx.search.navigation.searchScreen
+import com.donghanx.setdetails.navigation.navigateToSetDetails
+import com.donghanx.setdetails.navigation.setDetailsScreen
+import com.donghanx.sets.navigation.SETS_ROUTE
 import com.donghanx.sets.navigation.setsScreen
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -55,7 +58,16 @@ fun NimNavHost(
                         )
                     },
                 )
-                setsScreen(onShowSnackbar = onShowSnackbar)
+                setsScreen(
+                    onShowSnackbar = onShowSnackbar,
+                    onSetClick = { setInfo ->
+                        navController.navigateToSetDetails(
+                            code = setInfo.code,
+                            parentRoute = SETS_ROUTE,
+                        )
+                    },
+                    nestedGraphs = { parentRoute -> setDetailsScreen(parentRoute = parentRoute) },
+                )
                 searchScreen(onCloseClick = navController::popBackStack)
                 favoriteGraph(
                     onCardClick = { card, parentRoute ->
