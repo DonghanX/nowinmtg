@@ -19,4 +19,6 @@ interface SetsDao {
     fun searchAllSetsByQuery(query: String): Flow<List<SetEntity>>
 
     @Query("SELECT COUNT(*) FROM sets") fun getSetsCount(): Int
+
+    @Query("SELECT * FROM sets WHERE scryfallId = :id") fun getSetById(id: String): Flow<SetEntity>
 }

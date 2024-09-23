@@ -6,15 +6,15 @@ import androidx.navigation.compose.composable
 import com.donghanx.setdetails.SetDetailsScreen
 
 private const val SET_DETAILS_ROUTE = "SetDetails"
-internal const val SET_CODE_ARGS = "SetCode"
+internal const val SET_ID_ARGS = "SetId"
 
-fun NavController.navigateToSetDetails(code: String, parentRoute: String) {
-    navigate("${setDetailsPrefixRoute(parentRoute)}/$code")
+fun NavController.navigateToSetDetails(setId: String, parentRoute: String) {
+    navigate("${setDetailsPrefixRoute(parentRoute)}/$setId")
 }
 
-fun NavGraphBuilder.setDetailsScreen(parentRoute: String) {
-    composable(route = "${setDetailsPrefixRoute(parentRoute)}/{$SET_CODE_ARGS}") {
-        SetDetailsScreen()
+fun NavGraphBuilder.setDetailsScreen(parentRoute: String, onBackClick: () -> Unit) {
+    composable(route = "${setDetailsPrefixRoute(parentRoute)}/{$SET_ID_ARGS}") {
+        SetDetailsScreen(onBackClick = onBackClick)
     }
 }
 

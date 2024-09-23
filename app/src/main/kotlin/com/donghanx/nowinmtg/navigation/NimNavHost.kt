@@ -62,11 +62,16 @@ fun NimNavHost(
                     onShowSnackbar = onShowSnackbar,
                     onSetClick = { setInfo ->
                         navController.navigateToSetDetails(
-                            code = setInfo.code,
+                            setId = setInfo.scryfallId,
                             parentRoute = SETS_ROUTE,
                         )
                     },
-                    nestedGraphs = { parentRoute -> setDetailsScreen(parentRoute = parentRoute) },
+                    nestedGraphs = { parentRoute ->
+                        setDetailsScreen(
+                            parentRoute = parentRoute,
+                            onBackClick = navController::popBackStack,
+                        )
+                    },
                 )
                 searchScreen(onCloseClick = navController::popBackStack)
                 favoriteGraph(

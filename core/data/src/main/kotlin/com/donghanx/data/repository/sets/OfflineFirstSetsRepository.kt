@@ -52,6 +52,9 @@ constructor(
             .map { it.map(SetEntity::asExternalModel) }
             .flowOn(ioDispatcher)
 
+    override fun getSetInfoById(id: String): Flow<SetInfo> =
+        setsDao.getSetById(id).map(SetEntity::asExternalModel)
+
     override suspend fun shouldFetchInitialSets(): Boolean {
         return withContext(ioDispatcher) { setsDao.getSetsCount() == 0 }
     }
