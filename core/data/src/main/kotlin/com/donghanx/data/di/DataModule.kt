@@ -6,6 +6,8 @@ import com.donghanx.data.repository.cards.OfflineFirstRandomCardsRepository
 import com.donghanx.data.repository.cards.RandomCardsRepository
 import com.donghanx.data.repository.favorites.FavoritesRepository
 import com.donghanx.data.repository.favorites.OfflineFirstFavoritesRepository
+import com.donghanx.data.repository.setdetails.OfflineFirstSetDetailsRepository
+import com.donghanx.data.repository.setdetails.SetDetailsRepository
 import com.donghanx.data.repository.sets.OfflineFirstSetsRepository
 import com.donghanx.data.repository.sets.SetsRepository
 import dagger.Binds
@@ -34,4 +36,9 @@ interface DataModule {
     fun bindFavoritesRepository(
         offlineFirstFavoritesRepository: OfflineFirstFavoritesRepository
     ): FavoritesRepository
+
+    @Binds
+    fun bindSetDetailsRepository(
+        offlineFirstSetDetailsRepository: OfflineFirstSetDetailsRepository
+    ): SetDetailsRepository
 }

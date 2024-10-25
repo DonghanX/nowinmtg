@@ -10,8 +10,13 @@ import kotlinx.coroutines.flow.Flow
 interface CardDetailsDao {
     @Upsert suspend fun upsertCardDetails(cardDetails: CardDetailsEntity)
 
+    @Upsert suspend fun upsertCardDetailsList(cardDetailsCollection: List<CardDetailsEntity>)
+
     @Query("SELECT * FROM card_details WHERE id = :cardId ")
     fun getCardDetailsById(cardId: String): Flow<CardDetailsEntity?>
+
+    @Query("SELECT * FROM card_details WHERE `set` = :setCode ")
+    fun getCardDetailsListBySetCode(setCode: String): Flow<List<CardDetailsEntity>>
 
     @Query("SELECT * FROM card_details WHERE multiverseId = :multiverseId ")
     fun getCardDetailsByMultiverseId(multiverseId: Int): Flow<CardDetailsEntity?>

@@ -5,10 +5,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ScryfallHttpClient @Inject constructor() {
+class  ScryfallHttpClient @Inject constructor() {
+
+    companion object {
+        const val BASE_URL = "api.scryfall.com"
+    }
+
     operator fun invoke(): HttpClient = client
 
-    private val client: HttpClient by lazy { baseHttpClient(SCRYFALL_BASE_URL) }
+    private val client: HttpClient by lazy { baseHttpClient(BASE_URL) }
 }
 
-private const val SCRYFALL_BASE_URL = "api.scryfall.com"

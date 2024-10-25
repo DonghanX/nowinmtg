@@ -28,27 +28,38 @@ import coil.compose.AsyncImage
 import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.R
 import com.donghanx.design.ui.text.ResizableText
+import com.donghanx.model.CardDetails
 import com.donghanx.model.SetInfo
 
 @Composable
 fun SetDetailsScreen(onBackClick: () -> Unit, viewModel: SetDetailsViewModel = hiltViewModel()) {
-    val setInfo by viewModel.setInfoFlow.collectAsStateWithLifecycle()
+    val setDetailsUiState by viewModel.setDetailsUiState.collectAsStateWithLifecycle()
+
     Column {
-        SetDetailsTopBar(setInfo = setInfo, onBackClick = onBackClick)
-        setInfo?.let { SetDetailsBasicInfo(setInfo = it) }
+        SetDetailsTopBar(setInfo = setDetailsUiState.setInfo, onBackClick = onBackClick)
+        SetDetailsBasicInfo(setInfo = setDetailsUiState.setInfo)
+
+        when (val uiState = setDetailsUiState) {
+            is SetDetailsUiState.Success -> {
+                CardsGalleryInSet(cardsInSet = uiState.cards)
+            }
+            is SetDetailsUiState.NoSetDetails -> {}
+        }
     }
 }
 
 @Composable
-private fun SetDetailsBasicInfo(setInfo: SetInfo, modifier: Modifier = Modifier) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(space = 6.dp)) {
-        SuggestionChip(onClick = {}, label = { Text("${setInfo.cardCount} cards") })
+private fun SetDetailsBasicInfo(setInfo: SetInfo?, modifier: Modifier = Modifier) {
+    setInfo?.let {
+        Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(space = 6.dp)) {
+            SuggestionChip(onClick = {}, label = { Text("${it.cardCount} cards") })
 
-        SuggestionChip(onClick = {}, label = { Text("Type: ${setInfo.setType.capitalize()}") })
+            SuggestionChip(onClick = {}, label = { Text("Type: ${it.setType.capitalize()}") })
 
-        SuggestionChip(onClick = {}, label = { Text("Code: ${setInfo.code}") })
+            SuggestionChip(onClick = {}, label = { Text("Code: ${it.code}") })
 
-        SuggestionChip(onClick = {}, label = { Text("Released at ${setInfo.releasedAt}") })
+            SuggestionChip(onClick = {}, label = { Text("Released at ${it.releasedAt}") })
+        }
     }
 }
 
@@ -91,4 +102,9 @@ private fun SetDetailsTitle(name: String, iconUri: String, modifier: Modifier = 
 
         ResizableText(text = name, fontSize = 20.sp, fontWeight = FontWeight.Bold)
     }
+}
+
+@Composable
+private fun CardsGalleryInSet(cardsInSet: List<CardDetails>) {
+    Row { Text(text = "list size: ${cardsInSet.size}") }
 }
