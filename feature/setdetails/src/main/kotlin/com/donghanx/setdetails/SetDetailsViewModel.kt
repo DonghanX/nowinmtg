@@ -10,7 +10,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -18,8 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 @HiltViewModel
 class SetDetailsViewModel
 @Inject
-constructor(private val savedStateHandle: SavedStateHandle, setsRepository: SetsRepository) :
-    ViewModel() {
+constructor(savedStateHandle: SavedStateHandle, setsRepository: SetsRepository) : ViewModel() {
 
     private val setIdFlow: StateFlow<String?> =
         savedStateHandle.getStateFlow(key = SET_ID_ARGS, initialValue = null)
@@ -33,4 +31,5 @@ constructor(private val savedStateHandle: SavedStateHandle, setsRepository: Sets
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
                 initialValue = null,
             )
+
 }

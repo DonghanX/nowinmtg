@@ -2,7 +2,6 @@ package com.donghanx.design.ui.card
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -55,12 +54,7 @@ private fun ExpandableCard(
 ) {
     Card(
         modifier =
-            modifier.fillMaxWidth().wrapContentHeight().clickable(
-                interactionSource = MutableInteractionSource(),
-                indication = null,
-            ) {
-                onSetExpanded(!expanded)
-            }
+            modifier.fillMaxWidth().wrapContentHeight().clickable { onSetExpanded(!expanded) }
     ) {
         Column(modifier = Modifier.padding(all = 8.dp)) {
             if (showHeaderWhenExpanded || !expanded) {

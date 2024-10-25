@@ -12,6 +12,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.R
 import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.model.SetInfo
@@ -30,7 +33,23 @@ import com.donghanx.model.SetInfo
 @Composable
 fun SetDetailsScreen(onBackClick: () -> Unit, viewModel: SetDetailsViewModel = hiltViewModel()) {
     val setInfo by viewModel.setInfoFlow.collectAsStateWithLifecycle()
-    Column { SetDetailsTopBar(setInfo = setInfo, onBackClick = onBackClick) }
+    Column {
+        SetDetailsTopBar(setInfo = setInfo, onBackClick = onBackClick)
+        setInfo?.let { SetDetailsBasicInfo(setInfo = it) }
+    }
+}
+
+@Composable
+private fun SetDetailsBasicInfo(setInfo: SetInfo, modifier: Modifier = Modifier) {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(space = 6.dp)) {
+        SuggestionChip(onClick = {}, label = { Text("${setInfo.cardCount} cards") })
+
+        SuggestionChip(onClick = {}, label = { Text("Type: ${setInfo.setType.capitalize()}") })
+
+        SuggestionChip(onClick = {}, label = { Text("Code: ${setInfo.code}") })
+
+        SuggestionChip(onClick = {}, label = { Text("Released at ${setInfo.releasedAt}") })
+    }
 }
 
 @Composable
