@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.donghanx.design.R
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
 import com.donghanx.design.ui.grid.fullWidthItem

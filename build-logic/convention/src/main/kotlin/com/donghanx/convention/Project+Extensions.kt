@@ -11,6 +11,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val Project.libs: VersionCatalog
@@ -20,7 +21,7 @@ private typealias CommonExtensionType = CommonExtension<*, *, *, *, *, *>
 
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtensionType) {
     with(commonExtension) {
-        compileSdk = 34
+        compileSdk = 35
         defaultConfig { minSdk = 26 }
 
         compileOptions {
@@ -43,19 +44,20 @@ internal fun Project.configureKotlinJvm() {
 
 private fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_18.toString()
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_18)
             // Treat all Kotlin warnings as errors (disabled by default)
             // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
             val warningsAsErrors: String? by project
-            allWarningsAsErrors = warningsAsErrors.toBoolean()
-            freeCompilerArgs =
-                freeCompilerArgs +
+            allWarningsAsErrors.set(warningsAsErrors.toBoolean())
+            freeCompilerArgs.set(
+                freeCompilerArgs.get() +
                     listOf(
                         "-opt-in=kotlin.RequiresOptIn",
                         "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                         "-opt-in=kotlinx.coroutines.FlowPreview",
                     )
+            )
         }
     }
 }
@@ -63,11 +65,6 @@ private fun Project.configureKotlin() {
 internal fun Project.configureAndroidCompose(commonExtension: CommonExtensionType) {
     commonExtension.apply {
         buildFeatures { compose = true }
-
-        composeOptions {
-            kotlinCompilerExtensionVersion =
-                libs.findVersion("android.compose.compiler").get().toString()
-        }
 
         dependencies {
             val bom = libs.findLibrary("androidx.compose.bom").get()
