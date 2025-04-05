@@ -1,6 +1,5 @@
 package com.donghanx.network
 
-import com.donghanx.model.network.NetworkCardDetails
 import com.donghanx.model.network.NetworkSet
 import com.donghanx.model.network.NetworkSetDetails
 import com.donghanx.model.network.NetworkSets
@@ -14,9 +13,8 @@ class SetsRemoteDataSource @Inject constructor(private val scryfallHttpClient: S
     suspend fun getAllSets(): List<NetworkSet> =
         scryfallHttpClient().get { url(path = "/sets") }.body<NetworkSets>().data
 
-    suspend fun getCardsInCurrentSet(searchUri: String): List<NetworkCardDetails> =
+    suspend fun getCardsInCurrentSet(searchUri: String): NetworkSetDetails =
         scryfallHttpClient()
             .get { url(urlString = searchUri.removePrefix(ScryfallHttpClient.BASE_URL)) }
             .body<NetworkSetDetails>()
-            .cards
 }

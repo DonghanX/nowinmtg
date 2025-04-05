@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.donghanx.model.CardDetails
+import com.donghanx.model.CardPreview
 import com.donghanx.model.network.ImageUris
 import com.donghanx.model.network.NetworkCardDetails
 
@@ -72,3 +73,6 @@ fun CardDetailsEntity.asExternalModel(): CardDetails =
         setName = setName,
         toughness = toughness,
     )
+
+fun CardDetailsEntity.asExternalPreviewModel(): CardPreview =
+    CardPreview(id = id, name = name, imageUrl = imageUris?.png)

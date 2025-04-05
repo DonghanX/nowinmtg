@@ -7,7 +7,7 @@ import com.donghanx.common.ErrorMessage
 import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.setdetails.SetDetailsRepository
 import com.donghanx.data.repository.sets.SetsRepository
-import com.donghanx.model.CardDetails
+import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
 import com.donghanx.setdetails.navigation.SET_ID_ARGS
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -86,47 +86,33 @@ constructor(
     }
 }
 
-data class SetInfoAndCards(val setInfo: SetInfo, val cardsInSet: List<CardDetails>)
+data class SetInfoAndCards(val setInfo: SetInfo, val cardsInSet: List<CardPreview>)
 
 sealed interface SetDetailsUiState {
-    val refreshing: Boolean
-    val errorMessage: ErrorMessage
     val setInfo: SetInfo?
 
-    data class Success(
-        val cards: List<CardDetails>,
-        override val setInfo: SetInfo?,
-        override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage(),
-    ) : SetDetailsUiState
+    data class Success(val cards: List<CardPreview>, override val setInfo: SetInfo?) :
+        SetDetailsUiState
 
     data class NoSetDetails(
         override val setInfo: SetInfo?,
-        override val refreshing: Boolean,
-        override val errorMessage: ErrorMessage = emptyErrorMessage(),
+        val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : SetDetailsUiState
+
+    data class Loading(override val setInfo: SetInfo? = null) : SetDetailsUiState
 }
 
 private data class SetDetailsViewModelState(
     val setInfo: SetInfo? = null,
-    val cards: List<CardDetails> = emptyList(),
+    val cards: List<CardPreview> = emptyList(),
     val refreshing: Boolean,
     val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {
     fun toUiState(): SetDetailsUiState =
         when {
-            cards.isNotEmpty() ->
-                SetDetailsUiState.Success(
-                    setInfo = setInfo,
-                    cards = cards,
-                    refreshing = refreshing,
-                    errorMessage = errorMessage,
-                )
-            else ->
-                SetDetailsUiState.NoSetDetails(
-                    setInfo = setInfo,
-                    refreshing = refreshing,
-                    errorMessage = errorMessage,
-                )
+            cards.isNotEmpty() -> SetDetailsUiState.Success(setInfo = setInfo, cards = cards)
+            errorMessage.hasError ->
+                SetDetailsUiState.NoSetDetails(setInfo = setInfo, errorMessage = errorMessage)
+            else -> SetDetailsUiState.Loading(setInfo = setInfo)
         }
 }

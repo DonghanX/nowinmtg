@@ -11,7 +11,7 @@ data class NetworkSetDetails(
     @SerialName("has_more")
     val hasMore: Boolean,
     @SerialName("next_page")
-    val nextPage: String,
+    val nextPage: String?,
     @SerialName("total_cards")
     val totalCards: Int
 )

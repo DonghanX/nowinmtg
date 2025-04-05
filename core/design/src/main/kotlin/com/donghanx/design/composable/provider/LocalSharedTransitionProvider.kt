@@ -19,7 +19,7 @@ val ProvidableCompositionLocal<SharedTransitionScope?>.currentNotNull: SharedTra
     @Composable get() = current ?: throw IllegalStateException("No SharedTransitionScope found")
 
 val ProvidableCompositionLocal<AnimatedVisibilityScope?>.currentNotNull: AnimatedVisibilityScope
-    @Composable get() = current ?: throw IllegalStateException("No SharedTransitionScope found")
+    @Composable get() = current ?: throw IllegalStateException("No AnimatedVisibilityScope found")
 
 @Composable
 fun SharedTransitionProviderWrapper(content: @Composable () -> Unit) {

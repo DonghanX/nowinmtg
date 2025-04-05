@@ -8,7 +8,9 @@ import com.donghanx.database.CardDetailsDao
 import com.donghanx.database.model.CardDetailsEntity
 import com.donghanx.database.model.asCardDetailsEntity
 import com.donghanx.database.model.asExternalModel
+import com.donghanx.database.model.asExternalPreviewModel
 import com.donghanx.model.CardDetails
+import com.donghanx.model.CardPreview
 import com.donghanx.model.network.NetworkCardDetails
 import com.donghanx.network.SetsRemoteDataSource
 import javax.inject.Inject
@@ -27,7 +29,19 @@ constructor(
 ) : SetDetailsRepository {
 
     override fun refreshCardsInCurrentSet(searchUri: String): Flow<NetworkResult<Unit>> =
-        flow { emit(setsRemoteDataSource.getCardsInCurrentSet(searchUri)) }
+        flow {
+                var nextPageUri: String? = searchUri
+                val cardsInSet = mutableListOf<NetworkCardDetails>()
+
+                while (!nextPageUri.isNullOrBlank()) {
+                    with(setsRemoteDataSource.getCardsInCurrentSet(nextPageUri)) {
+                        cardsInSet.addAll(cards)
+                        nextPageUri = if (hasMore) nextPage else null
+                    }
+                }
+
+                emit(cardsInSet)
+            }
             .asResultFlow()
             .foldResult(
                 onSuccess = { cards ->
@@ -41,9 +55,9 @@ constructor(
             )
             .flowOn(ioDispatcher)
 
-    override fun getCardsInCurrentSet(setCode: String): Flow<List<CardDetails>> =
+    override fun getCardsInCurrentSet(setCode: String): Flow<List<CardPreview>> =
         cardDetailsDao
             .getCardDetailsListBySetCode(setCode)
-            .map { it.map(CardDetailsEntity::asExternalModel) }
+            .map { it.map(CardDetailsEntity::asExternalPreviewModel) }
             .flowOn(ioDispatcher)
 }

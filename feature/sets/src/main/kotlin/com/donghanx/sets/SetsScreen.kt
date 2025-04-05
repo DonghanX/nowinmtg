@@ -1,7 +1,6 @@
 package com.donghanx.sets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -107,10 +106,8 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>, onSetClick: (SetInfo)
                         code = it.code,
                         name = it.name,
                         iconUrl = it.iconSvgUri,
-                        modifier =
-                            Modifier.fillMaxWidth().padding(horizontal = 6.dp).clickable {
-                                onSetClick(it)
-                            },
+                        onClick = { onSetClick(it) },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
                     )
                 }
             }

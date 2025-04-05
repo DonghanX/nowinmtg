@@ -1,6 +1,7 @@
 package com.donghanx.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -27,11 +28,15 @@ fun SetInfoItem(
     code: String,
     name: String,
     iconUrl: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     resizable: Boolean = false,
     maxLines: Int = 1,
 ) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.clickable(onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         AsyncImage(model = iconUrl, contentDescription = name, modifier = Modifier.size(24.dp))
 
         Spacer(modifier = Modifier.width(4.dp))
@@ -65,6 +70,7 @@ private fun SetInfoItemPreview() {
         code = "soi",
         name = "Shadows over Innistrad",
         iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400",
+        onClick = {},
     )
 }
 

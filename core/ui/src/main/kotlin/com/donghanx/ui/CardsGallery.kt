@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -43,6 +45,7 @@ fun CardsGallery(
     cards: List<CardPreview>,
     onCardClick: (card: CardPreview) -> Unit,
     modifier: Modifier = Modifier,
+    header: (LazyGridScope.() -> Unit)? = null,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
@@ -56,6 +59,8 @@ fun CardsGallery(
             verticalArrangement = Arrangement.spacedBy(6.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            header?.invoke(this)
+
             items(cards, key = { card -> card.id }) { card ->
                 val cacheKey =
                     remember(card.id) { CardSharedElementKey(id = card.id, origin = parentRoute) }

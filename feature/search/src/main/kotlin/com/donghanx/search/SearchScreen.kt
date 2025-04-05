@@ -20,12 +20,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.design.R as DesignR
+import com.donghanx.model.SetInfo
 import com.donghanx.ui.SetInfoItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SearchScreen(
     onCloseClick: () -> Unit,
+    onSetClick: (SetInfo) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = hiltViewModel(),
 ) {
@@ -59,7 +61,12 @@ internal fun SearchScreen(
                 is SearchUiState.Success -> {
                     LazyColumn {
                         items(uiState.searchedSets) {
-                            SetInfoItem(code = it.code, name = it.name, iconUrl = it.iconSvgUri)
+                            SetInfoItem(
+                                code = it.code,
+                                name = it.name,
+                                iconUrl = it.iconSvgUri,
+                                onClick = { onSetClick(it) },
+                            )
                         }
                     }
                 }
