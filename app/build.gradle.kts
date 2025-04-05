@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
+    implementation(libs.coil.network)
     implementation(libs.coil.svg)
     implementation(libs.okhttp3)
     implementation(libs.okhttp3.tls)

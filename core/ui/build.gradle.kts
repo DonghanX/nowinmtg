@@ -23,6 +23,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.network)
     implementation(libs.coil.svg)
 
     testImplementation(libs.junit)
