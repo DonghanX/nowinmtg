@@ -18,6 +18,7 @@ import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.favorites.navigation.favoriteGraph
 import com.donghanx.randomcards.navigation.RANDOM_CARDS_GRAPH_ROUTE
 import com.donghanx.randomcards.navigation.randomCardsGraph
+import com.donghanx.search.navigation.SEARCH_ROUTE
 import com.donghanx.search.navigation.searchScreen
 import com.donghanx.setdetails.navigation.navigateToSetDetails
 import com.donghanx.setdetails.navigation.setDetailsScreen
@@ -58,17 +59,42 @@ fun NimNavHost(
                         )
                     },
                 )
+
                 setsScreen(
                     onShowSnackbar = onShowSnackbar,
                     onSetClick = { setInfo ->
                         navController.navigateToSetDetails(
-                            code = setInfo.code,
+                            setId = setInfo.scryfallId,
                             parentRoute = SETS_ROUTE,
                         )
                     },
-                    nestedGraphs = { parentRoute -> setDetailsScreen(parentRoute = parentRoute) },
+                    nestedGraphs = { parentRoute ->
+                        setDetailsScreen(
+                            parentRoute = parentRoute,
+                            onBackClick = navController::popBackStack,
+                            onCardClick = { card ->
+                                // TODO: navigate to SetDetails screen
+                            },
+                        )
+
+                        cardDetailsScreen(
+                            parentRoute = parentRoute,
+                            onBackClick = navController::popBackStack,
+                            onShowSnackbar = onShowSnackbar,
+                        )
+                    },
                 )
-                searchScreen(onCloseClick = navController::popBackStack)
+
+                searchScreen(
+                    onCloseClick = navController::popBackStack,
+                    onSetClick = { setInfo ->
+                        navController.navigateToSetDetails(
+                            setId = setInfo.scryfallId,
+                            parentRoute = SEARCH_ROUTE,
+                        )
+                    },
+                )
+
                 favoriteGraph(
                     onCardClick = { card, parentRoute ->
                         navController.navigateToCardDetails(
@@ -78,6 +104,7 @@ fun NimNavHost(
                         )
                     },
                     nestedGraphs = { parentRoute ->
+                        // TODO: use a centrailized shared CardDetailsScreen nav composable
                         cardDetailsScreen(
                             parentRoute = parentRoute,
                             onBackClick = navController::popBackStack,

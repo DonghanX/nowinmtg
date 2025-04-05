@@ -153,10 +153,12 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
             }
 
             // TODO: parse manaCost string to a visualized form
-            cardDetails.manaCost?.let { manaCost ->
-                Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp)
-                LightHorizontalDivider()
-            }
+            cardDetails.manaCost
+                ?.takeIf { it.isNotEmpty() }
+                ?.let { manaCost ->
+                    Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp)
+                    LightHorizontalDivider()
+                }
 
             Text(
                 text = cardDetails.rarity.capitalize(),

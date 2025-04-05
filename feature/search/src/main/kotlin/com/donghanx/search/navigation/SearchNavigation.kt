@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.donghanx.model.SetInfo
 import com.donghanx.search.SearchScreen
 
 const val SEARCH_ROUTE = "Search"
@@ -12,7 +13,7 @@ fun NavController.navigateToSearch() {
     navigate(route = SEARCH_ROUTE) { launchSingleTop = true }
 }
 
-fun NavGraphBuilder.searchScreen(onCloseClick: () -> Unit) {
+fun NavGraphBuilder.searchScreen(onCloseClick: () -> Unit, onSetClick: (SetInfo) -> Unit) {
     composable(
         route = SEARCH_ROUTE,
         enterTransition = {
@@ -22,6 +23,6 @@ fun NavGraphBuilder.searchScreen(onCloseClick: () -> Unit) {
             slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Down)
         },
     ) {
-        SearchScreen(onCloseClick = onCloseClick)
+        SearchScreen(onCloseClick = onCloseClick, onSetClick = onSetClick)
     }
 }

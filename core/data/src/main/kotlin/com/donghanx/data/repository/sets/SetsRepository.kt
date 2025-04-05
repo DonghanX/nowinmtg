@@ -12,5 +12,7 @@ interface SetsRepository {
 
     fun searchAllSetsByQuery(query: String): Flow<List<SetInfo>>
 
+    fun getSetInfoById(id: String): Flow<SetInfo>
+
     suspend fun shouldFetchInitialSets(): Boolean
 }

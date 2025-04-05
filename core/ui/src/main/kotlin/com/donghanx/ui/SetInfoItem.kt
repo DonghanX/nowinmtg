@@ -1,11 +1,14 @@
 package com.donghanx.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,17 +24,34 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
 @Composable
-fun SetInfoItem(code: String, name: String, iconUrl: String, modifier: Modifier = Modifier) {
+fun SetInfoItem(
+    code: String,
+    name: String,
+    iconUrl: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    resizable: Boolean = false,
+    maxLines: Int = 1,
+) {
     Row(
-        modifier = modifier.horizontalScroll(state = rememberScrollState()),
+        modifier = modifier.clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         AsyncImage(model = iconUrl, contentDescription = name, modifier = Modifier.size(24.dp))
 
-        Text(text = name, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.width(4.dp))
 
-        Text(text = code, fontSize = 14.sp, color = Color.DarkGray)
+        Row(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .horizontalScroll(state = rememberScrollState(), enabled = !resizable),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(text = name, fontSize = 20.sp, fontWeight = FontWeight.Bold, maxLines = maxLines)
+
+            Text(text = code, fontSize = 14.sp, color = Color.DarkGray)
+        }
     }
 }
 
@@ -50,6 +70,7 @@ private fun SetInfoItemPreview() {
         code = "soi",
         name = "Shadows over Innistrad",
         iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400",
+        onClick = {},
     )
 }
 
