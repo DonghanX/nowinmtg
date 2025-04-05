@@ -15,4 +15,3 @@ class MtgHttpClient @Inject constructor() {
 
     private val client: HttpClient by lazy { baseHttpClient(MTG_BASE_URL) }
 }
-

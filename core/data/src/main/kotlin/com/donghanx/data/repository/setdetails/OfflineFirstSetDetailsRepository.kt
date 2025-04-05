@@ -7,9 +7,7 @@ import com.donghanx.data.sync.syncListWith
 import com.donghanx.database.CardDetailsDao
 import com.donghanx.database.model.CardDetailsEntity
 import com.donghanx.database.model.asCardDetailsEntity
-import com.donghanx.database.model.asExternalModel
 import com.donghanx.database.model.asExternalPreviewModel
-import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
 import com.donghanx.model.network.NetworkCardDetails
 import com.donghanx.network.SetsRemoteDataSource

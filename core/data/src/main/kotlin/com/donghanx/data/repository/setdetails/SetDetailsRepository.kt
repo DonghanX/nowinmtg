@@ -1,7 +1,6 @@
 package com.donghanx.data.repository.setdetails
 
 import com.donghanx.common.NetworkResult
-import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
 import kotlinx.coroutines.flow.Flow
 
