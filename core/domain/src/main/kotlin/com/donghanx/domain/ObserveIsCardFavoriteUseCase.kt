@@ -8,11 +8,11 @@ class ObserveIsCardFavoriteUseCase
 @Inject
 constructor(private val favoritesRepository: FavoritesRepository) {
 
-    operator fun invoke(cardIdFlow: Flow<String?>, multiverseIdFlow: Flow<Int>): Flow<Boolean> =
-        flatMapValidCardIdFlow(
-            cardIdFlow = cardIdFlow,
-            multiverseIdFlow = multiverseIdFlow,
-            flatMapById = favoritesRepository::observeIsCardFavoriteByCardId,
-            flatMapByMultiverseId = favoritesRepository::observeIsCardFavoriteByMultiverseId,
+    operator fun invoke(cardId: String?, multiverseId: Int?): Flow<Boolean> =
+        mapValidCardIdFlow(
+            cardId = cardId,
+            multiverseId = multiverseId,
+            flowById = favoritesRepository::observeIsCardFavoriteByCardId,
+            flowByMultiverseId = favoritesRepository::observeIsCardFavoriteByMultiverseId,
         )
 }

@@ -51,13 +51,6 @@ fun NimNavHost(
                         )
                     },
                     onShowSnackbar = onShowSnackbar,
-                    nestedGraphs = { from ->
-                        cardDetailsScreen(
-                            parentRoute = from,
-                            onBackClick = navController::popBackStack,
-                            onShowSnackbar = onShowSnackbar,
-                        )
-                    },
                 )
 
                 setsScreen(
@@ -73,14 +66,12 @@ fun NimNavHost(
                             parentRoute = parentRoute,
                             onBackClick = navController::popBackStack,
                             onCardClick = { card ->
-                                // TODO: navigate to SetDetails screen
+                                navController.navigateToCardDetails(
+                                    cardId = card.id,
+                                    previewImageUrl = card.imageUrl,
+                                    parentRoute = SETS_ROUTE,
+                                )
                             },
-                        )
-
-                        cardDetailsScreen(
-                            parentRoute = parentRoute,
-                            onBackClick = navController::popBackStack,
-                            onShowSnackbar = onShowSnackbar,
                         )
                     },
                 )
@@ -95,6 +86,11 @@ fun NimNavHost(
                     },
                 )
 
+                cardDetailsScreen(
+                    onBackClick = navController::popBackStack,
+                    onShowSnackbar = onShowSnackbar,
+                )
+
                 favoriteGraph(
                     onCardClick = { card, parentRoute ->
                         navController.navigateToCardDetails(
@@ -102,15 +98,7 @@ fun NimNavHost(
                             cardId = card.id,
                             parentRoute = parentRoute,
                         )
-                    },
-                    nestedGraphs = { parentRoute ->
-                        // TODO: use a centrailized shared CardDetailsScreen nav composable
-                        cardDetailsScreen(
-                            parentRoute = parentRoute,
-                            onBackClick = navController::popBackStack,
-                            onShowSnackbar = onShowSnackbar,
-                        )
-                    },
+                    }
                 )
             }
         }

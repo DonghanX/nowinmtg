@@ -31,6 +31,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("androidx.compose.ui.tooling.preview").get())
                 add("implementation", libs.findLibrary("androidx.compose.material3").get())
 
+                add("implementation", libs.findLibrary("kotlinx.serialization").get())
                 add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
                 add("implementation", libs.findLibrary("coil.compose").get())
                 add("implementation", libs.findLibrary("coil.network").get())

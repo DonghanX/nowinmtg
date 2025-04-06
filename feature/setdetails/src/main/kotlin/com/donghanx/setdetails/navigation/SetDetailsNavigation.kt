@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.model.CardPreview
 import com.donghanx.setdetails.SetDetailsScreen
+import kotlinx.serialization.Serializable
 
 const val SET_DETAILS_ROUTE = "SetDetails"
 internal const val SET_ID_ARGS = "SetId"
