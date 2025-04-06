@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donghanx.favorites.navigation.FAVORITES_ROUTE
+import com.donghanx.favorites.navigation.FavoritesRoute
 import com.donghanx.model.CardPreview
 import com.donghanx.ui.CardsGallery
 
@@ -20,7 +20,7 @@ internal fun FavoritesScreen(
     when (val uiState = favoritesUiState) {
         is FavoritesUiState.Success ->
             CardsGallery(
-                parentRoute = FAVORITES_ROUTE,
+                parentRoute = FavoritesRoute.toString(),
                 cards = uiState.favoriteCards,
                 onCardClick = onCardClick,
                 modifier = modifier,

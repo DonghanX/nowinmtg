@@ -3,16 +3,16 @@ package com.donghanx.setdetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.setdetails.SetDetailsRepository
 import com.donghanx.data.repository.sets.SetsRepository
 import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
-import com.donghanx.setdetails.navigation.SET_ID_ARGS
+import com.donghanx.setdetails.navigation.SetDetailsRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,15 +30,20 @@ class SetDetailsViewModel
 @Inject
 constructor(
     savedStateHandle: SavedStateHandle,
-    private val setsRepository: SetsRepository,
+    setsRepository: SetsRepository,
     private val setDetailsRepository: SetDetailsRepository,
 ) : ViewModel() {
 
-    private val setIdFlow: StateFlow<String?> =
-        savedStateHandle.getStateFlow(key = SET_ID_ARGS, initialValue = null)
+    private val setDetailsRoute = savedStateHandle.toRoute<SetDetailsRoute>()
 
-    private val setInfoFlow: Flow<SetInfo> =
-        setIdFlow.filterNotNull().flatMapLatest { id -> setsRepository.getSetInfoById(id) }
+    private val setInfoFlow: StateFlow<SetInfo?> =
+        setsRepository
+            .getSetInfoById(setDetailsRoute.setId)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = null,
+            )
 
     private val viewModelState = MutableStateFlow(SetDetailsViewModelState(refreshing = true))
 
@@ -52,6 +57,8 @@ constructor(
             )
 
     init {
+        // TODO: refactor to eliminate the viewmodel state in this case because no refreshing is
+        // needed in this screen.
         observeSetDetails()
         refreshCardInSets()
     }
@@ -59,13 +66,11 @@ constructor(
     private fun observeSetDetails() {
         // TODO: create a UseCase to encapsulate the following code snippet
         viewModelScope.launch {
-            setIdFlow
+            setInfoFlow
                 .filterNotNull()
-                .flatMapLatest { setId ->
-                    setsRepository.getSetInfoById(setId).flatMapLatest { setInfo ->
-                        setDetailsRepository.getCardsInCurrentSet(setInfo.code).map { cardsInSet ->
-                            SetInfoAndCards(setInfo, cardsInSet)
-                        }
+                .flatMapLatest { setInfo ->
+                    setDetailsRepository.getCardsInCurrentSet(setInfo.code).map { cardsInSet ->
+                        SetInfoAndCards(setInfo, cardsInSet)
                     }
                 }
                 .onEach { (setInfo, cardsInSet) ->
@@ -78,6 +83,7 @@ constructor(
     private fun refreshCardInSets() {
         viewModelScope.launch {
             setInfoFlow
+                .filterNotNull()
                 .flatMapLatest { setInfo ->
                     setDetailsRepository.refreshCardsInCurrentSet(searchUri = setInfo.searchUri)
                 }

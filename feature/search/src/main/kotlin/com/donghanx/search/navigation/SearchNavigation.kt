@@ -6,16 +6,16 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.donghanx.model.SetInfo
 import com.donghanx.search.SearchScreen
+import kotlinx.serialization.Serializable
 
-const val SEARCH_ROUTE = "Search"
+@Serializable object SearchRoute
 
 fun NavController.navigateToSearch() {
-    navigate(route = SEARCH_ROUTE) { launchSingleTop = true }
+    navigate(route = SearchRoute) { launchSingleTop = true }
 }
 
 fun NavGraphBuilder.searchScreen(onCloseClick: () -> Unit, onSetClick: (SetInfo) -> Unit) {
-    composable(
-        route = SEARCH_ROUTE,
+    composable<SearchRoute>(
         enterTransition = {
             slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Up)
         },

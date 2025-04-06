@@ -10,22 +10,17 @@ import com.donghanx.setdetails.SetDetailsScreen
 import kotlinx.serialization.Serializable
 
 const val SET_DETAILS_ROUTE = "SetDetails"
-internal const val SET_ID_ARGS = "SetId"
+
+@Serializable data class SetDetailsRoute(val setId: String, val parentRoute: String)
 
 fun NavController.navigateToSetDetails(setId: String, parentRoute: String) {
-    navigate("${setDetailsPrefixRoute(parentRoute)}/$setId")
+    navigate(SetDetailsRoute(setId = setId, parentRoute = parentRoute))
 }
 
-fun NavGraphBuilder.setDetailsScreen(
-    parentRoute: String,
-    onBackClick: () -> Unit,
-    onCardClick: (CardPreview) -> Unit,
-) {
-    composable(route = "${setDetailsPrefixRoute(parentRoute)}/{$SET_ID_ARGS}") {
+fun NavGraphBuilder.setDetailsScreen(onBackClick: () -> Unit, onCardClick: (CardPreview) -> Unit) {
+    composable<SetDetailsRoute> {
         CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
             SetDetailsScreen(onBackClick = onBackClick, onCardClick = onCardClick)
         }
     }
 }
-
-private fun setDetailsPrefixRoute(parentRoute: String): String = "${SET_DETAILS_ROUTE}_$parentRoute"

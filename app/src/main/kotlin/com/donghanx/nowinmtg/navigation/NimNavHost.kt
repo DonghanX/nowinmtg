@@ -16,13 +16,13 @@ import com.donghanx.carddetails.navigation.navigateToCardDetailsWithMultiverseId
 import com.donghanx.common.INVALID_ID
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.favorites.navigation.favoriteGraph
-import com.donghanx.randomcards.navigation.RANDOM_CARDS_GRAPH_ROUTE
+import com.donghanx.randomcards.navigation.RandomCardsBaseRoute
 import com.donghanx.randomcards.navigation.randomCardsGraph
-import com.donghanx.search.navigation.SEARCH_ROUTE
+import com.donghanx.search.navigation.SearchRoute
 import com.donghanx.search.navigation.searchScreen
 import com.donghanx.setdetails.navigation.navigateToSetDetails
 import com.donghanx.setdetails.navigation.setDetailsScreen
-import com.donghanx.sets.navigation.SETS_ROUTE
+import com.donghanx.sets.navigation.SetsRoute
 import com.donghanx.sets.navigation.setsScreen
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -31,13 +31,12 @@ fun NimNavHost(
     navController: NavHostController,
     onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
-    startDestination: String = RANDOM_CARDS_GRAPH_ROUTE,
 ) {
     SharedTransitionLayout {
         CompositionLocalProvider(LocalSharedTransitionScope provides this) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination,
+                startDestination = RandomCardsBaseRoute,
                 modifier = modifier,
                 enterTransition = { fadeIn(animationSpec = tween(300)) },
                 exitTransition = { fadeOut(animationSpec = tween(300)) },
@@ -51,6 +50,12 @@ fun NimNavHost(
                         )
                     },
                     onShowSnackbar = onShowSnackbar,
+                    nestedGraph = {
+                        cardDetailsScreen(
+                            onBackClick = navController::popBackStack,
+                            onShowSnackbar = onShowSnackbar,
+                        )
+                    },
                 )
 
                 setsScreen(
@@ -58,20 +63,24 @@ fun NimNavHost(
                     onSetClick = { setInfo ->
                         navController.navigateToSetDetails(
                             setId = setInfo.scryfallId,
-                            parentRoute = SETS_ROUTE,
+                            parentRoute = SetsRoute.toString(),
                         )
                     },
-                    nestedGraphs = { parentRoute ->
+                    nestedGraphs = {
                         setDetailsScreen(
-                            parentRoute = parentRoute,
                             onBackClick = navController::popBackStack,
                             onCardClick = { card ->
                                 navController.navigateToCardDetails(
                                     cardId = card.id,
                                     previewImageUrl = card.imageUrl,
-                                    parentRoute = SETS_ROUTE,
+                                    parentRoute = SetsRoute.toString(),
                                 )
                             },
+                        )
+
+                        cardDetailsScreen(
+                            onBackClick = navController::popBackStack,
+                            onShowSnackbar = onShowSnackbar,
                         )
                     },
                 )
@@ -81,14 +90,9 @@ fun NimNavHost(
                     onSetClick = { setInfo ->
                         navController.navigateToSetDetails(
                             setId = setInfo.scryfallId,
-                            parentRoute = SEARCH_ROUTE,
+                            parentRoute = SearchRoute.toString(),
                         )
                     },
-                )
-
-                cardDetailsScreen(
-                    onBackClick = navController::popBackStack,
-                    onShowSnackbar = onShowSnackbar,
                 )
 
                 favoriteGraph(
@@ -98,7 +102,13 @@ fun NimNavHost(
                             cardId = card.id,
                             parentRoute = parentRoute,
                         )
-                    }
+                    },
+                    nestedGraph = {
+                        cardDetailsScreen(
+                            onBackClick = navController::popBackStack,
+                            onShowSnackbar = onShowSnackbar,
+                        )
+                    },
                 )
             }
         }
