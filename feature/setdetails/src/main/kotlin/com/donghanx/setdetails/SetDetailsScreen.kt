@@ -44,7 +44,7 @@ import com.donghanx.setdetails.navigation.SET_DETAILS_ROUTE
 import com.donghanx.ui.CardsGallery
 
 @Composable
-fun SetDetailsScreen(
+internal fun SetDetailsScreen(
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
     viewModel: SetDetailsViewModel = hiltViewModel(),

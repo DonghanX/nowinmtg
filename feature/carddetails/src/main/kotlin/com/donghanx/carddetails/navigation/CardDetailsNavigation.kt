@@ -7,36 +7,36 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.donghanx.carddetails.CardDetailsScreen
-import com.donghanx.common.INVALID_ID
-import com.donghanx.common.extensions.encodeUrl
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
+import kotlinx.serialization.Serializable
 
-private const val CARD_DETAILS_ROUTE = "CardDetails"
-private const val PREVIEW_IMAGE_URL_ARGS = "PreviewImageUrl"
-internal const val CARD_ID_ARGS = "CardId"
-internal const val MULTIVERSE_ID_ARGS = "MultiverseId"
+@Serializable
+data class CardDetailsRoute(
+    val cardId: String?,
+    val multiverseId: Int?,
+    val previewImageUrl: String?,
+    val parentRoute: String,
+)
 
 fun NavController.navigateToCardDetails(
     cardId: String,
     previewImageUrl: String?,
     parentRoute: String,
 ) {
-    navigate(
-        route =
-            "${cardDetailsPrefixRoute(parentRoute)}/?$PREVIEW_IMAGE_URL_ARGS=${previewImageUrl?.encodeUrl()}&$CARD_ID_ARGS=$cardId"
-    ) {
-        launchSingleTop = true
-    }
+    val cardDetailsRoute =
+        CardDetailsRoute(
+            cardId = cardId,
+            multiverseId = null,
+            previewImageUrl = previewImageUrl,
+            parentRoute = parentRoute,
+        )
+    navigate(cardDetailsRoute) { launchSingleTop = true }
 }
 
 fun NavController.navigateToCardDetailsWithMultiverseId(
@@ -44,36 +44,21 @@ fun NavController.navigateToCardDetailsWithMultiverseId(
     multiverseId: Int,
     parentRoute: String,
 ) {
-    navigate(
-        route =
-            "${cardDetailsPrefixRoute(parentRoute)}/?$PREVIEW_IMAGE_URL_ARGS=${previewImageUrl?.encodeUrl()}&$MULTIVERSE_ID_ARGS=$multiverseId"
-    ) {
-        launchSingleTop = true
-    }
+    val cardDetailsRoute =
+        CardDetailsRoute(
+            multiverseId = multiverseId,
+            cardId = null,
+            previewImageUrl = previewImageUrl,
+            parentRoute = parentRoute,
+        )
+    navigate(cardDetailsRoute) { launchSingleTop = true }
 }
 
 fun NavGraphBuilder.cardDetailsScreen(
-    parentRoute: String,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
-    composable(
-        route = cardDetailsFullRoute(parentRoute),
-        arguments =
-            listOf(
-                navArgument(PREVIEW_IMAGE_URL_ARGS) {
-                    type = NavType.StringType
-                    nullable = true
-                },
-                navArgument(CARD_ID_ARGS) {
-                    type = NavType.StringType
-                    nullable = true
-                },
-                navArgument(MULTIVERSE_ID_ARGS) {
-                    type = NavType.IntType
-                    defaultValue = INVALID_ID
-                },
-            ),
+    composable<CardDetailsRoute>(
         enterTransition = {
             fadeIn(animationSpec = tween(durationMillis = 300, easing = LinearEasing)) +
                 slideIntoContainer(
@@ -89,36 +74,16 @@ fun NavGraphBuilder.cardDetailsScreen(
                 )
         },
     ) { backStackEntry ->
+        val cardDetailsRoute = backStackEntry.toRoute<CardDetailsRoute>()
+
         CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
             CardDetailsScreen(
-                cacheKeyId = backStackEntry.rememberValidId(),
-                previewImageUrl =
-                    backStackEntry.arguments?.getString(PREVIEW_IMAGE_URL_ARGS).orEmpty(),
-                parentRoute = parentRoute,
+                cacheKeyId = cardDetailsRoute.cardId ?: cardDetailsRoute.multiverseId?.toString(),
+                previewImageUrl = cardDetailsRoute.previewImageUrl.orEmpty(),
+                parentRoute = cardDetailsRoute.parentRoute,
                 onBackClick = onBackClick,
                 onShowSnackbar = onShowSnackbar,
             )
         }
     }
 }
-
-private fun cardDetailsFullRoute(parentRoute: String): String =
-    "${cardDetailsPrefixRoute(parentRoute)}/?" +
-        "${optionalArgs(PREVIEW_IMAGE_URL_ARGS)}&" +
-        "${optionalArgs(CARD_ID_ARGS)}&" +
-        optionalArgs(MULTIVERSE_ID_ARGS)
-
-private fun cardDetailsPrefixRoute(parentRoute: String): String =
-    "${CARD_DETAILS_ROUTE}_$parentRoute"
-
-private fun optionalArgs(argsName: String): String = "$argsName={$argsName}"
-
-@Composable
-private fun NavBackStackEntry.rememberValidId(): String? =
-    remember(arguments) {
-        val arguments = arguments ?: return@remember null
-        with(arguments) {
-            getString(CARD_ID_ARGS)
-                ?: getInt(MULTIVERSE_ID_ARGS).takeIf { it != INVALID_ID }?.toString()
-        }
-    }

@@ -5,20 +5,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.donghanx.model.SetInfo
 import com.donghanx.sets.SetsScreen
+import kotlinx.serialization.Serializable
 
-const val SETS_GRAPH_ROUTE = "SetsGraph"
-const val SETS_ROUTE = "Sets"
+@Serializable object SetsBaseRoute
+
+@Serializable object SetsRoute
 
 fun NavGraphBuilder.setsScreen(
     onSetClick: (SetInfo) -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
-    nestedGraphs: NavGraphBuilder.(parentRoute: String) -> Unit,
+    nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
-    navigation(startDestination = SETS_ROUTE, route = SETS_GRAPH_ROUTE) {
-        composable(route = SETS_ROUTE) {
+    navigation<SetsBaseRoute>(startDestination = SetsRoute) {
+        composable<SetsRoute> {
             SetsScreen(onShowSnackbar = onShowSnackbar, onSetClick = onSetClick)
         }
 
-        nestedGraphs(SETS_ROUTE)
+        nestedGraphs()
     }
 }

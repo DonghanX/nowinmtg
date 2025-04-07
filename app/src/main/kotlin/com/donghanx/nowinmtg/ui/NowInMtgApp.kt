@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
@@ -34,6 +35,7 @@ import com.donghanx.design.ui.navigation.NowInMtgNavigationRailItem
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.search.navigation.navigateToSearch
+import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +72,7 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
                     LeftNavigationRail(
                         topLevelDestinations = appState.topLevelDestinations,
                         currentDestination = appState.currentDestination,
-                        onNavItemClick = { route -> appState.navigateToTopLevelDestination(route) },
+                        onNavItemClick = appState::navigateToTopLevelDestination,
                     )
 
                     Spacer(modifier = Modifier.width(width = 8.dp))
@@ -90,15 +92,18 @@ fun NowInMtgApp(windowSizeClass: WindowSizeClass) {
 private fun BottomNavigationBar(
     topLevelDestinations: List<TopLevelDestination>,
     currentDestination: NavDestination?,
-    onNavItemClick: (route: String) -> Unit,
+    onNavItemClick: (TopLevelDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier) {
         NavigationBar(containerColor = Color.Transparent) {
             topLevelDestinations.forEach { destination ->
                 NowInMtgNavigationBarItem(
-                    selected = currentDestination.withinTopLevelDestinationInHierarchy(destination),
-                    onClick = { onNavItemClick(destination.route) },
+                    selected =
+                        currentDestination.withinTopLevelDestinationInHierarchy(
+                            destination.baseRoute
+                        ),
+                    onClick = { onNavItemClick(destination) },
                     selectedIcon = {
                         Icon(
                             painter = painterResource(id = destination.selectedIconResId),
@@ -122,7 +127,7 @@ private fun BottomNavigationBar(
 private fun LeftNavigationRail(
     topLevelDestinations: List<TopLevelDestination>,
     currentDestination: NavDestination?,
-    onNavItemClick: (route: String) -> Unit,
+    onNavItemClick: (TopLevelDestination) -> Unit,
 ) {
     NavigationRail(
         containerColor = Color.Transparent,
@@ -130,8 +135,9 @@ private fun LeftNavigationRail(
     ) {
         topLevelDestinations.forEach { destination ->
             NowInMtgNavigationRailItem(
-                selected = currentDestination.withinTopLevelDestinationInHierarchy(destination),
-                onClick = { onNavItemClick(destination.route) },
+                selected =
+                    currentDestination.withinTopLevelDestinationInHierarchy(destination.baseRoute),
+                onClick = { onNavItemClick(destination) },
                 selectedIcon = {
                     Icon(
                         painter = painterResource(id = destination.selectedIconResId),
@@ -151,6 +157,5 @@ private fun LeftNavigationRail(
     }
 }
 
-private fun NavDestination?.withinTopLevelDestinationInHierarchy(
-    topLevelDestination: TopLevelDestination
-): Boolean = this?.hierarchy?.any { it.route == topLevelDestination.route } ?: false
+private fun NavDestination?.withinTopLevelDestinationInHierarchy(route: KClass<*>): Boolean =
+    this?.hierarchy?.any { it.hasRoute(route) } ?: false

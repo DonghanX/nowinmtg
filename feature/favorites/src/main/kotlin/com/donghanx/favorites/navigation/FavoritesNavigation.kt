@@ -7,21 +7,24 @@ import androidx.navigation.navigation
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.favorites.FavoritesScreen
 import com.donghanx.model.CardPreview
+import kotlinx.serialization.Serializable
 
-const val FAVORITES_GRAPH_ROUTE = "FavoritesGraph"
-const val FAVORITES_ROUTE = "Favorites"
+@Serializable object FavoritesBaseRoute
+
+@Serializable object FavoritesRoute
 
 fun NavGraphBuilder.favoriteGraph(
     onCardClick: (card: CardPreview, parentRoute: String) -> Unit,
-    nestedGraphs: NavGraphBuilder.(parentRoute: String) -> Unit,
+    nestedGraph: NavGraphBuilder.() -> Unit,
 ) {
-    navigation(startDestination = FAVORITES_ROUTE, route = FAVORITES_GRAPH_ROUTE) {
-        composable(route = FAVORITES_ROUTE) {
+    navigation<FavoritesBaseRoute>(startDestination = FavoritesRoute) {
+        composable<FavoritesRoute> {
             CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-                FavoritesScreen(onCardClick = { card -> onCardClick(card, FAVORITES_ROUTE) })
+                FavoritesScreen(
+                    onCardClick = { card -> onCardClick(card, FavoritesRoute.toString()) }
+                )
             }
         }
-
-        nestedGraphs(FAVORITES_ROUTE)
+        nestedGraph()
     }
 }

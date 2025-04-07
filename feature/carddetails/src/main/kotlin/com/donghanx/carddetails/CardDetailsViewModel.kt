@@ -3,10 +3,9 @@ package com.donghanx.carddetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.donghanx.carddetails.navigation.CARD_ID_ARGS
-import com.donghanx.carddetails.navigation.MULTIVERSE_ID_ARGS
+import androidx.navigation.toRoute
+import com.donghanx.carddetails.navigation.CardDetailsRoute
 import com.donghanx.common.ErrorMessage
-import com.donghanx.common.INVALID_ID
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
@@ -39,10 +38,7 @@ constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val cardIdFlow: StateFlow<String?> =
-        savedStateHandle.getStateFlow(key = CARD_ID_ARGS, initialValue = null)
-    private val multiverseIdFlow: StateFlow<Int> =
-        savedStateHandle.getStateFlow(key = MULTIVERSE_ID_ARGS, initialValue = INVALID_ID)
+    private val cardDetailsRoute = savedStateHandle.toRoute<CardDetailsRoute>()
 
     private val viewModelState = MutableStateFlow(CardDetailsViewModelState(refreshing = true))
 
@@ -56,7 +52,7 @@ constructor(
             )
 
     val isCardFavorite: StateFlow<Boolean> =
-        observeIsCardFavoriteUseCase(cardIdFlow, multiverseIdFlow)
+        observeIsCardFavoriteUseCase(cardDetailsRoute.cardId, cardDetailsRoute.multiverseId)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
@@ -70,7 +66,10 @@ constructor(
 
     private fun observeCardDetails() {
         viewModelScope.launch {
-            observeCardDetailsUseCase(cardIdFlow = cardIdFlow, multiverseIdFlow = multiverseIdFlow)
+            observeCardDetailsUseCase(
+                    cardId = cardDetailsRoute.cardId,
+                    multiverseId = cardDetailsRoute.multiverseId,
+                )
                 .onEach { (cardDetails, rulings) ->
                     viewModelState.update {
                         it.copy(cardDetails = cardDetails, rulings = rulings, refreshing = false)
@@ -84,7 +83,7 @@ constructor(
         viewModelState.update { it.copy(refreshing = true) }
 
         viewModelScope.launch {
-            refreshCardDetailsUseCase(cardIdFlow, multiverseIdFlow)
+            refreshCardDetailsUseCase(cardDetailsRoute.cardId, cardDetailsRoute.multiverseId)
                 .onEach { it.updateViewModelState() }
                 .collect()
         }

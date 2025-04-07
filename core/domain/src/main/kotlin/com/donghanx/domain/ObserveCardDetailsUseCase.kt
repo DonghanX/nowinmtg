@@ -5,7 +5,6 @@ import com.donghanx.model.CardDetails
 import com.donghanx.model.Ruling
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -15,16 +14,13 @@ class ObserveCardDetailsUseCase
 @Inject
 constructor(private val cardDetailsRepository: CardDetailsRepository) {
 
-    operator fun invoke(
-        cardIdFlow: StateFlow<String?>,
-        multiverseIdFlow: StateFlow<Int>,
-    ): Flow<CardDetailsAndRulings> {
+    operator fun invoke(cardId: String?, multiverseId: Int?): Flow<CardDetailsAndRulings> {
         val cardDetailsFlow =
-            flatMapValidCardIdFlow(
-                    cardIdFlow = cardIdFlow,
-                    multiverseIdFlow = multiverseIdFlow,
-                    flatMapById = cardDetailsRepository::getCardDetailsById,
-                    flatMapByMultiverseId = cardDetailsRepository::getCardDetailsByMultiverseId,
+            mapValidCardIdFlow(
+                    cardId = cardId,
+                    multiverseId = multiverseId,
+                    flowById = cardDetailsRepository::getCardDetailsById,
+                    flowByMultiverseId = cardDetailsRepository::getCardDetailsByMultiverseId,
                 )
                 .filterNotNull()
 

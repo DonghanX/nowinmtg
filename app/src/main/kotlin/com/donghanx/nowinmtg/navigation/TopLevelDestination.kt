@@ -3,19 +3,25 @@ package com.donghanx.nowinmtg.navigation
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.donghanx.design.R as DesignR
-import com.donghanx.favorites.navigation.FAVORITES_GRAPH_ROUTE
-import com.donghanx.randomcards.navigation.RANDOM_CARDS_GRAPH_ROUTE
-import com.donghanx.sets.navigation.SETS_GRAPH_ROUTE
+import com.donghanx.favorites.navigation.FavoritesBaseRoute
+import com.donghanx.favorites.navigation.FavoritesRoute
+import com.donghanx.randomcards.navigation.RandomCardsBaseRoute
+import com.donghanx.randomcards.navigation.RandomCardsRoute
+import com.donghanx.sets.navigation.SetsBaseRoute
+import com.donghanx.sets.navigation.SetsRoute
+import kotlin.reflect.KClass
 
 sealed class TopLevelDestination(
-    val route: String,
+    val route: KClass<*>,
+    val baseRoute: KClass<*> = route,
     @DrawableRes val selectedIconResId: Int,
     @DrawableRes val unselectedIconResId: Int,
     @StringRes val labelResId: Int,
 ) {
     data object RandomCards :
         TopLevelDestination(
-            route = RANDOM_CARDS_GRAPH_ROUTE,
+            route = RandomCardsRoute::class,
+            baseRoute = RandomCardsBaseRoute::class,
             selectedIconResId = DesignR.drawable.baseline_swipe_vertical_24,
             unselectedIconResId = DesignR.drawable.outline_swipe_vertical_24,
             labelResId = com.donghanx.randomcards.R.string.random_cards,
@@ -23,7 +29,8 @@ sealed class TopLevelDestination(
 
     data object Sets :
         TopLevelDestination(
-            route = SETS_GRAPH_ROUTE,
+            route = SetsRoute::class,
+            baseRoute = SetsBaseRoute::class,
             selectedIconResId = DesignR.drawable.baseline_dataset_24,
             unselectedIconResId = DesignR.drawable.outline_dataset_24,
             labelResId = com.donghanx.sets.R.string.sets,
@@ -31,7 +38,8 @@ sealed class TopLevelDestination(
 
     data object Favorites :
         TopLevelDestination(
-            route = FAVORITES_GRAPH_ROUTE,
+            route = FavoritesRoute::class,
+            baseRoute = FavoritesBaseRoute::class,
             selectedIconResId = DesignR.drawable.baseline_favorite_24,
             unselectedIconResId = DesignR.drawable.outline_favorite_border_24,
             labelResId = com.donghanx.favorites.R.string.favorites,

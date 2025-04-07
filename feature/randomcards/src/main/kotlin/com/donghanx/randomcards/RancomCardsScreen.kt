@@ -14,7 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
-import com.donghanx.randomcards.navigation.RANDOM_CARDS_ROUTE
+import com.donghanx.randomcards.navigation.RandomCardsRoute
 import com.donghanx.ui.CardsGallery
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,7 +35,7 @@ internal fun RandomCardsScreen(
         when (val uiState = randomCardsUiState) {
             is RandomCardsUiState.Success -> {
                 CardsGallery(
-                    parentRoute = RANDOM_CARDS_ROUTE,
+                    parentRoute = RandomCardsRoute.toString(),
                     cards = uiState.cards,
                     onCardClick = onCardClick,
                 )
@@ -57,7 +57,7 @@ internal fun RandomCardsScreen(
 private fun CardsGalleryPreview() {
     SharedTransitionProviderWrapper {
         CardsGallery(
-            parentRoute = RANDOM_CARDS_ROUTE,
+            parentRoute = RandomCardsRoute.toString(),
             cards = MockUtils.emptyCards,
             onCardClick = {},
         )
