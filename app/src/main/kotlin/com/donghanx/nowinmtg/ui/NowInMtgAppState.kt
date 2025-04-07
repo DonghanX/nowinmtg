@@ -42,10 +42,18 @@ class NowInMtgAppState(
             }
         }
 
-    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
+    val topLevelDestinations: List<TopLevelDestination> =
+        listOf(
+            TopLevelDestination.RandomCards,
+            TopLevelDestination.Sets,
+            TopLevelDestination.Favorites,
+        )
+
+    val shouldShowBottomBar: Boolean
+        get() = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 
     val shouldShowLeftNavigationRail: Boolean
-        get() = windowSizeClass.widthSizeClass != WindowWidthSizeClass.Compact
+        get() = !shouldShowBottomBar
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         val navOptions = navOptions {
