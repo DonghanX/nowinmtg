@@ -62,7 +62,9 @@ constructor(private val randomCardsRepository: RandomCardsRepository) : ViewMode
             randomCardsRepository
                 .getRandomCards()
                 .onEach { randomCards ->
-                    viewModelState.update { it.copy(randomCards = randomCards, refreshing = false) }
+                    viewModelState.update {
+                        it.copy(randomCards = randomCards, refreshing = randomCards.isEmpty())
+                    }
                 }
                 .collect()
         }

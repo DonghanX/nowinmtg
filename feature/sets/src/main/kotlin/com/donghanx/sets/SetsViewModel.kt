@@ -76,7 +76,9 @@ constructor(
                 }
                 .map { sets -> sets.groupBy { it.releasedAt.yearOfDate() } }
                 .onEach { groupedSets ->
-                    viewModelState.update { it.copy(groupedSets = groupedSets, refreshing = false) }
+                    viewModelState.update {
+                        it.copy(groupedSets = groupedSets, refreshing = groupedSets.isEmpty())
+                    }
                 }
                 .collect()
         }

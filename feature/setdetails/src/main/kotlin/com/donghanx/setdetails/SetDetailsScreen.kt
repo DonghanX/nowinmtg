@@ -1,13 +1,16 @@
 package com.donghanx.setdetails
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,6 +21,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,9 +29,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.donghanx.design.R
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
+import com.donghanx.design.ui.appbar.rememberCollapsingNestedScrollConnection
 import com.donghanx.design.ui.grid.fullWidthItem
 import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.mock.MockUtils
@@ -64,31 +72,49 @@ private fun SetDetailsScreen(
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
 ) {
-    Column {
-        SetDetailsTopBar(setInfo = setDetailsUiState.setInfo, onBackClick = onBackClick)
+    val appBarMaxHeightPx = with(LocalDensity.current) { appBarHeight.roundToPx() }
+    val nestedScrollConnection = rememberCollapsingNestedScrollConnection(appBarMaxHeightPx)
+
+    Box(modifier = Modifier.fillMaxSize().nestedScroll(connection = nestedScrollConnection)) {
+        when (setDetailsUiState) {
+            is SetDetailsUiState.Success -> {
+                CardsGalleryInSet(
+                    cardsInSet = setDetailsUiState.cards,
+                    releasedAt = setDetailsUiState.setInfo?.releasedAt,
+                    onCardClick = onCardClick,
+                )
+            }
+            is SetDetailsUiState.NoSetDetails -> {}
+            is SetDetailsUiState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center).padding(top = appBarHeight)
+                )
+            }
+        }
+
+        SetDetailsHeader(
+            setInfo = setDetailsUiState.setInfo,
+            onBackClick = onBackClick,
+            modifier = Modifier.offset { IntOffset(0, nestedScrollConnection.targetOffset) },
+        )
+    }
+}
+
+@Composable
+private fun SetDetailsHeader(
+    setInfo: SetInfo?,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.background(color = MaterialTheme.colorScheme.background)) {
+        SetDetailsTopBar(setInfo = setInfo, onBackClick = onBackClick)
 
         SetDetailsBasicInfo(
-            setInfo = setDetailsUiState.setInfo,
+            setInfo = setInfo,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
         )
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 4.dp))
-
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (setDetailsUiState) {
-                is SetDetailsUiState.Success -> {
-                    CardsGalleryInSet(
-                        cardsInSet = setDetailsUiState.cards,
-                        releasedAt = setDetailsUiState.setInfo?.releasedAt,
-                        onCardClick = onCardClick,
-                    )
-                }
-                is SetDetailsUiState.NoSetDetails -> {}
-                is SetDetailsUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-            }
-        }
     }
 }
 
@@ -170,6 +196,7 @@ private fun CardsGalleryInSet(
                 )
             }
         },
+        contentPadding = PaddingValues(top = appBarHeight, bottom = 4.dp, start = 4.dp, end = 4.dp),
         modifier = modifier,
     )
 }
@@ -189,3 +216,5 @@ private fun SetDetailsScreenPreview() {
         )
     }
 }
+
+private val appBarHeight = 120.dp
