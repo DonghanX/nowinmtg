@@ -38,7 +38,7 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val viewModelState = MutableStateFlow(SetsViewModelState(refreshing = false))
+    private val viewModelState = MutableStateFlow(SetsViewModelState(refreshing = true))
 
     val setsUiState: StateFlow<SetsUiState> =
         viewModelState
