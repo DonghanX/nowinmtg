@@ -61,9 +61,7 @@ internal fun CardDetailsView(
     modifier: Modifier = Modifier,
     placeholderResId: Int? = null,
 ) {
-    Column(modifier = modifier
-        .fillMaxSize()
-        .padding(horizontal = 8.dp)) {
+    Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // TODO: Accommodate different window size
             CardImage(
@@ -144,8 +142,12 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
 
             LightHorizontalDivider()
 
-            Text(text = cardDetails.typeLine, textAlign = TextAlign.Center, fontSize = 16.sp,
-                fontWeight = FontWeight.Medium)
+            Text(
+                text = cardDetails.typeLine,
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+            )
 
             LightHorizontalDivider()
 
@@ -154,7 +156,7 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                     text = "${cardDetails.power}/${cardDetails.toughness}",
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
                 LightHorizontalDivider()
             }
@@ -163,7 +165,12 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
             cardDetails.manaCost
                 ?.takeIf { it.isNotEmpty() }
                 ?.let { manaCost ->
-                    Text(text = manaCost, textAlign = TextAlign.Center, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                    Text(
+                        text = manaCost,
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                    )
 
                     LightHorizontalDivider()
                 }
@@ -172,7 +179,7 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                 text = cardDetails.rarity.capitalize(),
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
 
             LightHorizontalDivider()
@@ -183,7 +190,7 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                         text = stringResource(id = R.string.illustrated_by),
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
 
                     HorizontalDivider(modifier = Modifier.width(2.dp))
@@ -193,7 +200,7 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                         textAlign = TextAlign.Center,
                         fontSize = 14.sp,
                         fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
                 }
             }

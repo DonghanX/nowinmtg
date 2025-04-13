@@ -13,6 +13,9 @@ import com.donghanx.model.SetInfo
 import com.donghanx.setdetails.navigation.SetDetailsRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -74,7 +77,9 @@ constructor(
                     }
                 }
                 .onEach { (setInfo, cardsInSet) ->
-                    viewModelState.update { it.copy(setInfo = setInfo, cards = cardsInSet) }
+                    viewModelState.update {
+                        it.copy(setInfo = setInfo, cards = cardsInSet.toImmutableList())
+                    }
                 }
                 .collect()
         }
@@ -97,7 +102,7 @@ data class SetInfoAndCards(val setInfo: SetInfo, val cardsInSet: List<CardPrevie
 sealed interface SetDetailsUiState {
     val setInfo: SetInfo?
 
-    data class Success(val cards: List<CardPreview>, override val setInfo: SetInfo?) :
+    data class Success(val cards: ImmutableList<CardPreview>, override val setInfo: SetInfo?) :
         SetDetailsUiState
 
     data class NoSetDetails(
@@ -110,7 +115,7 @@ sealed interface SetDetailsUiState {
 
 private data class SetDetailsViewModelState(
     val setInfo: SetInfo? = null,
-    val cards: List<CardPreview> = emptyList(),
+    val cards: ImmutableList<CardPreview> = persistentListOf(),
     val refreshing: Boolean,
     val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {

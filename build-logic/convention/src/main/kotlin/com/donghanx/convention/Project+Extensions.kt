@@ -11,6 +11,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -66,10 +67,24 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtensionTyp
     commonExtension.apply {
         buildFeatures { compose = true }
 
+        configComposeCompiler()
+
         dependencies {
             val bom = libs.findLibrary("androidx.compose.bom").get()
             add("implementation", platform(bom))
             add("androidTestImplementation", platform(bom))
         }
+    }
+}
+
+private fun Project.configComposeCompiler() {
+    extensions.configure<ComposeCompilerGradlePluginExtension> {
+        val destination = layout.buildDirectory.dir("compose_compiler")
+        reportsDestination.set(destination)
+        metricsDestination.set(destination)
+
+        stabilityConfigurationFiles.add(
+            rootProject.layout.projectDirectory.file("compose_compiler_config.conf")
+        )
     }
 }

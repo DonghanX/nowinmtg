@@ -37,13 +37,14 @@ import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.design.ui.shared.CardSharedElementKey
 import com.donghanx.model.CardPreview
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CardsGallery(
     parentRoute: String,
-    cards: List<CardPreview>,
+    cards: ImmutableList<CardPreview>,
     onCardClick: (card: CardPreview) -> Unit,
     modifier: Modifier = Modifier,
     lazyGridState: LazyGridState = rememberLazyGridState(),

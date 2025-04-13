@@ -58,6 +58,8 @@ import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
 import com.donghanx.setdetails.navigation.SET_DETAILS_ROUTE
 import com.donghanx.ui.CardsGallery
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun SetDetailsScreen(
@@ -217,7 +219,7 @@ private fun SetDetailsTitle(name: String, iconUri: String, modifier: Modifier = 
 
 @Composable
 private fun CardsGalleryInSet(
-    cardsInSet: List<CardPreview>,
+    cardsInSet: ImmutableList<CardPreview>,
     releasedAt: String?,
     onCardClick: (CardPreview) -> Unit,
     lazyGridState: LazyGridState,
@@ -250,7 +252,7 @@ private fun SetDetailsScreenPreview() {
         SetDetailsScreen(
             setDetailsUiState =
                 SetDetailsUiState.Success(
-                    cards = MockUtils.emptyCards,
+                    cards = MockUtils.emptyCards.toImmutableList(),
                     setInfo = MockUtils.soiExpansion,
                 ),
             onBackClick = {},
