@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,9 +28,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
@@ -41,6 +47,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.donghanx.design.R
+import com.donghanx.design.composable.extensions.hasEnoughItemsToScroll
+import com.donghanx.design.composable.extensions.toDp
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
 import com.donghanx.design.ui.appbar.rememberCollapsingNestedScrollConnection
 import com.donghanx.design.ui.grid.fullWidthItem
@@ -75,14 +83,42 @@ private fun SetDetailsScreen(
     val appBarMaxHeightPx = with(LocalDensity.current) { appBarHeight.roundToPx() }
     val nestedScrollConnection = rememberCollapsingNestedScrollConnection(appBarMaxHeightPx)
 
-    Box(modifier = Modifier.fillMaxSize().nestedScroll(connection = nestedScrollConnection)) {
+    val lazyGridState = rememberLazyGridState()
+    val isCardsGridScrollable by remember {
+        derivedStateOf { lazyGridState.hasEnoughItemsToScroll() }
+    }
+
+    val density = LocalDensity.current
+    val spaceHeight by
+        remember(density, isCardsGridScrollable) {
+            derivedStateOf {
+                val offset =
+                    nestedScrollConnection.targetOffset.takeIf { isCardsGridScrollable } ?: 0
+                (appBarMaxHeightPx + offset).toDp(density)
+            }
+        }
+
+    Box(
+        modifier =
+            Modifier.fillMaxSize().nestedScroll(connection = nestedScrollConnection).clipToBounds()
+    ) {
         when (setDetailsUiState) {
             is SetDetailsUiState.Success -> {
-                CardsGalleryInSet(
-                    cardsInSet = setDetailsUiState.cards,
-                    releasedAt = setDetailsUiState.setInfo?.releasedAt,
-                    onCardClick = onCardClick,
-                )
+                Column {
+                    // A spacer that syncs with SetDetailsHeader’s offset to enable smooth
+                    // collapsing behavior.
+                    // While the header is expanding or collapsing, this spacer adjusts its height
+                    // to keep the list static, ensuring there’s no visual gap between the LazyGrid
+                    // and the header during scroll transitions.
+                    Spacer(modifier = Modifier.height(spaceHeight))
+
+                    CardsGalleryInSet(
+                        cardsInSet = setDetailsUiState.cards,
+                        releasedAt = setDetailsUiState.setInfo?.releasedAt,
+                        onCardClick = onCardClick,
+                        lazyGridState = lazyGridState,
+                    )
+                }
             }
             is SetDetailsUiState.NoSetDetails -> {}
             is SetDetailsUiState.Loading -> {
@@ -95,7 +131,11 @@ private fun SetDetailsScreen(
         SetDetailsHeader(
             setInfo = setDetailsUiState.setInfo,
             onBackClick = onBackClick,
-            modifier = Modifier.offset { IntOffset(0, nestedScrollConnection.targetOffset) },
+            modifier =
+                Modifier.offset {
+                    if (isCardsGridScrollable) IntOffset(0, nestedScrollConnection.targetOffset)
+                    else IntOffset.Zero
+                },
         )
     }
 }
@@ -180,6 +220,7 @@ private fun CardsGalleryInSet(
     cardsInSet: List<CardPreview>,
     releasedAt: String?,
     onCardClick: (CardPreview) -> Unit,
+    lazyGridState: LazyGridState,
     modifier: Modifier = Modifier,
 ) {
     CardsGallery(
@@ -196,7 +237,8 @@ private fun CardsGalleryInSet(
                 )
             }
         },
-        contentPadding = PaddingValues(top = appBarHeight, bottom = 4.dp, start = 4.dp, end = 4.dp),
+        contentPadding = PaddingValues(all = 4.dp),
+        lazyGridState = lazyGridState,
         modifier = modifier,
     )
 }
@@ -217,4 +259,4 @@ private fun SetDetailsScreenPreview() {
     }
 }
 
-private val appBarHeight = 120.dp
+private val appBarHeight = 110.dp

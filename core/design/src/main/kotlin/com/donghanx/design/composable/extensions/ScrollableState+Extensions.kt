@@ -10,3 +10,6 @@ fun LazyGridState.isFirstItemNotVisible(): Boolean = isItemNotVisible(index = 0)
 fun LazyListState.isItemNotVisible(index: Int): Boolean = firstVisibleItemIndex > index
 
 fun LazyGridState.isItemNotVisible(index: Int): Boolean = firstVisibleItemIndex > index
+
+fun LazyGridState.hasEnoughItemsToScroll(): Boolean =
+    layoutInfo.visibleItemsInfo.size < layoutInfo.totalItemsCount
