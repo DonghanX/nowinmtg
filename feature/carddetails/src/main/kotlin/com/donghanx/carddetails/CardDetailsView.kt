@@ -142,14 +142,15 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
 
             LightHorizontalDivider()
 
-            Text(
-                text = cardDetails.typeLine,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-            )
-
-            LightHorizontalDivider()
+            cardDetails.typeLine?.let {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                )
+                LightHorizontalDivider()
+            }
 
             if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
                 Text(

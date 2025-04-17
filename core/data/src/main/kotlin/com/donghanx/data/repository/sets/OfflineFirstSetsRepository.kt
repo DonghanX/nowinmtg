@@ -37,7 +37,7 @@ constructor(
                 onSuccess = { sets ->
                     sets.syncListWith(
                         entityConverter = NetworkSet::asSetEntity,
-                        modelActions = setsDao::upsertSets,
+                        modelActions = setsDao::deleteAllAndInsertSets,
                     )
                     NetworkResult.Success(Unit)
                 },

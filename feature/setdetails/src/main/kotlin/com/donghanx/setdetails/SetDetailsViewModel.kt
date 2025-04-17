@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.donghanx.common.ErrorMessage
+import com.donghanx.common.NetworkResult
+import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.setdetails.SetDetailsRepository
 import com.donghanx.data.repository.sets.SetsRepository
@@ -92,7 +94,22 @@ constructor(
                 .flatMapLatest { setInfo ->
                     setDetailsRepository.refreshCardsInCurrentSet(searchUri = setInfo.searchUri)
                 }
+                .onEach { it.updateViewModelState() }
                 .collect()
+        }
+    }
+
+    private fun <T> NetworkResult<T>.updateViewModelState() {
+        viewModelState.update { prevState ->
+            when (this) {
+                is NetworkResult.Success ->
+                    prevState.copy(refreshing = false, errorMessage = emptyErrorMessage())
+                is NetworkResult.Error ->
+                    prevState.copy(
+                        refreshing = false,
+                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1),
+                    )
+            }
         }
     }
 }

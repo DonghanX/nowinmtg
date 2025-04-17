@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -56,7 +57,7 @@ import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
-import com.donghanx.setdetails.navigation.SET_DETAILS_ROUTE
+import com.donghanx.setdetails.navigation.SetDetailsRoute
 import com.donghanx.ui.CardsGallery
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -65,6 +66,7 @@ import kotlinx.collections.immutable.toImmutableList
 internal fun SetDetailsScreen(
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: SetDetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.setDetailsUiState.collectAsStateWithLifecycle()
@@ -73,6 +75,7 @@ internal fun SetDetailsScreen(
         setDetailsUiState = uiState,
         onBackClick = onBackClick,
         onCardClick = onCardClick,
+        onShowSnackbar = onShowSnackbar,
     )
 }
 
@@ -81,6 +84,7 @@ private fun SetDetailsScreen(
     setDetailsUiState: SetDetailsUiState,
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
 ) {
     val appBarMaxHeightPx = with(LocalDensity.current) { appBarHeight.roundToPx() }
     val nestedScrollConnection = rememberCollapsingNestedScrollConnection(appBarMaxHeightPx)
@@ -122,11 +126,18 @@ private fun SetDetailsScreen(
                     )
                 }
             }
-            is SetDetailsUiState.NoSetDetails -> {}
             is SetDetailsUiState.Loading -> {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center).padding(top = appBarHeight)
                 )
+            }
+            is SetDetailsUiState.NoSetDetails -> {
+                LaunchedEffect(setDetailsUiState.errorMessage) {
+                    val errorMessage = setDetailsUiState.errorMessage
+                    if (errorMessage.hasError) {
+                        onShowSnackbar(errorMessage.message)
+                    }
+                }
             }
         }
 
@@ -226,7 +237,7 @@ private fun CardsGalleryInSet(
     modifier: Modifier = Modifier,
 ) {
     CardsGallery(
-        parentRoute = SET_DETAILS_ROUTE,
+        parentRoute = SetDetailsRoute.toString(),
         cards = cardsInSet,
         onCardClick = onCardClick,
         header = {
@@ -257,6 +268,7 @@ private fun SetDetailsScreenPreview() {
                 ),
             onBackClick = {},
             onCardClick = {},
+            onShowSnackbar = {},
         )
     }
 }
