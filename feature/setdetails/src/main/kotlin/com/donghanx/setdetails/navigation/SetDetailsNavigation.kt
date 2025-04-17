@@ -22,7 +22,11 @@ fun NavGraphBuilder.setDetailsScreen(
 ) {
     composable<SetDetailsRoute> {
         CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-            SetDetailsScreen(onBackClick = onBackClick, onCardClick = onCardClick, onShowSnackbar = onShowSnackbar)
+            SetDetailsScreen(
+                onBackClick = onBackClick,
+                onCardClick = onCardClick,
+                onShowSnackbar = onShowSnackbar,
+            )
         }
     }
 }
