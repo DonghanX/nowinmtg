@@ -1,4 +1,4 @@
-package com.donghanx.favorites
+package com.donghanx.design.ui.placeholder
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,37 +13,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-internal fun EmptyFavoritesView(modifier: Modifier = Modifier) {
+fun EmptyScreenWithIcon(text: String, imageVector: ImageVector, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Icon(
-            imageVector = Icons.Outlined.FavoriteBorder,
-            contentDescription = stringResource(id = R.string.no_favorites),
-            modifier = Modifier.size(48.dp),
-        )
+        Icon(imageVector = imageVector, contentDescription = text, modifier = Modifier.size(48.dp))
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(
-            text = stringResource(id = R.string.no_favorite_cards),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        Text(text = text, fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
 @Preview(showBackground = true, backgroundColor = 0XFFFFFF)
 private fun EmptyFavoritesViewPreview() {
-    EmptyFavoritesView()
+    EmptyScreenWithIcon(text = "Empty Screen", imageVector = Icons.Outlined.FavoriteBorder)
 }

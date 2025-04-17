@@ -20,6 +20,8 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -47,12 +49,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.donghanx.design.R
+import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.hasEnoughItemsToScroll
 import com.donghanx.design.composable.extensions.toDp
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
 import com.donghanx.design.ui.appbar.rememberCollapsingNestedScrollConnection
 import com.donghanx.design.ui.grid.fullWidthItem
+import com.donghanx.design.ui.placeholder.EmptyScreenWithIcon
 import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
@@ -138,6 +141,15 @@ private fun SetDetailsScreen(
                         onShowSnackbar(errorMessage.message)
                     }
                 }
+
+                EmptyScreenWithIcon(
+                    text =
+                        stringResource(
+                            R.string.no_cards_in_this_set,
+                            setDetailsUiState.setInfo?.name.orEmpty(),
+                        ),
+                    imageVector = Icons.Default.Warning,
+                )
             }
         }
 
@@ -201,7 +213,7 @@ private fun SetDetailsTopBar(
         IconButton(onClick = onBackClick) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(id = R.string.back),
+                contentDescription = stringResource(id = DesignR.string.back),
             )
         }
 

@@ -1,10 +1,14 @@
 package com.donghanx.favorites
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.design.ui.placeholder.EmptyScreenWithIcon
 import com.donghanx.favorites.navigation.FavoritesRoute
 import com.donghanx.model.CardPreview
 import com.donghanx.ui.CardsGallery
@@ -25,6 +29,10 @@ internal fun FavoritesScreen(
                 onCardClick = onCardClick,
                 modifier = modifier,
             )
-        is FavoritesUiState.Empty -> EmptyFavoritesView()
+        is FavoritesUiState.Empty ->
+            EmptyScreenWithIcon(
+                text = stringResource(R.string.no_favorite_cards),
+                imageVector = Icons.Outlined.FavoriteBorder,
+            )
     }
 }
