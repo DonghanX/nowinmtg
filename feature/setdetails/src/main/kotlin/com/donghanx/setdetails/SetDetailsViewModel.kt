@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.donghanx.common.ErrorMessage
+import com.donghanx.common.NetworkResult
+import com.donghanx.common.asErrorMessage
 import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.setdetails.SetDetailsRepository
 import com.donghanx.data.repository.sets.SetsRepository
@@ -13,6 +15,9 @@ import com.donghanx.model.SetInfo
 import com.donghanx.setdetails.navigation.SetDetailsRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -74,7 +79,9 @@ constructor(
                     }
                 }
                 .onEach { (setInfo, cardsInSet) ->
-                    viewModelState.update { it.copy(setInfo = setInfo, cards = cardsInSet) }
+                    viewModelState.update {
+                        it.copy(setInfo = setInfo, cards = cardsInSet.toImmutableList())
+                    }
                 }
                 .collect()
         }
@@ -87,7 +94,22 @@ constructor(
                 .flatMapLatest { setInfo ->
                     setDetailsRepository.refreshCardsInCurrentSet(searchUri = setInfo.searchUri)
                 }
+                .onEach { it.updateViewModelState() }
                 .collect()
+        }
+    }
+
+    private fun <T> NetworkResult<T>.updateViewModelState() {
+        viewModelState.update { prevState ->
+            when (this) {
+                is NetworkResult.Success ->
+                    prevState.copy(refreshing = false, errorMessage = emptyErrorMessage())
+                is NetworkResult.Error ->
+                    prevState.copy(
+                        refreshing = false,
+                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1),
+                    )
+            }
         }
     }
 }
@@ -97,7 +119,7 @@ data class SetInfoAndCards(val setInfo: SetInfo, val cardsInSet: List<CardPrevie
 sealed interface SetDetailsUiState {
     val setInfo: SetInfo?
 
-    data class Success(val cards: List<CardPreview>, override val setInfo: SetInfo?) :
+    data class Success(val cards: ImmutableList<CardPreview>, override val setInfo: SetInfo?) :
         SetDetailsUiState
 
     data class NoSetDetails(
@@ -110,7 +132,7 @@ sealed interface SetDetailsUiState {
 
 private data class SetDetailsViewModelState(
     val setInfo: SetInfo? = null,
-    val cards: List<CardPreview> = emptyList(),
+    val cards: ImmutableList<CardPreview> = persistentListOf(),
     val refreshing: Boolean,
     val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {

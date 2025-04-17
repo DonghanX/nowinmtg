@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -36,26 +37,28 @@ import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.design.ui.shared.CardSharedElementKey
 import com.donghanx.model.CardPreview
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CardsGallery(
     parentRoute: String,
-    cards: List<CardPreview>,
+    cards: ImmutableList<CardPreview>,
     onCardClick: (card: CardPreview) -> Unit,
     modifier: Modifier = Modifier,
+    lazyGridState: LazyGridState = rememberLazyGridState(),
+    contentPadding: PaddingValues = PaddingValues(all = 4.dp),
     header: (LazyGridScope.() -> Unit)? = null,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
-        val lazyGridState = rememberLazyGridState()
 
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 160.dp),
             state = lazyGridState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(all = 4.dp),
+            contentPadding = contentPadding,
             verticalArrangement = Arrangement.spacedBy(6.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {

@@ -1,52 +1,75 @@
 package com.donghanx.setdetails
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.donghanx.design.R
+import com.donghanx.design.R as DesignR
+import com.donghanx.design.composable.extensions.hasEnoughItemsToScroll
+import com.donghanx.design.composable.extensions.toDp
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
+import com.donghanx.design.ui.appbar.rememberCollapsingNestedScrollConnection
 import com.donghanx.design.ui.grid.fullWidthItem
+import com.donghanx.design.ui.placeholder.EmptyScreenWithIcon
 import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
-import com.donghanx.setdetails.navigation.SET_DETAILS_ROUTE
+import com.donghanx.setdetails.navigation.SetDetailsRoute
 import com.donghanx.ui.CardsGallery
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun SetDetailsScreen(
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
     viewModel: SetDetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.setDetailsUiState.collectAsStateWithLifecycle()
@@ -55,6 +78,7 @@ internal fun SetDetailsScreen(
         setDetailsUiState = uiState,
         onBackClick = onBackClick,
         onCardClick = onCardClick,
+        onShowSnackbar = onShowSnackbar,
     )
 }
 
@@ -63,32 +87,99 @@ private fun SetDetailsScreen(
     setDetailsUiState: SetDetailsUiState,
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
+    onShowSnackbar: suspend (String) -> Unit,
 ) {
-    Column {
-        SetDetailsTopBar(setInfo = setDetailsUiState.setInfo, onBackClick = onBackClick)
+    val appBarMaxHeightPx = with(LocalDensity.current) { appBarHeight.roundToPx() }
+    val nestedScrollConnection = rememberCollapsingNestedScrollConnection(appBarMaxHeightPx)
 
-        SetDetailsBasicInfo(
-            setInfo = setDetailsUiState.setInfo,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        )
+    val lazyGridState = rememberLazyGridState()
+    val isCardsGridScrollable by remember {
+        derivedStateOf { lazyGridState.hasEnoughItemsToScroll() }
+    }
 
-        HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 4.dp))
+    val density = LocalDensity.current
+    val spaceHeight by
+        remember(density, isCardsGridScrollable) {
+            derivedStateOf {
+                val offset =
+                    nestedScrollConnection.targetOffset.takeIf { isCardsGridScrollable } ?: 0
+                (appBarMaxHeightPx + offset).toDp(density)
+            }
+        }
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (setDetailsUiState) {
-                is SetDetailsUiState.Success -> {
+    Box(
+        modifier =
+            Modifier.fillMaxSize().nestedScroll(connection = nestedScrollConnection).clipToBounds()
+    ) {
+        when (setDetailsUiState) {
+            is SetDetailsUiState.Success -> {
+                Column {
+                    // A spacer that syncs with SetDetailsHeader’s offset to enable smooth
+                    // collapsing behavior.
+                    // While the header is expanding or collapsing, this spacer adjusts its height
+                    // to keep the list static, ensuring there’s no visual gap between the LazyGrid
+                    // and the header during scroll transitions.
+                    Spacer(modifier = Modifier.height(spaceHeight))
+
                     CardsGalleryInSet(
                         cardsInSet = setDetailsUiState.cards,
                         releasedAt = setDetailsUiState.setInfo?.releasedAt,
                         onCardClick = onCardClick,
+                        lazyGridState = lazyGridState,
                     )
                 }
-                is SetDetailsUiState.NoSetDetails -> {}
-                is SetDetailsUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            is SetDetailsUiState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center).padding(top = appBarHeight)
+                )
+            }
+            is SetDetailsUiState.NoSetDetails -> {
+                LaunchedEffect(setDetailsUiState.errorMessage) {
+                    val errorMessage = setDetailsUiState.errorMessage
+                    if (errorMessage.hasError) {
+                        onShowSnackbar(errorMessage.message)
+                    }
                 }
+
+                EmptyScreenWithIcon(
+                    text =
+                        stringResource(
+                            R.string.no_cards_in_this_set,
+                            setDetailsUiState.setInfo?.name.orEmpty(),
+                        ),
+                    imageVector = Icons.Default.Warning,
+                )
             }
         }
+
+        SetDetailsHeader(
+            setInfo = setDetailsUiState.setInfo,
+            onBackClick = onBackClick,
+            modifier =
+                Modifier.offset {
+                    if (isCardsGridScrollable) IntOffset(0, nestedScrollConnection.targetOffset)
+                    else IntOffset.Zero
+                },
+        )
+    }
+}
+
+@Composable
+private fun SetDetailsHeader(
+    setInfo: SetInfo?,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.background(color = MaterialTheme.colorScheme.background)) {
+        SetDetailsTopBar(setInfo = setInfo, onBackClick = onBackClick)
+
+        SetDetailsBasicInfo(
+            setInfo = setInfo,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        )
+
+        HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 4.dp))
     }
 }
 
@@ -122,7 +213,7 @@ private fun SetDetailsTopBar(
         IconButton(onClick = onBackClick) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(id = R.string.back),
+                contentDescription = stringResource(id = DesignR.string.back),
             )
         }
 
@@ -151,13 +242,14 @@ private fun SetDetailsTitle(name: String, iconUri: String, modifier: Modifier = 
 
 @Composable
 private fun CardsGalleryInSet(
-    cardsInSet: List<CardPreview>,
+    cardsInSet: ImmutableList<CardPreview>,
     releasedAt: String?,
     onCardClick: (CardPreview) -> Unit,
+    lazyGridState: LazyGridState,
     modifier: Modifier = Modifier,
 ) {
     CardsGallery(
-        parentRoute = SET_DETAILS_ROUTE,
+        parentRoute = SetDetailsRoute.toString(),
         cards = cardsInSet,
         onCardClick = onCardClick,
         header = {
@@ -170,6 +262,8 @@ private fun CardsGalleryInSet(
                 )
             }
         },
+        contentPadding = PaddingValues(all = 4.dp),
+        lazyGridState = lazyGridState,
         modifier = modifier,
     )
 }
@@ -181,11 +275,14 @@ private fun SetDetailsScreenPreview() {
         SetDetailsScreen(
             setDetailsUiState =
                 SetDetailsUiState.Success(
-                    cards = MockUtils.emptyCards,
+                    cards = MockUtils.emptyCards.toImmutableList(),
                     setInfo = MockUtils.soiExpansion,
                 ),
             onBackClick = {},
             onCardClick = {},
+            onShowSnackbar = {},
         )
     }
 }
+
+private val appBarHeight = 110.dp

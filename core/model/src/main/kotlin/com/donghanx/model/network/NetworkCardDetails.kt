@@ -9,7 +9,7 @@ data class NetworkCardDetails(
     // -- Core card fields start --
     // A unique ID for this card in Scryfall’s database.
     @SerialName("id") val id: String,
-    @SerialName("oracle_id") val oracleId: String,
+    @SerialName("oracle_id") val oracleId: String?,
     @SerialName("lang") val lang: String,
     @SerialName("mtgo_id") val mtgoId: Int?,
     @SerialName("mtgo_foil_id") val mtgoFoilId: Int?,
@@ -28,13 +28,13 @@ data class NetworkCardDetails(
     // -- Core card fields end --
     // -- Gameplay fields start --
     @SerialName("name") val name: String,
-    @SerialName("cmc") val cmc: Double,
+    @SerialName("cmc") val cmc: Double?,
     @SerialName("color_identity") val colorIdentity: List<String>,
     @SerialName("colors") val colors: List<String>?,
     @SerialName("defense") val defense: String?,
     @SerialName("power") val power: String?,
     @SerialName("toughness") val toughness: String?,
-    @SerialName("type_line") val typeLine: String,
+    @SerialName("type_line") val typeLine: String?,
     @SerialName("reserved") val reserved: Boolean,
     @SerialName("mana_cost") val manaCost: String?,
     @SerialName("edhrec_rank") val edhrecRank: Int?,

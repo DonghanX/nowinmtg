@@ -16,6 +16,7 @@ import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import com.donghanx.randomcards.navigation.RandomCardsRoute
 import com.donghanx.ui.CardsGallery
+import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +59,7 @@ private fun CardsGalleryPreview() {
     SharedTransitionProviderWrapper {
         CardsGallery(
             parentRoute = RandomCardsRoute.toString(),
-            cards = MockUtils.emptyCards,
+            cards = MockUtils.emptyCards.toImmutableList(),
             onCardClick = {},
         )
     }

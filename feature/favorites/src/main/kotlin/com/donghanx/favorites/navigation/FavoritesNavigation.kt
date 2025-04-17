@@ -14,15 +14,13 @@ import kotlinx.serialization.Serializable
 @Serializable object FavoritesRoute
 
 fun NavGraphBuilder.favoriteGraph(
-    onCardClick: (card: CardPreview, parentRoute: String) -> Unit,
+    onCardClick: (CardPreview) -> Unit,
     nestedGraph: NavGraphBuilder.() -> Unit,
 ) {
     navigation<FavoritesBaseRoute>(startDestination = FavoritesRoute) {
         composable<FavoritesRoute> {
             CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-                FavoritesScreen(
-                    onCardClick = { card -> onCardClick(card, FavoritesRoute.toString()) }
-                )
+                FavoritesScreen(onCardClick = onCardClick)
             }
         }
         nestedGraph()

@@ -6,6 +6,8 @@ import com.donghanx.data.repository.favorites.FavoritesRepository
 import com.donghanx.model.CardPreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -20,7 +22,7 @@ internal class FavoritesViewModel @Inject constructor(favoritesRepository: Favor
             .getFavoriteCards()
             .map { favoriteCards ->
                 if (favoriteCards.isEmpty()) FavoritesUiState.Empty
-                else FavoritesUiState.Success(favoriteCards)
+                else FavoritesUiState.Success(favoriteCards.toImmutableList())
             }
             .stateIn(
                 scope = viewModelScope,
@@ -34,7 +36,7 @@ internal sealed interface FavoritesUiState {
 
     data object Empty : FavoritesUiState
 
-    data class Success(val favoriteCards: List<CardPreview>) : FavoritesUiState
+    data class Success(val favoriteCards: ImmutableList<CardPreview>) : FavoritesUiState
 }
 
 private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

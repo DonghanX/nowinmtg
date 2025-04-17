@@ -10,6 +10,9 @@ import com.donghanx.data.repository.cards.RandomCardsRepository
 import com.donghanx.model.CardPreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -62,7 +65,12 @@ constructor(private val randomCardsRepository: RandomCardsRepository) : ViewMode
             randomCardsRepository
                 .getRandomCards()
                 .onEach { randomCards ->
-                    viewModelState.update { it.copy(randomCards = randomCards, refreshing = false) }
+                    viewModelState.update {
+                        it.copy(
+                            randomCards = randomCards.toImmutableList(),
+                            refreshing = randomCards.isEmpty(),
+                        )
+                    }
                 }
                 .collect()
         }
@@ -90,7 +98,7 @@ internal sealed interface RandomCardsUiState {
     fun hasError(): Boolean = errorMessage.hasError
 
     data class Success(
-        val cards: List<CardPreview>,
+        val cards: ImmutableList<CardPreview>,
         override val refreshing: Boolean,
         override val errorMessage: ErrorMessage = emptyErrorMessage(),
     ) : RandomCardsUiState
@@ -102,7 +110,7 @@ internal sealed interface RandomCardsUiState {
 }
 
 private data class RandomCardsViewModelState(
-    val randomCards: List<CardPreview> = emptyList(),
+    val randomCards: ImmutableList<CardPreview> = persistentListOf(),
     val refreshing: Boolean,
     val errorMessage: ErrorMessage = emptyErrorMessage(),
 ) {

@@ -15,11 +15,14 @@ import com.donghanx.carddetails.navigation.navigateToCardDetails
 import com.donghanx.carddetails.navigation.navigateToCardDetailsWithMultiverseId
 import com.donghanx.common.INVALID_ID
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
+import com.donghanx.favorites.navigation.FavoritesRoute
 import com.donghanx.favorites.navigation.favoriteGraph
 import com.donghanx.randomcards.navigation.RandomCardsBaseRoute
+import com.donghanx.randomcards.navigation.RandomCardsRoute
 import com.donghanx.randomcards.navigation.randomCardsGraph
 import com.donghanx.search.navigation.SearchRoute
 import com.donghanx.search.navigation.searchScreen
+import com.donghanx.setdetails.navigation.SetDetailsRoute
 import com.donghanx.setdetails.navigation.navigateToSetDetails
 import com.donghanx.setdetails.navigation.setDetailsScreen
 import com.donghanx.sets.navigation.SetsRoute
@@ -42,11 +45,11 @@ fun NimNavHost(
                 exitTransition = { fadeOut(animationSpec = tween(300)) },
             ) {
                 randomCardsGraph(
-                    onCardClick = { card, parentRoute ->
+                    onCardClick = { card ->
                         navController.navigateToCardDetailsWithMultiverseId(
                             previewImageUrl = card.imageUrl,
                             multiverseId = card.id.toIntOrNull() ?: INVALID_ID,
-                            parentRoute = parentRoute,
+                            parentRoute = RandomCardsRoute.toString(),
                         )
                     },
                     onShowSnackbar = onShowSnackbar,
@@ -73,9 +76,10 @@ fun NimNavHost(
                                 navController.navigateToCardDetails(
                                     cardId = card.id,
                                     previewImageUrl = card.imageUrl,
-                                    parentRoute = SetsRoute.toString(),
+                                    parentRoute = SetDetailsRoute.toString(),
                                 )
                             },
+                            onShowSnackbar = onShowSnackbar,
                         )
 
                         cardDetailsScreen(
@@ -96,11 +100,11 @@ fun NimNavHost(
                 )
 
                 favoriteGraph(
-                    onCardClick = { card, parentRoute ->
+                    onCardClick = { card ->
                         navController.navigateToCardDetails(
                             previewImageUrl = card.imageUrl,
                             cardId = card.id,
-                            parentRoute = parentRoute,
+                            parentRoute = FavoritesRoute.toString(),
                         )
                     },
                     nestedGraph = {

@@ -1,8 +1,10 @@
 package com.donghanx.database
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Upsert
+import androidx.room.Transaction
 import com.donghanx.database.model.SetEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -11,7 +13,15 @@ interface SetsDao {
 
     @Query("SELECT * FROM sets") fun getAllSets(): Flow<List<SetEntity>>
 
-    @Upsert suspend fun upsertSets(sets: List<SetEntity>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertSets(sets: List<SetEntity>)
+
+    @Query("DELETE FROM sets") suspend fun deleteAllSets()
+
+    @Transaction
+    suspend fun deleteAllAndInsertSets(sets: List<SetEntity>) {
+        deleteAllSets()
+        insertSets(sets)
+    }
 
     @Query(
         "SELECT * FROM sets WHERE name LIKE ('%' || :query || '%') OR code LIKE ('%' || :query || '%')"
