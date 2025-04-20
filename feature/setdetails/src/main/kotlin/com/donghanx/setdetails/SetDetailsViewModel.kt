@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
@@ -21,7 +22,10 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -41,35 +45,25 @@ constructor(
 
     private val setDetailsRoute = savedStateHandle.toRoute<SetDetailsRoute>()
 
-    private val setInfoFlow: StateFlow<SetInfo?> =
+    private val setInfoFlow =
         setsRepository
             .getSetInfoById(setDetailsRoute.setId)
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000L),
+                started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
                 initialValue = null,
             )
 
-    private val viewModelState = MutableStateFlow(SetDetailsViewModelState(refreshing = true))
-
-    val setDetailsUiState: StateFlow<SetDetailsUiState> =
-        viewModelState
-            .map(SetDetailsViewModelState::toUiState)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000L),
-                initialValue = viewModelState.value.toUiState(),
-            )
+    private val _setDetailsUiState = MutableStateFlow(SetDetailsUiState())
+    val setDetailsUiState: StateFlow<SetDetailsUiState> = _setDetailsUiState.asStateFlow()
 
     init {
-        // TODO: refactor to eliminate the viewmodel state in this case because no refreshing is
-        // needed in this screen.
+        // Load cached cards first (offline‑first), then refresh from network when available.
         observeSetDetails()
         refreshCardInSets()
     }
 
     private fun observeSetDetails() {
-        // TODO: create a UseCase to encapsulate the following code snippet
         viewModelScope.launch {
             setInfoFlow
                 .filterNotNull()
@@ -78,9 +72,15 @@ constructor(
                         SetInfoAndCards(setInfo, cardsInSet)
                     }
                 }
+                .filter { it.cardsInSet.isNotEmpty() }
                 .onEach { (setInfo, cardsInSet) ->
-                    viewModelState.update {
-                        it.copy(setInfo = setInfo, cards = cardsInSet.toImmutableList())
+                    _setDetailsUiState.update {
+                        SetDetailsUiState(
+                            setInfo = setInfo,
+                            cards = cardsInSet.toImmutableList(),
+                            isLoading = false,
+                            errorMessage = it.errorMessage,
+                        )
                     }
                 }
                 .collect()
@@ -94,53 +94,23 @@ constructor(
                 .flatMapLatest { setInfo ->
                     setDetailsRepository.refreshCardsInCurrentSet(searchUri = setInfo.searchUri)
                 }
-                .onEach { it.updateViewModelState() }
+                .filterIsInstance<NetworkResult.Error>()
+                .onEach { error ->
+                    _setDetailsUiState.update {
+                        val errorMessage = error.exception.asErrorMessage()
+                        it.copy(isLoading = false, errorMessage = errorMessage)
+                    }
+                }
                 .collect()
-        }
-    }
-
-    private fun <T> NetworkResult<T>.updateViewModelState() {
-        viewModelState.update { prevState ->
-            when (this) {
-                is NetworkResult.Success ->
-                    prevState.copy(refreshing = false, errorMessage = emptyErrorMessage())
-                is NetworkResult.Error ->
-                    prevState.copy(
-                        refreshing = false,
-                        errorMessage = exception.asErrorMessage(id = prevState.errorMessage.id + 1),
-                    )
-            }
         }
     }
 }
 
 data class SetInfoAndCards(val setInfo: SetInfo, val cardsInSet: List<CardPreview>)
 
-sealed interface SetDetailsUiState {
-    val setInfo: SetInfo?
-
-    data class Success(val cards: ImmutableList<CardPreview>, override val setInfo: SetInfo?) :
-        SetDetailsUiState
-
-    data class NoSetDetails(
-        override val setInfo: SetInfo?,
-        val errorMessage: ErrorMessage = emptyErrorMessage(),
-    ) : SetDetailsUiState
-
-    data class Loading(override val setInfo: SetInfo? = null) : SetDetailsUiState
-}
-
-private data class SetDetailsViewModelState(
-    val setInfo: SetInfo? = null,
+data class SetDetailsUiState(
     val cards: ImmutableList<CardPreview> = persistentListOf(),
-    val refreshing: Boolean,
+    val setInfo: SetInfo? = null,
+    val isLoading: Boolean = true,
     val errorMessage: ErrorMessage = emptyErrorMessage(),
-) {
-    fun toUiState(): SetDetailsUiState =
-        when {
-            cards.isNotEmpty() -> SetDetailsUiState.Success(setInfo = setInfo, cards = cards)
-            errorMessage.hasError ->
-                SetDetailsUiState.NoSetDetails(setInfo = setInfo, errorMessage = errorMessage)
-            else -> SetDetailsUiState.Loading(setInfo = setInfo)
-        }
-}
+)

@@ -4,7 +4,10 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -30,17 +33,25 @@ class NowInMtgAppState(
     val navController: NavHostController,
     private val windowSizeClass: WindowSizeClass,
 ) {
+    private var previousDestination by mutableStateOf<NavDestination?>(null)
 
     val currentDestination: NavDestination?
-        @Composable get() = navController.currentBackStackEntryAsState().value?.destination
+        @Composable
+        get() {
+            val targetDestination = navController.currentBackStackEntryAsState().value?.destination
+            // Fallback to previousDestination if currentEntry is null. This is to prevent a UI
+            // issue that happens during a transition between two destinations. In that case, the
+            // current navigation back stack entry might be null, making the TopBar briefly
+            // disappears and then shows up again and thus cause flickers.
+            return targetDestination?.also { previousDestination = it } ?: previousDestination
+        }
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable
-        get() {
-            return topLevelDestinations.find { topLevelDestination ->
-                currentDestination?.hasRoute(route = topLevelDestination.route) ?: false
+        get() =
+            topLevelDestinations.find { topLevelDestination ->
+                currentDestination?.hasRoute(route = topLevelDestination.route) == true
             }
-        }
 
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 

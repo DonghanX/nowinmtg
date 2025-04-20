@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.donghanx.carddetails.navigation.CardDetailsRoute
+import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
@@ -154,5 +155,3 @@ private data class CardDetailsViewModelState(
                 )
         }
 }
-
-private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

@@ -3,6 +3,7 @@ package com.donghanx.sets
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
@@ -174,7 +175,6 @@ private data class SetsQuery(
 
 // The date the set was released is in GMT-8 Pacific time
 const val RELEASE_DATE_OFFSET = 8
-private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
 private const val SET_TYPE_KEY = "SetType"
 private const val START_DATE_MILLIS_KEY = "StartDateMillis"
 private const val END_DATE_MILLIS_KEY = "EndDateMillis"

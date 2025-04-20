@@ -1,9 +1,13 @@
 package com.donghanx.favorites
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,18 +25,31 @@ internal fun FavoritesScreen(
 ) {
     val favoritesUiState by viewModel.favoritesUiState.collectAsStateWithLifecycle()
 
-    when (val uiState = favoritesUiState) {
-        is FavoritesUiState.Success ->
-            CardsGallery(
-                parentRoute = FavoritesRoute.toString(),
-                cards = uiState.favoriteCards,
-                onCardClick = onCardClick,
-                modifier = modifier,
-            )
-        is FavoritesUiState.Empty ->
-            EmptyScreenWithIcon(
-                text = stringResource(R.string.no_favorite_cards),
-                imageVector = Icons.Outlined.FavoriteBorder,
-            )
+    FavoritesScreen(uiState = favoritesUiState, onCardClick = onCardClick, modifier = modifier)
+}
+
+@Composable
+private fun FavoritesScreen(
+    uiState: FavoritesUiState,
+    onCardClick: (card: CardPreview) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (uiState) {
+            is FavoritesUiState.Success ->
+                CardsGallery(
+                    parentRoute = FavoritesRoute.toString(),
+                    cards = uiState.favoriteCards,
+                    onCardClick = onCardClick,
+                    modifier = modifier,
+                )
+            is FavoritesUiState.Empty ->
+                EmptyScreenWithIcon(
+                    text = stringResource(R.string.no_favorite_cards),
+                    imageVector = Icons.Outlined.FavoriteBorder,
+                )
+            is FavoritesUiState.Loading ->
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
     }
 }

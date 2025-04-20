@@ -2,6 +2,7 @@ package com.donghanx.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.data.repository.favorites.FavoritesRepository
 import com.donghanx.model.CardPreview
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +37,8 @@ internal sealed interface FavoritesUiState {
 
     data object Empty : FavoritesUiState
 
+    data object Loading : FavoritesUiState
+
     data class Success(val favoriteCards: ImmutableList<CardPreview>) : FavoritesUiState
 }
 
-private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

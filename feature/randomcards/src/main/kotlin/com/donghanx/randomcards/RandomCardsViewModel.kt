@@ -2,6 +2,7 @@ package com.donghanx.randomcards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asErrorMessage
@@ -126,4 +127,3 @@ private data class RandomCardsViewModelState(
         }
 }
 
-private const val DEFAULT_STOP_TIME_MILLIS = 5_000L
