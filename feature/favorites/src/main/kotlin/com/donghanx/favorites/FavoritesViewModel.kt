@@ -41,4 +41,3 @@ internal sealed interface FavoritesUiState {
 
     data class Success(val favoriteCards: ImmutableList<CardPreview>) : FavoritesUiState
 }
-

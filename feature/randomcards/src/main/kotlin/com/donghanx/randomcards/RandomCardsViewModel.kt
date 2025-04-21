@@ -126,4 +126,3 @@ private data class RandomCardsViewModelState(
             else -> RandomCardsUiState.Empty(refreshing = refreshing, errorMessage = errorMessage)
         }
 }
-
