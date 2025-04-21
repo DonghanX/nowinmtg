@@ -72,7 +72,7 @@ internal fun SetDetailsScreen(
     onShowSnackbar: suspend (String) -> Unit,
     viewModel: SetDetailsViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.setDetailsUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.setDetailsUiStateFlow.collectAsStateWithLifecycle()
 
     SetDetailsScreen(
         setDetailsUiState = uiState,
@@ -111,6 +111,13 @@ private fun SetDetailsScreen(
         modifier =
             Modifier.fillMaxSize().nestedScroll(connection = nestedScrollConnection).clipToBounds()
     ) {
+        val errorMessage = setDetailsUiState.errorMessage
+        LaunchedEffect(errorMessage) {
+            if (errorMessage.hasError) {
+                onShowSnackbar(errorMessage.message)
+            }
+        }
+
         when {
             setDetailsUiState.cards.isNotEmpty() -> {
                 Column {
@@ -136,10 +143,7 @@ private fun SetDetailsScreen(
                 )
             }
 
-            setDetailsUiState.errorMessage.hasError -> {
-                val errorMessage = setDetailsUiState.errorMessage
-                LaunchedEffect(errorMessage) { onShowSnackbar(errorMessage.message) }
-
+            else -> {
                 val currentSetName =
                     setDetailsUiState.setInfo?.name ?: stringResource(R.string.this_set)
                 EmptyScreenWithIcon(
