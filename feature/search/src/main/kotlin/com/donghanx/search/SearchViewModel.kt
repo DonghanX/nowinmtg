@@ -3,6 +3,7 @@ package com.donghanx.search
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.emptyErrorMessage
 import com.donghanx.data.repository.sets.SetsRepository
@@ -77,4 +78,3 @@ internal sealed interface SearchUiState {
 const val MIN_SEARCH_QUERY_LENGTH = 3
 private const val SEARCH_QUERY_KEY = "SearchQuery"
 private const val SEARCH_DEBOUNCE_MILLIS = 500L
-private const val DEFAULT_STOP_TIME_MILLIS = 5_000L

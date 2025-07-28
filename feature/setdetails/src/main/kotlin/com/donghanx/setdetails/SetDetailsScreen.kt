@@ -72,7 +72,7 @@ internal fun SetDetailsScreen(
     onShowSnackbar: suspend (String) -> Unit,
     viewModel: SetDetailsViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.setDetailsUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.setDetailsUiStateFlow.collectAsStateWithLifecycle()
 
     SetDetailsScreen(
         setDetailsUiState = uiState,
@@ -111,8 +111,15 @@ private fun SetDetailsScreen(
         modifier =
             Modifier.fillMaxSize().nestedScroll(connection = nestedScrollConnection).clipToBounds()
     ) {
-        when (setDetailsUiState) {
-            is SetDetailsUiState.Success -> {
+        val errorMessage = setDetailsUiState.errorMessage
+        LaunchedEffect(errorMessage) {
+            if (errorMessage.hasError) {
+                onShowSnackbar(errorMessage.message)
+            }
+        }
+
+        when {
+            setDetailsUiState.cards.isNotEmpty() -> {
                 Column {
                     // A spacer that syncs with SetDetailsHeader’s offset to enable smooth
                     // collapsing behavior.
@@ -129,25 +136,18 @@ private fun SetDetailsScreen(
                     )
                 }
             }
-            is SetDetailsUiState.Loading -> {
+
+            setDetailsUiState.isLoading -> {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center).padding(top = appBarHeight)
                 )
             }
-            is SetDetailsUiState.NoSetDetails -> {
-                LaunchedEffect(setDetailsUiState.errorMessage) {
-                    val errorMessage = setDetailsUiState.errorMessage
-                    if (errorMessage.hasError) {
-                        onShowSnackbar(errorMessage.message)
-                    }
-                }
 
+            else -> {
+                val currentSetName =
+                    setDetailsUiState.setInfo?.name ?: stringResource(R.string.this_set)
                 EmptyScreenWithIcon(
-                    text =
-                        stringResource(
-                            R.string.no_cards_in_this_set,
-                            setDetailsUiState.setInfo?.name.orEmpty(),
-                        ),
+                    text = stringResource(R.string.no_cards_in_this_set, currentSetName),
                     imageVector = Icons.Default.Warning,
                 )
             }
@@ -274,9 +274,10 @@ private fun SetDetailsScreenPreview() {
     SharedTransitionProviderWrapper {
         SetDetailsScreen(
             setDetailsUiState =
-                SetDetailsUiState.Success(
+                SetDetailsUiState(
                     cards = MockUtils.emptyCards.toImmutableList(),
                     setInfo = MockUtils.soiExpansion,
+                    isLoading = false,
                 ),
             onBackClick = {},
             onCardClick = {},

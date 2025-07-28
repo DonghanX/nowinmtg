@@ -79,6 +79,8 @@ fun CardsGallery(
                         contentDescription = card.name,
                         contentScale = ContentScale.Fit,
                         placeholder = painterResource(id = R.drawable.blank_card_placeholder),
+                        error = painterResource(id = R.drawable.blank_card_placeholder),
+                        fallback = painterResource(id = R.drawable.blank_card_placeholder),
                         modifier =
                             Modifier.sharedElement(
                                     state = rememberSharedContentState(key = cacheKey),

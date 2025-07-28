@@ -6,5 +6,5 @@ data class ErrorMessage(val id: Int, val message: String, val hasError: Boolean 
 
 fun emptyErrorMessage(): ErrorMessage = ErrorMessage(id = 0, message = "", hasError = false)
 
-fun Throwable?.asErrorMessage(id: Int): ErrorMessage =
+fun Throwable?.asErrorMessage(id: Int = 0): ErrorMessage =
     ErrorMessage(id = id, message = this?.message.orEmpty(), hasError = true)

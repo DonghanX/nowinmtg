@@ -20,20 +20,23 @@ data class SetEntity(
     val uri: String,
 )
 
-fun NetworkSet.asSetEntity(): SetEntity =
-    SetEntity(
-        scryfallId = scryfallId,
-        code = code,
-        cardCount = cardCount,
-        digital = digital,
-        iconSvgUri = iconSvgUri,
-        name = name,
-        setType = setType,
-        releasedAt = releasedAt,
-        scryfallUri = scryfallUri,
-        searchUri = searchUri,
-        uri = uri,
-    )
+fun NetworkSet.asSetEntity(): SetEntity? =
+    // Sets with zero cards are considered invalid and should not be stored and displayed.
+    if (cardCount == 0) null
+    else
+        SetEntity(
+            scryfallId = scryfallId,
+            code = code,
+            cardCount = cardCount,
+            digital = digital,
+            iconSvgUri = iconSvgUri,
+            name = name,
+            setType = setType,
+            releasedAt = releasedAt,
+            scryfallUri = scryfallUri,
+            searchUri = searchUri,
+            uri = uri,
+        )
 
 fun SetEntity.asExternalModel(): SetInfo =
     SetInfo(
