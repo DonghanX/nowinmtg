@@ -1,10 +1,10 @@
 package com.donghanx.data.sync
 
 suspend fun <T, R> List<T>.syncListWith(
-    entityConverter: (T) -> R,
+    entityConverter: (T) -> R?,
     modelActions: suspend (List<R>) -> Unit,
 ) {
-    map { networkEntity -> entityConverter(networkEntity) }
+    mapNotNull { networkEntity -> entityConverter(networkEntity) }
         .also { localEntity -> modelActions(localEntity) }
 }
 
