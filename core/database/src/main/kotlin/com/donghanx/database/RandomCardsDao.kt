@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RandomCardsDao {
 
-    @Query("SELECT * FROM random_cards") fun getRandomCards(): Flow<List<RandomCardEntity>>
+    @Query("SELECT * FROM random_cards ORDER BY orderIndex")
+    fun getRandomCards(): Flow<List<RandomCardEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRandomCards(randomCards: List<RandomCardEntity>)
