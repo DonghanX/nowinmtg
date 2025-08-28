@@ -3,13 +3,12 @@ package com.donghanx.data.repository.cards
 import com.donghanx.common.NetworkResult
 import com.donghanx.common.asResultFlow
 import com.donghanx.common.foldResult
-import com.donghanx.data.sync.syncListWith
+import com.donghanx.data.sync.syncListIndexedWith
 import com.donghanx.database.RandomCardsDao
 import com.donghanx.database.model.RandomCardEntity
 import com.donghanx.database.model.asExternalModel
 import com.donghanx.database.model.asRandomCardEntity
 import com.donghanx.model.CardPreview
-import com.donghanx.model.network.NetworkCard
 import com.donghanx.network.CardsRemoteDataSource
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -37,8 +36,8 @@ constructor(
             .asResultFlow()
             .foldResult(
                 onSuccess = { randomCards ->
-                    randomCards.syncListWith(
-                        entityConverter = NetworkCard::asRandomCardEntity,
+                    randomCards.syncListIndexedWith(
+                        entityConverter = { index, entity -> entity.asRandomCardEntity(index) },
                         modelActions = randomCardsDao::deleteAllAndInsertRandomCards,
                     )
 
