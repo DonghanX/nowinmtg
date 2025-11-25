@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.donghanx.data"
+    namespace = "com.donghanx.datastore"
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -17,20 +17,15 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
 }
 
 dependencies {
-    implementation(project(":core:network"))
-    implementation(project(":core:datastore"))
-    implementation(project(":core:database"))
     implementation(project(":core:model"))
-    implementation(project(":core:common"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.datastore)
     implementation(libs.kotlinx.serialization)
 
     testImplementation(libs.junit)
