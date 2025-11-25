@@ -27,6 +27,7 @@ import com.donghanx.setdetails.navigation.navigateToSetDetails
 import com.donghanx.setdetails.navigation.setDetailsScreen
 import com.donghanx.sets.navigation.SetsRoute
 import com.donghanx.sets.navigation.setsScreen
+import com.donghanx.settings.navigation.settingsDialog
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -114,6 +115,8 @@ fun NimNavHost(
                         )
                     },
                 )
+
+                settingsDialog()
             }
         }
     }

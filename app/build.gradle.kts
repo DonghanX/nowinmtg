@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":feature:search"))
     implementation(project(":feature:favorites"))
     implementation(project(":feature:setdetails"))
+    implementation(project(":feature:settings"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

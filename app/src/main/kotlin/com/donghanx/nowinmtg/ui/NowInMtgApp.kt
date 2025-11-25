@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.search.navigation.navigateToSearch
+import com.donghanx.settings.navigation.navigateToSettings
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,9 +82,12 @@ fun NowInMtgApp(
                             navigationIcon = Icons.Rounded.Search,
                             navigationIconContentDescription =
                                 stringResource(DesignR.string.search),
+                            actionIcon = Icons.Rounded.Settings,
+                            actionIconContentDescription = stringResource(DesignR.string.settings),
                             showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
                             shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
                             onNavigationIconClick = appState.navController::navigateToSearch,
+                            onActionIconClick = appState.navController::navigateToSettings,
                         )
                     }
                 },

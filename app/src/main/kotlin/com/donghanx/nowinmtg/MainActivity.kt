@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.view.WindowCompat
+import com.donghanx.design.theme.NowInMTGTheme
 import com.donghanx.nowinmtg.ui.NowInMtgApp
-import com.donghanx.nowinmtg.ui.theme.NowInMTGTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

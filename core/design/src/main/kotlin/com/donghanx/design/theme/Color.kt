@@ -1,4 +1,4 @@
-package com.donghanx.nowinmtg.ui.theme
+package com.donghanx.design.theme
 
 import androidx.compose.ui.graphics.Color
 
