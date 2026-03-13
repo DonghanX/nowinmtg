@@ -5,13 +5,7 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
-    <string-array name="color_theme_options">
-        <item name="dynamic_color">Dynamic Color</item>
-        <item name="default_theme">Default</item>
-    </string-array>
-
-    <string-array name="dark_mode_options">
-        <item name="light">Light</item>
-        <item name="dark">Dark</item>
-    </string-array>
+    <string name="system_default">System Default</string>
+    <string name="default_theme">Default</string>
+    <string name="dynamic_color">Dynamic Color</string>
 </resources>
