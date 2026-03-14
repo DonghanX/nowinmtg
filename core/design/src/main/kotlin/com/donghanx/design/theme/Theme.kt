@@ -261,19 +261,22 @@ data class ColorFamily(
 
 @Composable
 fun NowInMTGTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    useDarkMode: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
+    useDynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =
         when {
-            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            useDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 val context = LocalContext.current
-                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+                if (useDarkMode) {
+                    dynamicDarkColorScheme(context)
+                } else {
+                    dynamicLightColorScheme(context)
+                }
             }
-
-            darkTheme -> darkScheme
+            useDarkMode -> darkScheme
             else -> mediumContrastLightColorScheme
         }
 
@@ -285,7 +288,8 @@ fun NowInMTGTheme(
                     statusBarColor = Color.Transparent.toArgb()
                     navigationBarColor = Color.Transparent.toArgb()
                 }
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                !useDarkMode
         }
     }
 

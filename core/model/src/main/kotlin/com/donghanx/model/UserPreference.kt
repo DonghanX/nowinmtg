@@ -10,11 +10,17 @@ data class UserPreference(
 
 enum class ThemeConfig {
     DYNAMIC_COLOR,
-    DEFAULT,
+    DEFAULT;
+
+    val useDynamicColor: Boolean
+        get() = this == DYNAMIC_COLOR
 }
 
 enum class DarkModeConfig {
     SYSTEM_DEFAULT,
     LIGHT,
-    DARK,
+    DARK;
+
+    fun useDarkMode(isSystemDarkTheme: Boolean): Boolean =
+        isSystemDarkTheme && this == SYSTEM_DEFAULT || this == DARK
 }

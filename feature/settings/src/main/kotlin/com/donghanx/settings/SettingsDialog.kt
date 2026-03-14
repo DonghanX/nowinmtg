@@ -56,12 +56,12 @@ fun SettingsDialog(
         modifier =
             Modifier.fillMaxWidth()
                 .clip(shape = RoundedCornerShape(20.dp))
-                .background(color = MaterialTheme.colorScheme.onPrimaryContainer)
+                .background(color = MaterialTheme.colorScheme.surfaceContainer)
                 .padding(all = 20.dp)
     ) {
         Text(
             text = stringResource(R.string.settings),
-            fontSize = 22.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.Start),
         )
@@ -120,7 +120,7 @@ private fun <T> ColumnScope.SettingsSection(
 ) {
     Text(
         text = title,
-        fontSize = 20.sp,
+        fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.align(Alignment.Start),
     )
