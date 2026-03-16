@@ -285,7 +285,6 @@ private fun SettingsDialogSuccessWithDynamicColorPreview(
                 onUpdateContrastLevel = {},
             )
         }
-
     }
 }
 
