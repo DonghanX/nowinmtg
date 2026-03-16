@@ -1,6 +1,7 @@
 package com.donghanx.data.repository.userpreference
 
 import com.donghanx.datastore.UserPreferenceDataSource
+import com.donghanx.model.ContrastLevel
 import com.donghanx.model.DarkModeConfig
 import com.donghanx.model.ThemeConfig
 import com.donghanx.model.UserPreference
@@ -24,4 +25,8 @@ constructor(
 
     override suspend fun updateDarkModeConfig(darkModeConfig: DarkModeConfig) =
         withContext(ioDispatcher) { userPreferenceDataSource.updateDarkModeConfig(darkModeConfig) }
+
+    override suspend fun updateContrastLevel(contrastLevel: ContrastLevel) {
+        withContext(ioDispatcher) { userPreferenceDataSource.updateContrastLevel(contrastLevel) }
+    }
 }

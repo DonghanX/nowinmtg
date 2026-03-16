@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.data.repository.userpreference.UserPreferenceRepository
+import com.donghanx.model.ContrastLevel
 import com.donghanx.model.DarkModeConfig
 import com.donghanx.model.ThemeConfig
 import com.donghanx.model.UserPreference
@@ -35,6 +36,10 @@ constructor(private val userPreferenceRepository: UserPreferenceRepository) : Vi
 
     fun updateDarkModeConfig(darkModeConfig: DarkModeConfig) {
         viewModelScope.launch { userPreferenceRepository.updateDarkModeConfig(darkModeConfig) }
+    }
+
+    fun updateContrastLevel(contrastLevel: ContrastLevel) {
+        viewModelScope.launch { userPreferenceRepository.updateContrastLevel(contrastLevel) }
     }
 }
 

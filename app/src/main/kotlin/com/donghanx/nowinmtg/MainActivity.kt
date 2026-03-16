@@ -27,11 +27,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val userPreference by viewModel.userPreference.collectAsStateWithLifecycle()
-            val (themeConfig, darkModeConfig) = userPreference
+            val (themeConfig, darkModeConfig, contrastLevel) = userPreference
 
             NowInMTGTheme(
                 useDarkMode = darkModeConfig.useDarkMode(isSystemInDarkTheme()),
                 useDynamicColor = themeConfig.useDynamicColor,
+                contrastLevel = contrastLevel,
             ) {
                 NowInMtgApp(windowSizeClass = calculateWindowSizeClass(this))
             }

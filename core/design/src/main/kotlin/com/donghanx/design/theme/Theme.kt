@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.donghanx.model.ContrastLevel
 
 private val lightScheme =
     lightColorScheme(
@@ -264,20 +265,18 @@ fun NowInMTGTheme(
     useDarkMode: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     useDynamicColor: Boolean = false,
+    contrastLevel: ContrastLevel = ContrastLevel.MEDIUM,
     content: @Composable () -> Unit,
 ) {
+    val context = LocalContext.current
     val colorScheme =
         when {
             useDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                val context = LocalContext.current
-                if (useDarkMode) {
-                    dynamicDarkColorScheme(context)
-                } else {
-                    dynamicLightColorScheme(context)
-                }
+                if (useDarkMode) dynamicDarkColorScheme(context)
+                else dynamicLightColorScheme(context)
             }
-            useDarkMode -> darkScheme
-            else -> mediumContrastLightColorScheme
+            useDarkMode -> darkSchemesByContrastLevel.getValue(contrastLevel)
+            else -> lightSchemesByContrastLevel.getValue(contrastLevel)
         }
 
     val view = LocalView.current
@@ -295,3 +294,17 @@ fun NowInMTGTheme(
 
     MaterialTheme(colorScheme = colorScheme, typography = AppTypography, content = content)
 }
+
+private val lightSchemesByContrastLevel =
+    mapOf(
+        ContrastLevel.LOW to lightScheme,
+        ContrastLevel.MEDIUM to mediumContrastLightColorScheme,
+        ContrastLevel.HIGH to highContrastLightColorScheme,
+    )
+
+private val darkSchemesByContrastLevel =
+    mapOf(
+        ContrastLevel.LOW to darkScheme,
+        ContrastLevel.MEDIUM to mediumContrastDarkColorScheme,
+        ContrastLevel.HIGH to highContrastDarkColorScheme,
+    )

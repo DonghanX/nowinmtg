@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class UserPreference(
     val themeConfig: ThemeConfig = ThemeConfig.DYNAMIC_COLOR,
     val darkModeConfig: DarkModeConfig = DarkModeConfig.SYSTEM_DEFAULT,
+    val contrastLevel: ContrastLevel = ContrastLevel.MEDIUM,
 )
 
 enum class ThemeConfig {
@@ -23,4 +24,10 @@ enum class DarkModeConfig {
 
     fun useDarkMode(isSystemDarkTheme: Boolean): Boolean =
         isSystemDarkTheme && this == SYSTEM_DEFAULT || this == DARK
+}
+
+enum class ContrastLevel {
+    LOW,
+    MEDIUM,
+    HIGH,
 }
