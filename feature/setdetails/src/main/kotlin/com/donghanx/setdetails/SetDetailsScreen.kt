@@ -132,6 +132,7 @@ private fun SetDetailsScreen(
                         releasedAt = setDetailsUiState.setInfo?.releasedAt,
                         onCardClick = onCardClick,
                         lazyGridState = lazyGridState,
+                        onScrollToTop = { nestedScrollConnection.reset() },
                     )
                 }
             }
@@ -246,6 +247,7 @@ private fun CardsGalleryInSet(
     onCardClick: (CardPreview) -> Unit,
     lazyGridState: LazyGridState,
     modifier: Modifier = Modifier,
+    onScrollToTop: () -> Unit = {},
 ) {
     CardsGallery(
         parentRoute = SetDetailsRoute.toString(),
@@ -263,6 +265,7 @@ private fun CardsGalleryInSet(
         },
         contentPadding = PaddingValues(all = 4.dp),
         lazyGridState = lazyGridState,
+        onScrollToTop = onScrollToTop,
         modifier = modifier,
     )
 }
