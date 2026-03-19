@@ -49,6 +49,7 @@ fun CardsGallery(
     modifier: Modifier = Modifier,
     lazyGridState: LazyGridState = rememberLazyGridState(),
     contentPadding: PaddingValues = PaddingValues(all = 4.dp),
+    onScrollToTop: () -> Unit = {},
     header: (LazyGridScope.() -> Unit)? = null,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -100,7 +101,12 @@ fun CardsGallery(
         }
         ScrollToTopButton(
             visible = shouldShowScrollToTopButton,
-            onClick = { scope.launch { lazyGridState.animateScrollToItem(0) } },
+            onClick = {
+                scope.launch {
+                    lazyGridState.animateScrollToItem(0)
+                    onScrollToTop()
+                }
+            },
             modifier = Modifier.align(Alignment.BottomCenter),
         )
     }

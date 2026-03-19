@@ -10,6 +10,8 @@ import com.donghanx.data.repository.setdetails.OfflineFirstSetDetailsRepository
 import com.donghanx.data.repository.setdetails.SetDetailsRepository
 import com.donghanx.data.repository.sets.OfflineFirstSetsRepository
 import com.donghanx.data.repository.sets.SetsRepository
+import com.donghanx.data.repository.userpreference.OfflineFirstUserPreferenceRepository
+import com.donghanx.data.repository.userpreference.UserPreferenceRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -41,4 +43,9 @@ interface DataModule {
     fun bindSetDetailsRepository(
         offlineFirstSetDetailsRepository: OfflineFirstSetDetailsRepository
     ): SetDetailsRepository
+
+    @Binds
+    fun bindSettingsRepository(
+        offlineFirstUserPreferenceRepository: OfflineFirstUserPreferenceRepository
+    ): UserPreferenceRepository
 }

@@ -8,6 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.FloatingWindow
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -15,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.favorites.navigation.FavoritesBaseRoute
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.randomcards.navigation.RandomCardsBaseRoute
@@ -38,7 +41,7 @@ class NowInMtgAppState(
     val currentDestination: NavDestination?
         @Composable
         get() {
-            val targetDestination = navController.currentBackStackEntryAsState().value?.destination
+            val targetDestination = navController.currentDestinationIgnoringDialog()
             // Fallback to previousDestination if currentEntry is null. This is to prevent a UI
             // issue that happens during a transition between two destinations. In that case, the
             // current navigation back stack entry might be null, making the TopBar briefly
@@ -74,4 +77,22 @@ class NowInMtgAppState(
 
         navController.navigate(route = route, navOptions = navOptions)
     }
+}
+
+/**
+ * Returns the [NavDestination] representing the active screen for navigation UI elements such as
+ * [NowInMtgTopAppBar] and [navigationSuiteItem] selection.
+ *
+ * In Compose Navigation, showing a [FloatingWindow] (Dialog or bottom sheet) changes
+ * [NavController.currentDestination] even though the underlying screen remains visible. This
+ * function ignores such transient destinations and falls back to the previous one, ensuring the
+ * [NowInMtgTopAppBar] won't get hidden and the correct [navigationSuiteItem] remain selected.
+ */
+@Composable
+private fun NavController.currentDestinationIgnoringDialog(): NavDestination? {
+    val currentDestination = currentBackStackEntryAsState().value?.destination
+
+    return if (currentDestination is FloatingWindow) {
+        previousBackStackEntry?.destination
+    } else currentDestination
 }
