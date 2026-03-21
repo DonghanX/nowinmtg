@@ -12,7 +12,6 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.design.theme.NowInMTGTheme
 import com.donghanx.nowinmtg.ui.NowInMtgApp
@@ -27,26 +26,32 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        enableEdgeToEdge()
 
         setContent {
             val userPreference by viewModel.userPreference.collectAsStateWithLifecycle()
             val (themeConfig, darkModeConfig, contrastLevel) = userPreference
             val useDarkMode = darkModeConfig.useDarkMode(isSystemInDarkTheme())
 
-            LaunchedEffect(darkModeConfig) {
+            LaunchedEffect(useDarkMode) {
                 enableEdgeToEdge(
                     statusBarStyle =
                         SystemBarStyle.auto(
                             lightScrim = Color.TRANSPARENT,
                             darkScrim = Color.TRANSPARENT,
                             detectDarkMode = { useDarkMode },
-                        )
+                        ),
+                    navigationBarStyle =
+                        SystemBarStyle.auto(
+                            lightScrim = Color.TRANSPARENT,
+                            darkScrim = Color.TRANSPARENT,
+                            detectDarkMode = { useDarkMode },
+                        ),
                 )
             }
 
             NowInMTGTheme(
-                useDarkMode = darkModeConfig.useDarkMode(isSystemInDarkTheme()),
+                useDarkMode = useDarkMode,
                 useDynamicColor = themeConfig.useDynamicColor,
                 contrastLevel = contrastLevel,
             ) {

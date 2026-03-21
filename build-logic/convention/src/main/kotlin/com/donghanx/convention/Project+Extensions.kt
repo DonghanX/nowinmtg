@@ -22,7 +22,7 @@ private typealias CommonExtensionType = CommonExtension<*, *, *, *, *, *>
 
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtensionType) {
     with(commonExtension) {
-        compileSdk = 35
+        compileSdk = 36
         defaultConfig { minSdk = 26 }
 
         compileOptions {
