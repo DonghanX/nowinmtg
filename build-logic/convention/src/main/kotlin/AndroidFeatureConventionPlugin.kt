@@ -30,6 +30,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("androidx.compose.ui.graphics").get())
                 add("implementation", libs.findLibrary("androidx.compose.ui.tooling.preview").get())
                 add("implementation", libs.findLibrary("androidx.compose.material3").get())
+                add("implementation", libs.findLibrary("androidx.compose.material.icons").get())
 
                 add("implementation", libs.findLibrary("kotlinx.serialization").get())
                 add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())

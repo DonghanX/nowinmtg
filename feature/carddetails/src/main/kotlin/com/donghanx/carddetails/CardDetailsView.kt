@@ -106,7 +106,7 @@ private fun CardImage(
                     .then(
                         if (cacheKey.isValid())
                             Modifier.sharedElement(
-                                state = rememberSharedContentState(key = cacheKey),
+                                sharedContentState = rememberSharedContentState(key = cacheKey),
                                 animatedVisibilityScope =
                                     LocalNavAnimatedVisibilityScope.currentNotNull,
                             )
