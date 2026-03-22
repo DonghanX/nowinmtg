@@ -106,7 +106,7 @@ private fun CardImage(
                 modifier
                     .conditional(cacheKey.isValid()) {
                         sharedElement(
-                            state = rememberSharedContentState(key = cacheKey),
+                            sharedContentState = rememberSharedContentState(key = cacheKey),
                             animatedVisibilityScope = LocalNavAnimatedVisibilityScope.currentNotNull,
                         )
                     }

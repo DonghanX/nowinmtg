@@ -84,7 +84,7 @@ fun CardsGallery(
                         fallback = painterResource(id = R.drawable.blank_card_placeholder),
                         modifier =
                             Modifier.sharedElement(
-                                    state = rememberSharedContentState(key = cacheKey),
+                                    sharedContentState = rememberSharedContentState(key = cacheKey),
                                     animatedVisibilityScope =
                                         LocalNavAnimatedVisibilityScope.currentNotNull,
                                 )
