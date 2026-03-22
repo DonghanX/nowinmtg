@@ -8,13 +8,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
@@ -88,15 +91,17 @@ private fun SetDetailsScreen(
     onCardClick: (CardPreview) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
 ) {
-    val appBarMaxHeightPx = with(LocalDensity.current) { appBarHeight.roundToPx() }
-    val nestedScrollConnection = rememberCollapsingNestedScrollConnection(appBarMaxHeightPx)
-
     val lazyGridState = rememberLazyGridState()
     val isCardsGridScrollable by remember {
         derivedStateOf { lazyGridState.hasEnoughItemsToScroll() }
     }
 
     val density = LocalDensity.current
+
+    val appBarMaxHeightPx =
+        with(density) { appBarHeight.roundToPx() + WindowInsets.systemBars.getTop(this) }
+    val nestedScrollConnection = rememberCollapsingNestedScrollConnection(appBarMaxHeightPx)
+
     val spaceHeight by
         remember(density, isCardsGridScrollable) {
             derivedStateOf {
@@ -172,6 +177,8 @@ private fun SetDetailsHeader(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.background(color = MaterialTheme.colorScheme.background)) {
+        Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.systemBars))
+
         SetDetailsTopBar(setInfo = setInfo, onBackClick = onBackClick)
 
         SetDetailsBasicInfo(
@@ -288,4 +295,4 @@ private fun SetDetailsScreenPreview() {
     }
 }
 
-private val appBarHeight = 110.dp
+private val appBarHeight = 116.dp
