@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
+import com.donghanx.design.composable.extensions.safeDrawingTopPadding
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.model.SetInfo
 import com.donghanx.sets.preview.SetsListPreviewParameterProvider
@@ -58,6 +59,7 @@ internal fun SetsScreen(
             val selectedEndMillis by viewModel.endMillisQuery.collectAsStateWithLifecycle()
 
             SetsFilterRow(
+                modifier = Modifier.safeDrawingTopPadding(),
                 selectedSetType = selectedSetType,
                 onSetTypeChanged = viewModel::onSelectedSetTypeChanged,
                 selectedDateMillisRange = DateMillisRange(selectedStartMillis, selectedEndMillis),

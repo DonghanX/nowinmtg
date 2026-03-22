@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.design.composable.extensions.safeDrawingTopPadding
 import com.donghanx.design.R as DesignR
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,6 +52,7 @@ internal fun CardDetailsScreen(
         Column {
             val isCardFavorite by viewModel.isCardFavorite.collectAsStateWithLifecycle()
             CardDetailsTopBar(
+                modifier = Modifier.safeDrawingTopPadding(),
                 isCardFavorite = isCardFavorite,
                 onBackClick = onBackClick,
                 onFavoritesClick = { viewModel.onFavoriteClick() },
