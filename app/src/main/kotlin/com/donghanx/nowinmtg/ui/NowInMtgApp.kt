@@ -15,6 +15,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
@@ -22,10 +23,13 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,6 +37,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.donghanx.design.R as DesignR
+import com.donghanx.design.composable.extensions.conditional
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.nowinmtg.navigation.NimNavHost
 import com.donghanx.nowinmtg.navigation.TopLevelDestination
@@ -74,7 +79,18 @@ fun NowInMtgApp(
                     navigationBarContainerColor = MaterialTheme.colorScheme.inverseOnSurface
                 ),
         ) {
+            val scrollBehavior =
+                TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
             Scaffold(
+                // Only participate in nested scroll if the current screen is a top-level
+                // destination which has TopAppBar.
+                // This prevents scroll conflicts with sub-screens (e.g., SetDetails screen) that
+                // manage their own header and nested scrolling logic.
+                modifier =
+                    Modifier.conditional(appState.isTopLevelDestination) {
+                        nestedScroll(scrollBehavior.nestedScrollConnection)
+                    },
+                containerColor = Color.Transparent,
                 contentWindowInsets = WindowInsets(0, 0, 0, 0),
                 snackbarHost = { SnackbarHost(snackbarHostState) },
                 topBar = {
@@ -88,6 +104,7 @@ fun NowInMtgApp(
                             actionIconContentDescription = stringResource(DesignR.string.settings),
                             showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
                             shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
+                            scrollBehavior = scrollBehavior,
                             onNavigationIconClick = appState.navController::navigateToSearch,
                             onActionIconClick = appState.navController::navigateToSettings,
                         )

@@ -111,6 +111,8 @@ private fun SetDetailsScreen(
             }
         }
 
+    // TODO: Fix scroll flickering for short content lists where the scrollable range is
+    //  smaller than the SetDetailsHeader height.
     Box(
         modifier =
             Modifier.fillMaxSize().nestedScroll(connection = nestedScrollConnection).clipToBounds()

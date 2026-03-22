@@ -41,6 +41,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.placeholder
 import com.donghanx.common.extensions.capitalize
+import com.donghanx.design.composable.extensions.conditional
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
@@ -103,15 +104,12 @@ private fun CardImage(
             contentDescription = contentDescription,
             modifier =
                 modifier
-                    .then(
-                        if (cacheKey.isValid())
-                            Modifier.sharedElement(
-                                state = rememberSharedContentState(key = cacheKey),
-                                animatedVisibilityScope =
-                                    LocalNavAnimatedVisibilityScope.currentNotNull,
-                            )
-                        else Modifier
-                    )
+                    .conditional(cacheKey.isValid()) {
+                        sharedElement(
+                            state = rememberSharedContentState(key = cacheKey),
+                            animatedVisibilityScope = LocalNavAnimatedVisibilityScope.currentNotNull,
+                        )
+                    }
                     .fillMaxWidth(fraction = 0.5F)
                     .aspectRatio(ratio = 5F / 7F),
             contentScale = ContentScale.Crop,
