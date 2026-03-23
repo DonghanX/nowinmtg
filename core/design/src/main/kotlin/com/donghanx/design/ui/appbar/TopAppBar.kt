@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -41,10 +40,11 @@ fun NowInMtgTopAppBar(
     windowInsets: WindowInsets = WindowInsets(0, 0, 0, 0),
     contentPadding: PaddingValues = WindowInsets.systemBars.asPaddingValues(),
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = Color.Transparent,
-        scrolledContainerColor = Color.Transparent,
-    ),
+    colors: TopAppBarColors =
+        TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent,
+        ),
     onNavigationIconClick: () -> Unit = {},
     onActionIconClick: () -> Unit = {},
 ) {
