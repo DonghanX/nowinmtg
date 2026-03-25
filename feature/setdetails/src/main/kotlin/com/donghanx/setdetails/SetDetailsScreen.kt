@@ -40,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -241,7 +242,12 @@ private fun SetDetailsTitle(name: String, iconUri: String, modifier: Modifier = 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
-        AsyncImage(model = iconUri, contentDescription = name, modifier = Modifier.size(24.dp))
+        AsyncImage(
+            model = iconUri,
+            contentDescription = name,
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface),
+            modifier = Modifier.size(24.dp),
+        )
 
         Spacer(modifier = Modifier.width(4.dp))
 
