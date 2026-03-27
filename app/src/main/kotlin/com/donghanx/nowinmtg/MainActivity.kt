@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.design.theme.NowInMTGTheme
@@ -31,21 +31,19 @@ class MainActivity : ComponentActivity() {
             val (themeConfig, darkModeConfig, contrastLevel) = userPreference
             val useDarkMode = darkModeConfig.useDarkMode(isSystemInDarkTheme())
 
-            LaunchedEffect(useDarkMode) {
+            DisposableEffect(useDarkMode) {
+                val systemBarStyle =
+                    SystemBarStyle.auto(
+                        lightScrim = Color.TRANSPARENT,
+                        darkScrim = Color.TRANSPARENT,
+                        detectDarkMode = { useDarkMode },
+                    )
                 enableEdgeToEdge(
-                    statusBarStyle =
-                        SystemBarStyle.auto(
-                            lightScrim = Color.TRANSPARENT,
-                            darkScrim = Color.TRANSPARENT,
-                            detectDarkMode = { useDarkMode },
-                        ),
-                    navigationBarStyle =
-                        SystemBarStyle.auto(
-                            lightScrim = Color.TRANSPARENT,
-                            darkScrim = Color.TRANSPARENT,
-                            detectDarkMode = { useDarkMode },
-                        ),
+                    statusBarStyle = systemBarStyle,
+                    navigationBarStyle = systemBarStyle,
                 )
+
+                onDispose {}
             }
 
             NowInMTGTheme(

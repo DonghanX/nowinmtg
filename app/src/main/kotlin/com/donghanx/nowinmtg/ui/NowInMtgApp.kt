@@ -27,9 +27,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -47,7 +45,6 @@ import com.donghanx.nowinmtg.navigation.TopLevelDestination
 import com.donghanx.nowinmtg.navigation.rememberTopAppBarStatesByTopLevelDestination
 import com.donghanx.search.navigation.navigateToSearch
 import com.donghanx.settings.navigation.navigateToSettings
-import kotlin.collections.getValue
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalMaterial3Api::class)

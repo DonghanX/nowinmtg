@@ -24,7 +24,8 @@ class CollapsingNestedScrollConnection(val maxHeight: Int) : NestedScrollConnect
         val previousOffset = _targetOffset
 
         _targetOffset = newOffset.coerceIn(-maxHeight.toFloat(), 0F)
-        return Offset(0f, (targetOffset - previousOffset))
+        val consumed = _targetOffset - previousOffset
+        return Offset(0F, consumed)
     }
 
     fun reset() {
