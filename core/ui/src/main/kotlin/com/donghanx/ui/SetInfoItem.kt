@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,12 @@ fun SetInfoItem(
         modifier = modifier.clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AsyncImage(model = iconUrl, contentDescription = name, modifier = Modifier.size(24.dp))
+        AsyncImage(
+            model = iconUrl,
+            contentDescription = name,
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface),
+            modifier = Modifier.size(24.dp),
+        )
 
         Spacer(modifier = Modifier.width(4.dp))
 

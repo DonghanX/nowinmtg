@@ -56,6 +56,9 @@ class NowInMtgAppState(
                 currentDestination?.hasRoute(route = topLevelDestination.route) == true
             }
 
+    val isTopLevelDestination: Boolean
+        @Composable get() = currentTopLevelDestination != null
+
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 
     val shouldShowLeftNavigationRail: Boolean

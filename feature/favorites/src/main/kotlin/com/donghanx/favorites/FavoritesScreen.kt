@@ -20,18 +20,25 @@ import com.donghanx.ui.CardsGallery
 @Composable
 internal fun FavoritesScreen(
     onCardClick: (card: CardPreview) -> Unit,
+    onScrollToTop: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val favoritesUiState by viewModel.favoritesUiState.collectAsStateWithLifecycle()
 
-    FavoritesScreen(uiState = favoritesUiState, onCardClick = onCardClick, modifier = modifier)
+    FavoritesScreen(
+        uiState = favoritesUiState,
+        onCardClick = onCardClick,
+        onScrollToTop = onScrollToTop,
+        modifier = modifier,
+    )
 }
 
 @Composable
 private fun FavoritesScreen(
     uiState: FavoritesUiState,
     onCardClick: (card: CardPreview) -> Unit,
+    onScrollToTop: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -41,6 +48,7 @@ private fun FavoritesScreen(
                     parentRoute = FavoritesRoute.toString(),
                     cards = uiState.favoriteCards,
                     onCardClick = onCardClick,
+                    onScrollToTop = onScrollToTop,
                     modifier = modifier,
                 )
             is FavoritesUiState.Empty ->

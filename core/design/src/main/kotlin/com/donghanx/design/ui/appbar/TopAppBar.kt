@@ -1,7 +1,11 @@
 package com.donghanx.design.ui.appbar
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
@@ -13,8 +17,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +37,14 @@ fun NowInMtgTopAppBar(
     showNavigationIcon: Boolean,
     shouldAdjustNavigationRail: Boolean,
     modifier: Modifier = Modifier,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
+    windowInsets: WindowInsets = WindowInsets(0, 0, 0, 0),
+    contentPadding: PaddingValues = WindowInsets.systemBars.asPaddingValues(),
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    colors: TopAppBarColors =
+        TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent,
+        ),
     onNavigationIconClick: () -> Unit = {},
     onActionIconClick: () -> Unit = {},
 ) {
@@ -58,6 +71,9 @@ fun NowInMtgTopAppBar(
             }
         },
         modifier = modifier,
+        windowInsets = windowInsets,
+        contentPadding = contentPadding,
+        scrollBehavior = scrollBehavior,
     )
 }
 

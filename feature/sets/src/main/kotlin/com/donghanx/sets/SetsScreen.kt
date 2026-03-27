@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
+import com.donghanx.design.composable.extensions.safeDrawingTopPadding
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.model.SetInfo
 import com.donghanx.sets.preview.SetsListPreviewParameterProvider
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun SetsScreen(
     onSetClick: (SetInfo) -> Unit,
+    onScrollToTop: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SetsViewModel = hiltViewModel(),
@@ -58,6 +60,7 @@ internal fun SetsScreen(
             val selectedEndMillis by viewModel.endMillisQuery.collectAsStateWithLifecycle()
 
             SetsFilterRow(
+                modifier = Modifier.safeDrawingTopPadding(),
                 selectedSetType = selectedSetType,
                 onSetTypeChanged = viewModel::onSelectedSetTypeChanged,
                 selectedDateMillisRange = DateMillisRange(selectedStartMillis, selectedEndMillis),
@@ -66,7 +69,11 @@ internal fun SetsScreen(
 
             when (val uiState = setsUiState) {
                 is SetsUiState.Success ->
-                    SetsList(groupedSets = uiState.groupedSets, onSetClick = onSetClick)
+                    SetsList(
+                        groupedSets = uiState.groupedSets,
+                        onSetClick = onSetClick,
+                        onScrollToTop = onScrollToTop,
+                    )
 
                 // TODO: add a placeholder composable for empty sets
                 is SetsUiState.Empty -> Unit
@@ -83,7 +90,11 @@ internal fun SetsScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun SetsList(groupedSets: Map<Int, List<SetInfo>>, onSetClick: (SetInfo) -> Unit) {
+private fun SetsList(
+    groupedSets: Map<Int, List<SetInfo>>,
+    onSetClick: (SetInfo) -> Unit,
+    onScrollToTop: () -> Unit,
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
@@ -118,7 +129,12 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>, onSetClick: (SetInfo)
         }
         ScrollToTopButton(
             visible = shouldShowScrollToTopButton,
-            onClick = { scope.launch { lazyListState.animateScrollToItem(0) } },
+            onClick = {
+                scope.launch {
+                    launch { lazyListState.animateScrollToItem(0) }
+                    launch { onScrollToTop() }
+                }
+            },
             modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
@@ -154,5 +170,5 @@ private fun SetsFilterRow(
 private fun SetsListPreview(
     @PreviewParameter(SetsListPreviewParameterProvider::class) groupedSets: Map<Int, List<SetInfo>>
 ) {
-    SetsList(groupedSets = groupedSets, onSetClick = {})
+    SetsList(groupedSets = groupedSets, onSetClick = {}, onScrollToTop = {})
 }

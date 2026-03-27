@@ -1,14 +1,17 @@
 package com.donghanx.nowinmtg
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.design.theme.NowInMTGTheme
 import com.donghanx.nowinmtg.ui.NowInMtgApp
@@ -23,14 +26,28 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
         setContent {
             val userPreference by viewModel.userPreference.collectAsStateWithLifecycle()
             val (themeConfig, darkModeConfig, contrastLevel) = userPreference
+            val useDarkMode = darkModeConfig.useDarkMode(isSystemInDarkTheme())
+
+            DisposableEffect(useDarkMode) {
+                val systemBarStyle =
+                    SystemBarStyle.auto(
+                        lightScrim = Color.TRANSPARENT,
+                        darkScrim = Color.TRANSPARENT,
+                        detectDarkMode = { useDarkMode },
+                    )
+                enableEdgeToEdge(
+                    statusBarStyle = systemBarStyle,
+                    navigationBarStyle = systemBarStyle,
+                )
+
+                onDispose {}
+            }
 
             NowInMTGTheme(
-                useDarkMode = darkModeConfig.useDarkMode(isSystemInDarkTheme()),
+                useDarkMode = useDarkMode,
                 useDynamicColor = themeConfig.useDynamicColor,
                 contrastLevel = contrastLevel,
             ) {

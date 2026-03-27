@@ -2,7 +2,13 @@ package com.donghanx.design.composable.extensions
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -16,3 +22,13 @@ fun Modifier.rippleClickable(onClick: () -> Unit): Modifier {
         )
     }
 }
+
+@Composable
+fun Modifier.conditional(
+    condition: Boolean,
+    modifier: @Composable Modifier.() -> Modifier,
+): Modifier = if (condition) then(modifier(Modifier)) else this
+
+@Composable
+fun Modifier.safeDrawingTopPadding(): Modifier =
+    windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))

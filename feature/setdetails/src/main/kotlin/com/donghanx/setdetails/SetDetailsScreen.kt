@@ -8,20 +8,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -37,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -88,15 +91,17 @@ private fun SetDetailsScreen(
     onCardClick: (CardPreview) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
 ) {
-    val appBarMaxHeightPx = with(LocalDensity.current) { appBarHeight.roundToPx() }
-    val nestedScrollConnection = rememberCollapsingNestedScrollConnection(appBarMaxHeightPx)
-
     val lazyGridState = rememberLazyGridState()
     val isCardsGridScrollable by remember {
         derivedStateOf { lazyGridState.hasEnoughItemsToScroll() }
     }
 
     val density = LocalDensity.current
+
+    val appBarMaxHeightPx =
+        with(density) { appBarHeight.roundToPx() + WindowInsets.systemBars.getTop(this) }
+    val nestedScrollConnection = rememberCollapsingNestedScrollConnection(appBarMaxHeightPx)
+
     val spaceHeight by
         remember(density, isCardsGridScrollable) {
             derivedStateOf {
@@ -106,6 +111,8 @@ private fun SetDetailsScreen(
             }
         }
 
+    // TODO: Fix scroll flickering for short content lists where the scrollable range is
+    //  smaller than the SetDetailsHeader height.
     Box(
         modifier =
             Modifier.fillMaxSize().nestedScroll(connection = nestedScrollConnection).clipToBounds()
@@ -172,6 +179,8 @@ private fun SetDetailsHeader(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.background(color = MaterialTheme.colorScheme.background)) {
+        Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.systemBars))
+
         SetDetailsTopBar(setInfo = setInfo, onBackClick = onBackClick)
 
         SetDetailsBasicInfo(
@@ -232,7 +241,12 @@ private fun SetDetailsTitle(name: String, iconUri: String, modifier: Modifier = 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
-        AsyncImage(model = iconUri, contentDescription = name, modifier = Modifier.size(24.dp))
+        AsyncImage(
+            model = iconUri,
+            contentDescription = name,
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface),
+            modifier = Modifier.size(24.dp),
+        )
 
         Spacer(modifier = Modifier.width(4.dp))
 
@@ -288,4 +302,4 @@ private fun SetDetailsScreenPreview() {
     }
 }
 
-private val appBarHeight = 110.dp
+private val appBarHeight = 116.dp

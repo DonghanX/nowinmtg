@@ -15,13 +15,18 @@ import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.randomCardsGraph(
     onCardClick: (CardPreview) -> Unit,
+    onScrollToTop: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     nestedGraph: NavGraphBuilder.() -> Unit,
 ) {
     navigation<RandomCardsBaseRoute>(startDestination = RandomCardsRoute) {
         composable<RandomCardsRoute> {
             CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-                RandomCardsScreen(onCardClick = onCardClick, onShowSnackbar = onShowSnackbar)
+                RandomCardsScreen(
+                    onCardClick = onCardClick,
+                    onScrollToTop = onScrollToTop,
+                    onShowSnackbar = onShowSnackbar,
+                )
             }
         }
 
