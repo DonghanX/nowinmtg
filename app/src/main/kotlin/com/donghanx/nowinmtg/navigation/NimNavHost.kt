@@ -33,6 +33,7 @@ import com.donghanx.settings.navigation.settingsDialog
 @Composable
 fun NimNavHost(
     navController: NavHostController,
+    onScrollToTop: () -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -53,6 +54,7 @@ fun NimNavHost(
                             parentRoute = RandomCardsRoute.toString(),
                         )
                     },
+                    onScrollToTop = onScrollToTop,
                     onShowSnackbar = onShowSnackbar,
                     nestedGraph = {
                         cardDetailsScreen(
@@ -70,6 +72,7 @@ fun NimNavHost(
                             parentRoute = SetsRoute.toString(),
                         )
                     },
+                    onScrollToTop = onScrollToTop,
                     nestedGraphs = {
                         setDetailsScreen(
                             onBackClick = navController::popBackStack,
@@ -108,6 +111,7 @@ fun NimNavHost(
                             parentRoute = FavoritesRoute.toString(),
                         )
                     },
+                    onScrollToTop = onScrollToTop,
                     nestedGraph = {
                         cardDetailsScreen(
                             onBackClick = navController::popBackStack,

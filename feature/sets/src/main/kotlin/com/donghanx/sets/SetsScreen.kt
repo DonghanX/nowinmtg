@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun SetsScreen(
     onSetClick: (SetInfo) -> Unit,
+    onScrollToTop: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SetsViewModel = hiltViewModel(),
@@ -68,7 +69,11 @@ internal fun SetsScreen(
 
             when (val uiState = setsUiState) {
                 is SetsUiState.Success ->
-                    SetsList(groupedSets = uiState.groupedSets, onSetClick = onSetClick)
+                    SetsList(
+                        groupedSets = uiState.groupedSets,
+                        onSetClick = onSetClick,
+                        onScrollToTop = onScrollToTop,
+                    )
 
                 // TODO: add a placeholder composable for empty sets
                 is SetsUiState.Empty -> Unit
@@ -85,7 +90,11 @@ internal fun SetsScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun SetsList(groupedSets: Map<Int, List<SetInfo>>, onSetClick: (SetInfo) -> Unit) {
+private fun SetsList(
+    groupedSets: Map<Int, List<SetInfo>>,
+    onSetClick: (SetInfo) -> Unit,
+    onScrollToTop: () -> Unit,
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
@@ -120,7 +129,12 @@ private fun SetsList(groupedSets: Map<Int, List<SetInfo>>, onSetClick: (SetInfo)
         }
         ScrollToTopButton(
             visible = shouldShowScrollToTopButton,
-            onClick = { scope.launch { lazyListState.animateScrollToItem(0) } },
+            onClick = {
+                scope.launch {
+                    launch { lazyListState.animateScrollToItem(0) }
+                    launch { onScrollToTop() }
+                }
+            },
             modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
@@ -156,5 +170,5 @@ private fun SetsFilterRow(
 private fun SetsListPreview(
     @PreviewParameter(SetsListPreviewParameterProvider::class) groupedSets: Map<Int, List<SetInfo>>
 ) {
-    SetsList(groupedSets = groupedSets, onSetClick = {})
+    SetsList(groupedSets = groupedSets, onSetClick = {}, onScrollToTop = {})
 }

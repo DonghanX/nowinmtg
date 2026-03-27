@@ -22,6 +22,7 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 internal fun RandomCardsScreen(
     onCardClick: (card: CardPreview) -> Unit,
+    onScrollToTop: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RandomCardsViewModel = hiltViewModel(),
@@ -39,6 +40,7 @@ internal fun RandomCardsScreen(
                     parentRoute = RandomCardsRoute.toString(),
                     cards = uiState.cards,
                     onCardClick = onCardClick,
+                    onScrollToTop = onScrollToTop,
                 )
             }
             // TODO: add a placeholder composable for empty cards

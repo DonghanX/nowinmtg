@@ -28,6 +28,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -38,6 +39,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.donghanx.design.R as DesignR
+import com.donghanx.design.composable.extensions.animateReset
 import com.donghanx.design.composable.extensions.conditional
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.nowinmtg.navigation.NimNavHost
@@ -46,6 +48,7 @@ import com.donghanx.nowinmtg.navigation.rememberTopAppBarStatesByTopLevelDestina
 import com.donghanx.search.navigation.navigateToSearch
 import com.donghanx.settings.navigation.navigateToSettings
 import kotlin.reflect.KClass
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,8 +124,16 @@ fun NowInMtgApp(
                             .padding(paddingValues)
                             .consumeWindowInsets(paddingValues)
                 ) {
+                    val coroutineScope = rememberCoroutineScope()
                     NimNavHost(
                         navController = appState.navController,
+                        onScrollToTop = {
+                            coroutineScope.launch {
+                                currentAppBarState.animateReset(
+                                    animationSpec = scrollBehavior.snapAnimationSpec
+                                )
+                            }
+                        },
                         onShowSnackbar = { message ->
                             snackbarHostState.showSnackbar(
                                 message = message,

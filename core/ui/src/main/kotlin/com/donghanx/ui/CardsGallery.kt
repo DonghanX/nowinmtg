@@ -103,8 +103,8 @@ fun CardsGallery(
             visible = shouldShowScrollToTopButton,
             onClick = {
                 scope.launch {
-                    lazyGridState.animateScrollToItem(0)
-                    onScrollToTop()
+                    launch { lazyGridState.animateScrollToItem(0) }
+                    launch { onScrollToTop() }
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter),

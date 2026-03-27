@@ -13,12 +13,17 @@ import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.setsScreen(
     onSetClick: (SetInfo) -> Unit,
+    onScrollToTop: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
     navigation<SetsBaseRoute>(startDestination = SetsRoute) {
         composable<SetsRoute> {
-            SetsScreen(onShowSnackbar = onShowSnackbar, onSetClick = onSetClick)
+            SetsScreen(
+                onShowSnackbar = onShowSnackbar,
+                onSetClick = onSetClick,
+                onScrollToTop = onScrollToTop,
+            )
         }
 
         nestedGraphs()
