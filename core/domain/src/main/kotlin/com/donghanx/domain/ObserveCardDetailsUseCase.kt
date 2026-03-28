@@ -24,12 +24,11 @@ constructor(private val cardDetailsRepository: CardDetailsRepository) {
                 )
                 .filterNotNull()
 
-        val rulingsFlow =
-            cardDetailsFlow.flatMapLatest { cardDetails ->
-                cardDetailsRepository.refreshCardRulingsById(cardDetails.id).mapLatest {
-                    cardDetailsRepository.oneshotGetCardRulingsById(cardDetails.id)
-                }
+        val rulingsFlow = cardDetailsFlow.flatMapLatest { cardDetails ->
+            cardDetailsRepository.refreshCardRulingsById(cardDetails.id).mapLatest {
+                cardDetailsRepository.oneshotGetCardRulingsById(cardDetails.id)
             }
+        }
 
         return combine(cardDetailsFlow, rulingsFlow) { cardDetails, rulings ->
             CardDetailsAndRulings(cardDetails, rulings)
