@@ -11,5 +11,6 @@ data class RulingsEntity(@PrimaryKey val cardId: String, val rulings: List<Netwo
 fun List<NetworkRuling>.asRulingsEntity(cardId: String): RulingsEntity =
     RulingsEntity(cardId = cardId, rulings = this)
 
-fun RulingsEntity.asExternalModel(): List<Ruling> =
-    rulings.map { Ruling(comment = it.comment, it.publishedAt, it.source) }
+fun RulingsEntity.asExternalModel(): List<Ruling> = rulings.map {
+    Ruling(comment = it.comment, it.publishedAt, it.source)
+}

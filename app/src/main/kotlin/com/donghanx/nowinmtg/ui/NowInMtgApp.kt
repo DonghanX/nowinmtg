@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
@@ -79,10 +78,6 @@ fun NowInMtgApp(
                 }
             },
             layoutType = adaptiveInfo.toNavigationSuiteType(appState.shouldShowLeftNavigationRail),
-            navigationSuiteColors =
-                NavigationSuiteDefaults.colors(
-                    navigationBarContainerColor = MaterialTheme.colorScheme.inverseOnSurface
-                ),
         ) {
             val topAppBarStates = rememberTopAppBarStatesByTopLevelDestination()
             val currentAppBarState =

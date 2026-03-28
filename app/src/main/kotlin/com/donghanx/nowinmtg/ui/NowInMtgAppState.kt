@@ -51,10 +51,9 @@ class NowInMtgAppState(
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable
-        get() =
-            topLevelDestinations.find { topLevelDestination ->
-                currentDestination?.hasRoute(route = topLevelDestination.route) == true
-            }
+        get() = topLevelDestinations.find { topLevelDestination ->
+            currentDestination?.hasRoute(route = topLevelDestination.route) == true
+        }
 
     val isTopLevelDestination: Boolean
         @Composable get() = currentTopLevelDestination != null
