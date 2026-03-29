@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 @Stable
@@ -17,6 +18,9 @@ class CollapsingNestedScrollConnection(val maxHeight: Int) : NestedScrollConnect
     private var _targetOffset by mutableFloatStateOf(0F)
     val targetOffset: Int
         get() = _targetOffset.roundToInt()
+
+    val absoluteTargetOffset: Float
+        get() = targetOffset.absoluteValue.toFloat()
 
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
         val delta = available.y

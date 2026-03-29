@@ -18,6 +18,7 @@ fun NavController.navigateToSetDetails(setId: String, parentRoute: String) {
 fun NavGraphBuilder.setDetailsScreen(
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
+    onTopBarVisibilityChanged: (isCollapsed: Boolean) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
 ) {
     composable<SetDetailsRoute> {
@@ -25,6 +26,7 @@ fun NavGraphBuilder.setDetailsScreen(
             SetDetailsScreen(
                 onBackClick = onBackClick,
                 onCardClick = onCardClick,
+                onTopBarVisibilityChanged = onTopBarVisibilityChanged,
                 onShowSnackbar = onShowSnackbar,
             )
         }

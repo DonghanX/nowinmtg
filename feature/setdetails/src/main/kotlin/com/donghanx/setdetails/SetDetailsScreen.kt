@@ -55,6 +55,7 @@ import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.hasEnoughItemsToScroll
 import com.donghanx.design.composable.extensions.toDp
 import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
+import com.donghanx.design.ui.appbar.CollapsingNestedScrollConnection
 import com.donghanx.design.ui.appbar.rememberCollapsingNestedScrollConnection
 import com.donghanx.design.ui.grid.fullWidthItem
 import com.donghanx.design.ui.placeholder.EmptyScreenWithIcon
@@ -71,6 +72,7 @@ import kotlinx.collections.immutable.toImmutableList
 internal fun SetDetailsScreen(
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
+    onTopBarVisibilityChanged: (isCollapsed: Boolean) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     viewModel: SetDetailsViewModel = hiltViewModel(),
 ) {
@@ -80,6 +82,7 @@ internal fun SetDetailsScreen(
         setDetailsUiState = uiState,
         onBackClick = onBackClick,
         onCardClick = onCardClick,
+        onTopBarVisibilityChanged = onTopBarVisibilityChanged,
         onShowSnackbar = onShowSnackbar,
     )
 }
@@ -89,6 +92,7 @@ private fun SetDetailsScreen(
     setDetailsUiState: SetDetailsUiState,
     onBackClick: () -> Unit,
     onCardClick: (CardPreview) -> Unit,
+    onTopBarVisibilityChanged: (isCollapsed: Boolean) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
 ) {
     val lazyGridState = rememberLazyGridState()
@@ -110,6 +114,12 @@ private fun SetDetailsScreen(
                 (appBarMaxHeightPx + offset).toDp(density)
             }
         }
+
+    TopNavigationBarScrollSyncEffect(
+        appBarMaxHeightPx = appBarMaxHeightPx,
+        nestedScrollConnection = nestedScrollConnection,
+        onTopBarVisibilityChanged = onTopBarVisibilityChanged,
+    )
 
     // TODO: Fix scroll flickering for short content lists where the scrollable range is
     //  smaller than the SetDetailsHeader height.
@@ -284,6 +294,20 @@ private fun CardsGalleryInSet(
     )
 }
 
+@Composable
+private fun TopNavigationBarScrollSyncEffect(
+    appBarMaxHeightPx: Int,
+    nestedScrollConnection: CollapsingNestedScrollConnection,
+    onTopBarVisibilityChanged: (isCollapsed: Boolean) -> Unit,
+) {
+    val collapsedFraction by remember {
+        derivedStateOf { nestedScrollConnection.absoluteTargetOffset / appBarMaxHeightPx }
+    }
+    val isTopbarCollapsed by remember { derivedStateOf { collapsedFraction > 0.5F } }
+
+    LaunchedEffect(isTopbarCollapsed) { onTopBarVisibilityChanged(isTopbarCollapsed) }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun SetDetailsScreenPreview() {
@@ -297,6 +321,7 @@ private fun SetDetailsScreenPreview() {
                 ),
             onBackClick = {},
             onCardClick = {},
+            onTopBarVisibilityChanged = {},
             onShowSnackbar = {},
         )
     }

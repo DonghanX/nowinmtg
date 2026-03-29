@@ -145,6 +145,11 @@ fun NowInMtgApp(
                                 )
                             }
                         },
+                        onTopBarVisibilityChanged = { isTopBarCollapsed ->
+                            coroutineScope.launch {
+                                navigationSuiteState.hideOrShow(isTopBarCollapsed)
+                            }
+                        },
                         onShowSnackbar = { message ->
                             snackbarHostState.showSnackbar(
                                 message = message,
@@ -173,9 +178,7 @@ private fun BottomNavigationBarScrollSyncEffect(
         snapshotFlow { scrollBehavior.state.collapsedFraction }
             .map { collapsedFraction -> collapsedFraction > 0.5F }
             .distinctUntilChanged()
-            .onEach { isTopBarCollapsed ->
-                with(navigationSuiteState) { if (isTopBarCollapsed) hide() else show() }
-            }
+            .onEach { isTopBarCollapsed -> navigationSuiteState.hideOrShow(isTopBarCollapsed) }
             .collect()
     }
 }
@@ -214,3 +217,6 @@ private fun WindowAdaptiveInfo.toNavigationSuiteType(shouldShowNavigationRail: B
 
 private fun NavDestination?.withinTopLevelDestinationInHierarchy(route: KClass<*>): Boolean =
     this?.hierarchy?.any { it.hasRoute(route) } ?: false
+
+private suspend fun NavigationSuiteScaffoldState.hideOrShow(shouldCollapse: Boolean) =
+    if (shouldCollapse) hide() else show()
