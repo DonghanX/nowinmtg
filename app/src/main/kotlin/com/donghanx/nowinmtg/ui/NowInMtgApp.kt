@@ -17,7 +17,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -95,8 +95,8 @@ fun NowInMtgApp(
                 topAppBarStates[appState.currentTopLevelDestination] ?: rememberTopAppBarState()
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(currentAppBarState)
 
-            if (!appState.shouldShowLeftNavigationRail) {
-                BottomNavigationBarScrollSyncEffect(scrollBehavior, navigationSuiteState)
+            if (!appState.shouldShowLeftNavigationRail && appState.isTopLevelDestination) {
+                BottomNavigationBarScrollSyncEffect(scrollBehavior.state, navigationSuiteState)
             }
 
             Scaffold(
@@ -147,7 +147,9 @@ fun NowInMtgApp(
                         },
                         onTopBarVisibilityChanged = { isTopBarCollapsed ->
                             coroutineScope.launch {
-                                navigationSuiteState.hideOrShow(isTopBarCollapsed)
+                                if (!appState.shouldShowLeftNavigationRail) {
+                                    navigationSuiteState.hideOrShow(isTopBarCollapsed)
+                                }
                             }
                         },
                         onShowSnackbar = { message ->
@@ -171,11 +173,11 @@ fun NowInMtgApp(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BottomNavigationBarScrollSyncEffect(
-    scrollBehavior: TopAppBarScrollBehavior,
+    appBarState: TopAppBarState,
     navigationSuiteState: NavigationSuiteScaffoldState,
 ) {
-    LaunchedEffect(scrollBehavior) {
-        snapshotFlow { scrollBehavior.state.collapsedFraction }
+    LaunchedEffect(appBarState) {
+        snapshotFlow { appBarState.collapsedFraction }
             .map { collapsedFraction -> collapsedFraction > 0.5F }
             .distinctUntilChanged()
             .onEach { isTopBarCollapsed -> navigationSuiteState.hideOrShow(isTopBarCollapsed) }
