@@ -17,17 +17,22 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldState
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -47,6 +52,10 @@ import com.donghanx.nowinmtg.navigation.rememberTopAppBarStatesByTopLevelDestina
 import com.donghanx.search.navigation.navigateToSearch
 import com.donghanx.settings.navigation.navigateToSettings
 import kotlin.reflect.KClass
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,6 +68,7 @@ fun NowInMtgApp(
         val appState = rememberNowInMtgAppState(windowSizeClass = windowSizeClass)
         val snackbarHostState = remember { SnackbarHostState() }
         val currentDestination = appState.currentDestination
+        val navigationSuiteState = rememberNavigationSuiteScaffoldState()
 
         NavigationSuiteScaffold(
             navigationSuiteItems = {
@@ -77,12 +87,18 @@ fun NowInMtgApp(
                     )
                 }
             },
+            state = navigationSuiteState,
             layoutType = adaptiveInfo.toNavigationSuiteType(appState.shouldShowLeftNavigationRail),
         ) {
             val topAppBarStates = rememberTopAppBarStatesByTopLevelDestination()
             val currentAppBarState =
                 topAppBarStates[appState.currentTopLevelDestination] ?: rememberTopAppBarState()
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(currentAppBarState)
+
+            if (!appState.shouldShowLeftNavigationRail && appState.isTopLevelDestination) {
+                BottomNavigationBarScrollSyncEffect(scrollBehavior.state, navigationSuiteState)
+            }
+
             Scaffold(
                 // Only participate in nested scroll if the current screen is a top-level
                 // destination which has TopAppBar.
@@ -129,6 +145,13 @@ fun NowInMtgApp(
                                 )
                             }
                         },
+                        onTopBarVisibilityChanged = { isTopBarCollapsed ->
+                            coroutineScope.launch {
+                                if (!appState.shouldShowLeftNavigationRail) {
+                                    navigationSuiteState.hideOrShow(isTopBarCollapsed)
+                                }
+                            }
+                        },
                         onShowSnackbar = { message ->
                             snackbarHostState.showSnackbar(
                                 message = message,
@@ -139,6 +162,25 @@ fun NowInMtgApp(
                 }
             }
         }
+    }
+}
+
+/**
+ * A LaunchedEffect that syncs [navigationSuiteState] visibility with the TopAppBar's [appBarState]
+ * to provide an immersive scrolling experience in screens with a large set of contents.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BottomNavigationBarScrollSyncEffect(
+    appBarState: TopAppBarState,
+    navigationSuiteState: NavigationSuiteScaffoldState,
+) {
+    LaunchedEffect(appBarState) {
+        snapshotFlow { appBarState.collapsedFraction }
+            .map { collapsedFraction -> collapsedFraction > 0.5F }
+            .distinctUntilChanged()
+            .onEach { isTopBarCollapsed -> navigationSuiteState.hideOrShow(isTopBarCollapsed) }
+            .collect()
     }
 }
 
@@ -176,3 +218,6 @@ private fun WindowAdaptiveInfo.toNavigationSuiteType(shouldShowNavigationRail: B
 
 private fun NavDestination?.withinTopLevelDestinationInHierarchy(route: KClass<*>): Boolean =
     this?.hierarchy?.any { it.hasRoute(route) } ?: false
+
+private suspend fun NavigationSuiteScaffoldState.hideOrShow(shouldCollapse: Boolean) =
+    if (shouldCollapse) hide() else show()

@@ -34,6 +34,7 @@ import com.donghanx.settings.navigation.settingsDialog
 fun NimNavHost(
     navController: NavHostController,
     onScrollToTop: () -> Unit,
+    onTopBarVisibilityChanged: (isCollapsed: Boolean) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -83,6 +84,7 @@ fun NimNavHost(
                                     parentRoute = SetDetailsRoute.toString(),
                                 )
                             },
+                            onTopBarVisibilityChanged = onTopBarVisibilityChanged,
                             onShowSnackbar = onShowSnackbar,
                         )
 
