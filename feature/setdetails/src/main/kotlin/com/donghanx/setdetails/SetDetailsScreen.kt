@@ -300,9 +300,10 @@ private fun TopNavigationBarScrollSyncEffect(
     nestedScrollConnection: CollapsingNestedScrollConnection,
     onTopBarVisibilityChanged: (isCollapsed: Boolean) -> Unit,
 ) {
-    val collapsedFraction by remember(appBarMaxHeightPx) {
-        derivedStateOf { nestedScrollConnection.absoluteTargetOffset / appBarMaxHeightPx }
-    }
+    val collapsedFraction by
+        remember(appBarMaxHeightPx) {
+            derivedStateOf { nestedScrollConnection.absoluteTargetOffset / appBarMaxHeightPx }
+        }
     val isTopbarCollapsed by remember { derivedStateOf { collapsedFraction > 0.5F } }
 
     LaunchedEffect(isTopbarCollapsed) { onTopBarVisibilityChanged(isTopbarCollapsed) }
