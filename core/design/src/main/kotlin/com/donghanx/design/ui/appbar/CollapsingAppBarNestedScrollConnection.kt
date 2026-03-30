@@ -20,7 +20,7 @@ class CollapsingNestedScrollConnection(val maxHeight: Int) : NestedScrollConnect
         get() = _targetOffset.roundToInt()
 
     val absoluteTargetOffset: Float
-        get() = targetOffset.absoluteValue.toFloat()
+        get() = _targetOffset.absoluteValue
 
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
         val delta = available.y

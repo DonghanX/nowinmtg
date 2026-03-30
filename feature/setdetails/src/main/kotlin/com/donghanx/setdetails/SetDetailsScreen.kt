@@ -115,7 +115,7 @@ private fun SetDetailsScreen(
             }
         }
 
-    TopNavigationBarScrollSyncEffect(
+    TopBarScrollSyncEffect(
         appBarMaxHeightPx = appBarMaxHeightPx,
         nestedScrollConnection = nestedScrollConnection,
         onTopBarVisibilityChanged = onTopBarVisibilityChanged,
@@ -295,7 +295,7 @@ private fun CardsGalleryInSet(
 }
 
 @Composable
-private fun TopNavigationBarScrollSyncEffect(
+private fun TopBarScrollSyncEffect(
     appBarMaxHeightPx: Int,
     nestedScrollConnection: CollapsingNestedScrollConnection,
     onTopBarVisibilityChanged: (isCollapsed: Boolean) -> Unit,

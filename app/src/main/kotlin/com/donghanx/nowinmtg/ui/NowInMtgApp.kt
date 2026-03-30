@@ -166,9 +166,8 @@ fun NowInMtgApp(
 }
 
 /**
- * A LaunchedEffect that syncs [navigationSuiteState] visibility with the TopAppBar's
- * [scrollBehavior] to provide an immersive scrolling experience in screens with a large set of
- * contents.
+ * A LaunchedEffect that syncs [navigationSuiteState] visibility with the TopAppBar's [appBarState]
+ * to provide an immersive scrolling experience in screens with a large set of contents.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
