@@ -31,6 +31,7 @@ import coil3.size.Precision
 import com.donghanx.design.R
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.rippleClickable
+import com.donghanx.design.composable.provider.LocalIsBottomNavBarAnimating
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.design.composable.provider.currentNotNull
@@ -99,8 +100,9 @@ fun CardsGallery(
         val shouldShowScrollToTopButton by remember {
             derivedStateOf { lazyGridState.isFirstItemNotVisible() }
         }
+        val isBottomNavBarAnimating = LocalIsBottomNavBarAnimating.current
         ScrollToTopButton(
-            visible = shouldShowScrollToTopButton,
+            visible = shouldShowScrollToTopButton && !isBottomNavBarAnimating,
             onClick = {
                 scope.launch {
                     launch { lazyGridState.animateScrollToItem(0) }

@@ -9,9 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
+import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import com.donghanx.randomcards.navigation.RandomCardsRoute
@@ -58,7 +58,7 @@ internal fun RandomCardsScreen(
 @Preview(showBackground = true)
 @Composable
 private fun CardsGalleryPreview() {
-    SharedTransitionProviderWrapper {
+    SharedTransitionProviderPreviewWrapper {
         CardsGallery(
             parentRoute = RandomCardsRoute.toString(),
             cards = MockUtils.emptyCards.toImmutableList(),

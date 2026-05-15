@@ -1,35 +1,26 @@
 package com.donghanx.randomcards.navigation
 
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
+import androidx.navigation3.runtime.NavKey
+import com.donghanx.design.composable.provider.NavAnimatedVisibilityProviderWrapper
 import com.donghanx.model.CardPreview
+import com.donghanx.navigation.NavKeyEntryProviderScope
 import com.donghanx.randomcards.RandomCardsScreen
 import kotlinx.serialization.Serializable
 
-@Serializable object RandomCardsBaseRoute
+@Serializable data object RandomCardsRoute : NavKey
 
-@Serializable object RandomCardsRoute
-
-fun NavGraphBuilder.randomCardsGraph(
+fun NavKeyEntryProviderScope.randomCardsEntry(
     onCardClick: (CardPreview) -> Unit,
     onScrollToTop: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
-    nestedGraph: NavGraphBuilder.() -> Unit,
 ) {
-    navigation<RandomCardsBaseRoute>(startDestination = RandomCardsRoute) {
-        composable<RandomCardsRoute> {
-            CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-                RandomCardsScreen(
-                    onCardClick = onCardClick,
-                    onScrollToTop = onScrollToTop,
-                    onShowSnackbar = onShowSnackbar,
-                )
-            }
+    entry<RandomCardsRoute> {
+        NavAnimatedVisibilityProviderWrapper {
+            RandomCardsScreen(
+                onCardClick = onCardClick,
+                onScrollToTop = onScrollToTop,
+                onShowSnackbar = onShowSnackbar,
+            )
         }
-
-        nestedGraph()
     }
 }

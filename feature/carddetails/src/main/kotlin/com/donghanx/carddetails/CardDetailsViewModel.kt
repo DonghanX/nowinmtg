@@ -1,9 +1,7 @@
 package com.donghanx.carddetails
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.donghanx.carddetails.navigation.CardDetailsRoute
 import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.common.ErrorMessage
@@ -16,8 +14,10 @@ import com.donghanx.domain.ObserveIsCardFavoriteUseCase
 import com.donghanx.domain.RefreshCardDetailsUseCase
 import com.donghanx.model.CardDetails
 import com.donghanx.model.Ruling
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,18 +28,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@HiltViewModel
+@HiltViewModel(assistedFactory = CardDetailsViewModel.Factory::class)
 internal class CardDetailsViewModel
-@Inject
+@AssistedInject
 constructor(
+    @Assisted private val cardDetailsRoute: CardDetailsRoute,
     private val favoritesRepository: FavoritesRepository,
     private val refreshCardDetailsUseCase: RefreshCardDetailsUseCase,
     private val observeCardDetailsUseCase: ObserveCardDetailsUseCase,
     observeIsCardFavoriteUseCase: ObserveIsCardFavoriteUseCase,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
-    private val cardDetailsRoute = savedStateHandle.toRoute<CardDetailsRoute>()
 
     private val viewModelState = MutableStateFlow(CardDetailsViewModelState(refreshing = true))
 
@@ -111,6 +109,11 @@ constructor(
                     )
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(cardDetailsRoute: CardDetailsRoute): CardDetailsViewModel
     }
 }
 

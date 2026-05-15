@@ -30,8 +30,11 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,19 +42,17 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.animateReset
 import com.donghanx.design.composable.extensions.conditional
+import com.donghanx.design.composable.provider.NotInMtgProvidersWrapper
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
-import com.donghanx.nowinmtg.navigation.NimNavHost
-import com.donghanx.nowinmtg.navigation.TopLevelDestination
+import com.donghanx.navigation.Navigator
+import com.donghanx.nowinmtg.navigation.NowInMtgNavDisplay
+import com.donghanx.nowinmtg.navigation.TopLevelNavItem
 import com.donghanx.nowinmtg.navigation.rememberTopAppBarStatesByTopLevelDestination
 import com.donghanx.search.navigation.navigateToSearch
 import com.donghanx.settings.navigation.navigateToSettings
-import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -67,23 +68,22 @@ fun NowInMtgApp(
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         val appState = rememberNowInMtgAppState(windowSizeClass = windowSizeClass)
         val snackbarHostState = remember { SnackbarHostState() }
-        val currentDestination = appState.currentDestination
         val navigationSuiteState = rememberNavigationSuiteScaffoldState()
+
+        val navigator = remember { Navigator(appState.navigationState) }
 
         NavigationSuiteScaffold(
             navigationSuiteItems = {
-                appState.topLevelDestinations.forEachIndexed { index, topLevelDestination ->
-                    val selected =
-                        currentDestination.withinTopLevelDestinationInHierarchy(
-                            topLevelDestination.baseRoute
-                        )
+                TopLevelNavItem.entries.forEachIndexed { index, topLevelNavItem ->
+                    val route = topLevelNavItem.route
+                    val selected = route == appState.currentTopLevelRoute
 
                     navigationSuiteItem(
                         selected = selected,
-                        topLevelDestination = topLevelDestination,
+                        topLevelNavItem = topLevelNavItem,
                         isFirstItem = index == 0,
                         isNavigationRailItem = appState.shouldShowLeftNavigationRail,
-                        onClick = { appState.navigateToTopLevelDestination(topLevelDestination) },
+                        onClick = { navigator.navigate(route) },
                     )
                 }
             },
@@ -92,11 +92,16 @@ fun NowInMtgApp(
         ) {
             val topAppBarStates = rememberTopAppBarStatesByTopLevelDestination()
             val currentAppBarState =
-                topAppBarStates[appState.currentTopLevelDestination] ?: rememberTopAppBarState()
+                topAppBarStates[appState.currentTopLevelNavItem] ?: rememberTopAppBarState()
             val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(currentAppBarState)
+            var isBottomNavBarAnimating by remember { mutableStateOf(false) }
 
-            if (!appState.shouldShowLeftNavigationRail && appState.isTopLevelDestination) {
-                BottomNavigationBarScrollSyncEffect(scrollBehavior.state, navigationSuiteState)
+            if (!appState.shouldShowLeftNavigationRail && appState.isTopLevelRoute) {
+                BottomNavigationBarScrollSyncEffect(
+                    appBarState = scrollBehavior.state,
+                    navigationSuiteState = navigationSuiteState,
+                    onNavBarAnimatingChanged = { isBottomNavBarAnimating = it },
+                )
             }
 
             Scaffold(
@@ -105,14 +110,14 @@ fun NowInMtgApp(
                 // This prevents scroll conflicts with sub-screens (e.g., SetDetails screen) that
                 // manage their own header and nested scrolling logic.
                 modifier =
-                    Modifier.conditional(appState.isTopLevelDestination) {
+                    Modifier.conditional(appState.isTopLevelRoute) {
                         nestedScroll(scrollBehavior.nestedScrollConnection)
                     },
                 containerColor = Color.Transparent,
                 contentWindowInsets = WindowInsets(0, 0, 0, 0),
                 snackbarHost = { SnackbarHost(snackbarHostState) },
                 topBar = {
-                    appState.currentTopLevelDestination?.let { topLevelDestination ->
+                    appState.currentTopLevelNavItem?.let { topLevelDestination ->
                         NowInMtgTopAppBar(
                             title = stringResource(topLevelDestination.labelResId),
                             navigationIcon = Icons.Rounded.Search,
@@ -120,11 +125,11 @@ fun NowInMtgApp(
                                 stringResource(DesignR.string.search),
                             actionIcon = Icons.Rounded.Settings,
                             actionIconContentDescription = stringResource(DesignR.string.settings),
-                            showNavigationIcon = topLevelDestination == TopLevelDestination.Sets,
+                            showNavigationIcon = topLevelDestination == TopLevelNavItem.Sets,
                             shouldAdjustNavigationRail = appState.shouldShowLeftNavigationRail,
                             scrollBehavior = scrollBehavior,
-                            onNavigationIconClick = appState.navController::navigateToSearch,
-                            onActionIconClick = appState.navController::navigateToSettings,
+                            onNavigationIconClick = navigator::navigateToSearch,
+                            onActionIconClick = navigator::navigateToSettings,
                         )
                     }
                 },
@@ -136,29 +141,32 @@ fun NowInMtgApp(
                             .consumeWindowInsets(paddingValues)
                 ) {
                     val coroutineScope = rememberCoroutineScope()
-                    NimNavHost(
-                        navController = appState.navController,
-                        onScrollToTop = {
-                            coroutineScope.launch {
-                                currentAppBarState.animateReset(
-                                    animationSpec = scrollBehavior.snapAnimationSpec
-                                )
-                            }
-                        },
-                        onTopBarVisibilityChanged = { isTopBarCollapsed ->
-                            coroutineScope.launch {
-                                if (!appState.shouldShowLeftNavigationRail) {
-                                    navigationSuiteState.hideOrShow(isTopBarCollapsed)
+                    NotInMtgProvidersWrapper(isBottomNavBarAnimating = isBottomNavBarAnimating) {
+                        NowInMtgNavDisplay(
+                            navigator = navigator,
+                            navigationState = appState.navigationState,
+                            onScrollToTop = {
+                                coroutineScope.launch {
+                                    currentAppBarState.animateReset(
+                                        scrollBehavior.snapAnimationSpec
+                                    )
                                 }
-                            }
-                        },
-                        onShowSnackbar = { message ->
-                            snackbarHostState.showSnackbar(
-                                message = message,
-                                withDismissAction = true,
-                            )
-                        },
-                    )
+                            },
+                            onTopBarVisibilityChanged = { isTopBarCollapsed ->
+                                coroutineScope.launch {
+                                    if (!appState.shouldShowLeftNavigationRail) {
+                                        navigationSuiteState.hideOrShow(isTopBarCollapsed)
+                                    }
+                                }
+                            },
+                            onShowSnackbar = { message ->
+                                snackbarHostState.showSnackbar(
+                                    message = message,
+                                    withDismissAction = true,
+                                )
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -174,37 +182,41 @@ fun NowInMtgApp(
 private fun BottomNavigationBarScrollSyncEffect(
     appBarState: TopAppBarState,
     navigationSuiteState: NavigationSuiteScaffoldState,
+    onNavBarAnimatingChanged: (isAnimating: Boolean) -> Unit,
 ) {
     LaunchedEffect(appBarState) {
         snapshotFlow { appBarState.collapsedFraction }
             .map { collapsedFraction -> collapsedFraction > 0.5F }
             .distinctUntilChanged()
-            .onEach { isTopBarCollapsed -> navigationSuiteState.hideOrShow(isTopBarCollapsed) }
+            .onEach { isTopBarCollapsed ->
+                onNavBarAnimatingChanged(true)
+                navigationSuiteState.hideOrShow(isTopBarCollapsed)
+                onNavBarAnimatingChanged(false)
+            }
             .collect()
     }
 }
 
 private fun NavigationSuiteScope.navigationSuiteItem(
     selected: Boolean,
-    topLevelDestination: TopLevelDestination,
+    topLevelNavItem: TopLevelNavItem,
     isFirstItem: Boolean,
     isNavigationRailItem: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val iconResId =
-        if (selected) topLevelDestination.selectedIconResId
-        else topLevelDestination.unselectedIconResId
+        if (selected) topLevelNavItem.selectedIconResId else topLevelNavItem.unselectedIconResId
 
     item(
         selected = selected,
         icon = {
             Icon(
                 painter = painterResource(iconResId),
-                contentDescription = stringResource(topLevelDestination.labelResId),
+                contentDescription = stringResource(topLevelNavItem.labelResId),
             )
         },
-        label = { Text(text = stringResource(topLevelDestination.labelResId)) },
+        label = { Text(text = stringResource(topLevelNavItem.labelResId)) },
         onClick = onClick,
         modifier =
             if (isNavigationRailItem) modifier.padding(top = if (isFirstItem) 64.dp else 0.dp)
@@ -215,9 +227,6 @@ private fun NavigationSuiteScope.navigationSuiteItem(
 private fun WindowAdaptiveInfo.toNavigationSuiteType(shouldShowNavigationRail: Boolean) =
     if (shouldShowNavigationRail) NavigationSuiteType.NavigationRail
     else NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(this)
-
-private fun NavDestination?.withinTopLevelDestinationInHierarchy(route: KClass<*>): Boolean =
-    this?.hierarchy?.any { it.hasRoute(route) } ?: false
 
 private suspend fun NavigationSuiteScaffoldState.hideOrShow(shouldCollapse: Boolean) =
     if (shouldCollapse) hide() else show()

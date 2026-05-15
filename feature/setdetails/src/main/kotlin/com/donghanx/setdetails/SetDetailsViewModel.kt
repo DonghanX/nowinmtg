@@ -1,9 +1,7 @@
 package com.donghanx.setdetails
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.donghanx.common.DEFAULT_STOP_TIME_MILLIS
 import com.donghanx.common.ErrorMessage
 import com.donghanx.common.emptyErrorMessage
@@ -12,8 +10,10 @@ import com.donghanx.domain.SetDetailsUseCaseResult
 import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
 import com.donghanx.setdetails.navigation.SetDetailsRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -21,15 +21,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 
-@HiltViewModel
+@HiltViewModel(assistedFactory = SetDetailsViewModel.Factory::class)
 class SetDetailsViewModel
-@Inject
+@AssistedInject
 constructor(
-    savedStateHandle: SavedStateHandle,
+    @Assisted setDetailsRoute: SetDetailsRoute,
     observeSetDetailsUseCase: ObserveSetDetailsUseCase,
 ) : ViewModel() {
-
-    private val setDetailsRoute = savedStateHandle.toRoute<SetDetailsRoute>()
 
     /** Load cached cards first (offline‑first), then refresh from network when available. */
     val setDetailsUiStateFlow =
@@ -48,6 +46,11 @@ constructor(
                 started = SharingStarted.WhileSubscribed(DEFAULT_STOP_TIME_MILLIS),
                 initialValue = SetDetailsUiState(),
             )
+
+    @AssistedFactory
+    interface Factory {
+        fun create(setDetailsRoute: SetDetailsRoute): SetDetailsViewModel
+    }
 }
 
 data class SetDetailsUiState(

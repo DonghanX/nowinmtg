@@ -44,7 +44,7 @@ import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.composable.extensions.conditional
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
-import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
+import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
 import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.design.ui.shared.CardSharedElementKey
@@ -274,7 +274,7 @@ private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
 private fun CardDetailsViewPreview(
     @PreviewParameter(CardDetailsPreviewParameterProvider::class) cardDetails: CardDetails
 ) {
-    SharedTransitionProviderWrapper {
+    SharedTransitionProviderPreviewWrapper {
         CardDetailsView(
             cacheKeyId = null,
             cardDetails = cardDetails,

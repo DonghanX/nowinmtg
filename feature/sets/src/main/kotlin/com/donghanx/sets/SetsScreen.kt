@@ -26,11 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.safeDrawingTopPadding
+import com.donghanx.design.composable.provider.LocalIsBottomNavBarAnimating
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.model.SetInfo
 import com.donghanx.sets.preview.SetsListPreviewParameterProvider
@@ -127,8 +128,9 @@ private fun SetsList(
         val shouldShowScrollToTopButton by remember {
             derivedStateOf { lazyListState.isFirstItemNotVisible() }
         }
+        val isBottomNavBarAnimating = LocalIsBottomNavBarAnimating.current
         ScrollToTopButton(
-            visible = shouldShowScrollToTopButton,
+            visible = shouldShowScrollToTopButton && !isBottomNavBarAnimating,
             onClick = {
                 scope.launch {
                     launch { lazyListState.animateScrollToItem(0) }

@@ -1,20 +1,23 @@
 package com.donghanx.settings.navigation
 
 import androidx.compose.ui.window.DialogProperties
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.dialog
+import androidx.navigation3.scene.DialogSceneStrategy
+import com.donghanx.navigation.NavKeyEntryProviderScope
+import com.donghanx.navigation.Navigator
+import com.donghanx.navigation.navkey.DialogNavKey
 import com.donghanx.settings.SettingsDialog
 import kotlinx.serialization.Serializable
 
-@Serializable data object SettingsRoute
+@Serializable data object SettingsRoute : DialogNavKey
 
-fun NavController.navigateToSettings() {
-    navigate(SettingsRoute) { launchSingleTop = true }
+fun Navigator.navigateToSettings() {
+    navigate(SettingsRoute)
 }
 
-fun NavGraphBuilder.settingsDialog() {
-    dialog<SettingsRoute>(dialogProperties = DialogProperties(usePlatformDefaultWidth = true)) {
+fun NavKeyEntryProviderScope.settingsDialogEntry() {
+    entry<SettingsRoute>(
+        metadata = DialogSceneStrategy.dialog(DialogProperties(usePlatformDefaultWidth = true))
+    ) {
         SettingsDialog()
     }
 }

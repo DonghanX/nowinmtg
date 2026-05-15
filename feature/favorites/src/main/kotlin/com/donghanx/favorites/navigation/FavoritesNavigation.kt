@@ -1,29 +1,21 @@
 package com.donghanx.favorites.navigation
 
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
+import androidx.navigation3.runtime.NavKey
+import com.donghanx.design.composable.provider.NavAnimatedVisibilityProviderWrapper
 import com.donghanx.favorites.FavoritesScreen
 import com.donghanx.model.CardPreview
+import com.donghanx.navigation.NavKeyEntryProviderScope
 import kotlinx.serialization.Serializable
 
-@Serializable object FavoritesBaseRoute
+@Serializable data object FavoritesRoute : NavKey
 
-@Serializable object FavoritesRoute
-
-fun NavGraphBuilder.favoriteGraph(
+fun NavKeyEntryProviderScope.favoritesEntry(
     onCardClick: (CardPreview) -> Unit,
     onScrollToTop: () -> Unit,
-    nestedGraph: NavGraphBuilder.() -> Unit,
 ) {
-    navigation<FavoritesBaseRoute>(startDestination = FavoritesRoute) {
-        composable<FavoritesRoute> {
-            CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
-                FavoritesScreen(onCardClick = onCardClick, onScrollToTop = onScrollToTop)
-            }
+    entry<FavoritesRoute> {
+        NavAnimatedVisibilityProviderWrapper {
+            FavoritesScreen(onCardClick = onCardClick, onScrollToTop = onScrollToTop)
         }
-        nestedGraph()
     }
 }
