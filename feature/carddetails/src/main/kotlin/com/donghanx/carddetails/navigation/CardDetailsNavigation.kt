@@ -1,19 +1,21 @@
 package com.donghanx.carddetails.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
+import androidx.compose.animation.togetherWith
+import androidx.compose.runtime.Composable
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.metadata
 import com.donghanx.carddetails.CardDetailsScreen
-import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
+import com.donghanx.carddetails.CardDetailsViewModel
+import com.donghanx.design.animation.enterTransitionHorizontal
+import com.donghanx.design.animation.exitTransitionHorizontal
+import com.donghanx.design.animation.fadeInTween
+import com.donghanx.design.animation.fadeOutTween
+import com.donghanx.design.composable.provider.NavAnimatedVisibilityProviderWrapper
+import com.donghanx.navigation.NavKeyEntryProviderScope
+import com.donghanx.navigation.Navigator
+import com.donghanx.navigation.extensions.popTransition
+import com.donghanx.navigation.extensions.transition
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,13 +24,12 @@ data class CardDetailsRoute(
     val multiverseId: Int?,
     val previewImageUrl: String?,
     val parentRoute: String,
-)
+) : NavKey {
+    val cachedKeyId: String?
+        get() = cardId ?: multiverseId?.toString()
+}
 
-fun NavController.navigateToCardDetails(
-    cardId: String,
-    previewImageUrl: String?,
-    parentRoute: String,
-) {
+fun Navigator.navigateToCardDetails(cardId: String, previewImageUrl: String?, parentRoute: String) {
     val cardDetailsRoute =
         CardDetailsRoute(
             cardId = cardId,
@@ -36,10 +37,10 @@ fun NavController.navigateToCardDetails(
             previewImageUrl = previewImageUrl,
             parentRoute = parentRoute,
         )
-    navigate(cardDetailsRoute) { launchSingleTop = true }
+    navigate(cardDetailsRoute)
 }
 
-fun NavController.navigateToCardDetailsWithMultiverseId(
+fun Navigator.navigateToCardDetailsWithMultiverseId(
     previewImageUrl: String?,
     multiverseId: Int,
     parentRoute: String,
@@ -51,39 +52,33 @@ fun NavController.navigateToCardDetailsWithMultiverseId(
             previewImageUrl = previewImageUrl,
             parentRoute = parentRoute,
         )
-    navigate(cardDetailsRoute) { launchSingleTop = true }
+    navigate(cardDetailsRoute)
 }
 
-fun NavGraphBuilder.cardDetailsScreen(
+fun NavKeyEntryProviderScope.cardDetailsEntry(
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
 ) {
-    composable<CardDetailsRoute>(
-        enterTransition = {
-            fadeIn(animationSpec = tween(durationMillis = 300, easing = LinearEasing)) +
-                slideIntoContainer(
-                    animationSpec = tween(durationMillis = 300, easing = EaseIn),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Start,
-                )
-        },
-        exitTransition = {
-            fadeOut(animationSpec = tween(durationMillis = 300, easing = LinearEasing)) +
-                slideOutOfContainer(
-                    animationSpec = tween(300, easing = EaseOut),
-                    towards = AnimatedContentTransitionScope.SlideDirection.End,
-                )
-        },
-    ) { backStackEntry ->
-        val cardDetailsRoute = backStackEntry.toRoute<CardDetailsRoute>()
-
-        CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+    entry<CardDetailsRoute>(
+        metadata =
+            metadata {
+                transition { enterTransitionHorizontal() togetherWith fadeOutTween() }
+                popTransition { fadeInTween() togetherWith exitTransitionHorizontal() }
+            }
+    ) { cardDetailsRoute ->
+        NavAnimatedVisibilityProviderWrapper {
             CardDetailsScreen(
-                cacheKeyId = cardDetailsRoute.cardId ?: cardDetailsRoute.multiverseId?.toString(),
-                previewImageUrl = cardDetailsRoute.previewImageUrl.orEmpty(),
-                parentRoute = cardDetailsRoute.parentRoute,
+                cardDetailsRoute = cardDetailsRoute,
                 onBackClick = onBackClick,
                 onShowSnackbar = onShowSnackbar,
+                viewModel = cardDetailsViewModel(cardDetailsRoute),
             )
         }
     }
 }
+
+@Composable
+private fun cardDetailsViewModel(route: CardDetailsRoute): CardDetailsViewModel =
+    hiltViewModel<CardDetailsViewModel, CardDetailsViewModel.Factory>(
+        creationCallback = { factory -> factory.create(route) }
+    )

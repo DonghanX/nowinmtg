@@ -1,6 +1,5 @@
 package com.donghanx.ui
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +30,7 @@ import coil3.size.Precision
 import com.donghanx.design.R
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.rippleClickable
+import com.donghanx.design.composable.provider.LocalIsBottomNavBarAnimating
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.design.composable.provider.currentNotNull
@@ -40,7 +40,6 @@ import com.donghanx.model.CardPreview
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CardsGallery(
     parentRoute: String,
@@ -99,8 +98,9 @@ fun CardsGallery(
         val shouldShowScrollToTopButton by remember {
             derivedStateOf { lazyGridState.isFirstItemNotVisible() }
         }
+        val isBottomNavBarAnimating = LocalIsBottomNavBarAnimating.current
         ScrollToTopButton(
-            visible = shouldShowScrollToTopButton,
+            visible = shouldShowScrollToTopButton && !isBottomNavBarAnimating,
             onClick = {
                 scope.launch {
                     launch { lazyGridState.animateScrollToItem(0) }

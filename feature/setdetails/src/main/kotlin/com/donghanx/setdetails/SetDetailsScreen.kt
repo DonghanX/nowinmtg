@@ -48,13 +48,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.hasEnoughItemsToScroll
 import com.donghanx.design.composable.extensions.toDp
-import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
+import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
 import com.donghanx.design.ui.appbar.CollapsingNestedScrollConnection
 import com.donghanx.design.ui.appbar.rememberCollapsingNestedScrollConnection
 import com.donghanx.design.ui.grid.fullWidthItem
@@ -63,6 +62,7 @@ import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
+import com.donghanx.navigation.navkey.routeName
 import com.donghanx.setdetails.navigation.SetDetailsRoute
 import com.donghanx.ui.CardsGallery
 import kotlinx.collections.immutable.ImmutableList
@@ -74,7 +74,7 @@ internal fun SetDetailsScreen(
     onCardClick: (CardPreview) -> Unit,
     onTopBarVisibilityChanged: (isCollapsed: Boolean) -> Unit,
     onShowSnackbar: suspend (String) -> Unit,
-    viewModel: SetDetailsViewModel = hiltViewModel(),
+    viewModel: SetDetailsViewModel,
 ) {
     val uiState by viewModel.setDetailsUiStateFlow.collectAsStateWithLifecycle()
 
@@ -274,7 +274,7 @@ private fun CardsGalleryInSet(
     onScrollToTop: () -> Unit = {},
 ) {
     CardsGallery(
-        parentRoute = SetDetailsRoute.toString(),
+        parentRoute = SetDetailsRoute::class.routeName,
         cards = cardsInSet,
         onCardClick = onCardClick,
         header = {
@@ -312,7 +312,7 @@ private fun TopBarScrollSyncEffect(
 @Preview(showBackground = true)
 @Composable
 private fun SetDetailsScreenPreview() {
-    SharedTransitionProviderWrapper {
+    SharedTransitionProviderPreviewWrapper {
         SetDetailsScreen(
             setDetailsUiState =
                 SetDetailsUiState(

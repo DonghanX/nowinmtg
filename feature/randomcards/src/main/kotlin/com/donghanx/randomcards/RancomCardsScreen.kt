@@ -9,11 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.donghanx.design.composable.provider.SharedTransitionProviderWrapper
+import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
+import com.donghanx.navigation.navkey.routeName
 import com.donghanx.randomcards.navigation.RandomCardsRoute
 import com.donghanx.ui.CardsGallery
 import kotlinx.collections.immutable.toImmutableList
@@ -37,7 +38,7 @@ internal fun RandomCardsScreen(
         when (val uiState = randomCardsUiState) {
             is RandomCardsUiState.Success -> {
                 CardsGallery(
-                    parentRoute = RandomCardsRoute.toString(),
+                    parentRoute = RandomCardsRoute::class.routeName,
                     cards = uiState.cards,
                     onCardClick = onCardClick,
                     onScrollToTop = onScrollToTop,
@@ -58,9 +59,9 @@ internal fun RandomCardsScreen(
 @Preview(showBackground = true)
 @Composable
 private fun CardsGalleryPreview() {
-    SharedTransitionProviderWrapper {
+    SharedTransitionProviderPreviewWrapper {
         CardsGallery(
-            parentRoute = RandomCardsRoute.toString(),
+            parentRoute = RandomCardsRoute::class.routeName,
             cards = MockUtils.emptyCards.toImmutableList(),
             onCardClick = {},
         )

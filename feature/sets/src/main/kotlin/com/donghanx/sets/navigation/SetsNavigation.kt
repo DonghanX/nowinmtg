@@ -1,31 +1,23 @@
 package com.donghanx.sets.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
+import androidx.navigation3.runtime.NavKey
 import com.donghanx.model.SetInfo
+import com.donghanx.navigation.NavKeyEntryProviderScope
 import com.donghanx.sets.SetsScreen
 import kotlinx.serialization.Serializable
 
-@Serializable object SetsBaseRoute
+@Serializable data object SetsRoute : NavKey
 
-@Serializable object SetsRoute
-
-fun NavGraphBuilder.setsScreen(
+fun NavKeyEntryProviderScope.setsEntry(
     onSetClick: (SetInfo) -> Unit,
     onScrollToTop: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
-    nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
-    navigation<SetsBaseRoute>(startDestination = SetsRoute) {
-        composable<SetsRoute> {
-            SetsScreen(
-                onShowSnackbar = onShowSnackbar,
-                onSetClick = onSetClick,
-                onScrollToTop = onScrollToTop,
-            )
-        }
-
-        nestedGraphs()
+    entry<SetsRoute> {
+        SetsScreen(
+            onShowSnackbar = onShowSnackbar,
+            onSetClick = onSetClick,
+            onScrollToTop = onScrollToTop,
+        )
     }
 }

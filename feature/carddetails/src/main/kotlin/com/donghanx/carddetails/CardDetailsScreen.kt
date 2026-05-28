@@ -25,21 +25,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.donghanx.carddetails.navigation.CardDetailsRoute
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.safeDrawingTopPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CardDetailsScreen(
-    cacheKeyId: String?,
-    previewImageUrl: String?,
-    parentRoute: String,
+    cardDetailsRoute: CardDetailsRoute,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String) -> Unit,
+    viewModel: CardDetailsViewModel,
     modifier: Modifier = Modifier,
-    viewModel: CardDetailsViewModel = hiltViewModel(),
 ) {
     val cardDetailsUiState by viewModel.cardDetailsUiState.collectAsStateWithLifecycle()
 
@@ -72,11 +70,11 @@ internal fun CardDetailsScreen(
                     }
 
                 CardDetailsView(
-                    cacheKeyId = cacheKeyId,
                     cardDetails = cardDetails,
+                    cacheKeyId = cardDetailsRoute.cachedKeyId,
                     rulings = rulings.orEmpty(),
-                    previewImageUrl = previewImageUrl,
-                    parentRoute = parentRoute,
+                    previewImageUrl = cardDetailsRoute.previewImageUrl,
+                    parentRoute = cardDetailsRoute.parentRoute,
                 )
             }
         }

@@ -10,11 +10,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.design.ui.placeholder.EmptyScreenWithIcon
 import com.donghanx.favorites.navigation.FavoritesRoute
 import com.donghanx.model.CardPreview
+import com.donghanx.navigation.navkey.routeName
 import com.donghanx.ui.CardsGallery
 
 @Composable
@@ -45,7 +46,7 @@ private fun FavoritesScreen(
         when (uiState) {
             is FavoritesUiState.Success ->
                 CardsGallery(
-                    parentRoute = FavoritesRoute.toString(),
+                    parentRoute = FavoritesRoute::class.routeName,
                     cards = uiState.favoriteCards,
                     onCardClick = onCardClick,
                     onScrollToTop = onScrollToTop,
