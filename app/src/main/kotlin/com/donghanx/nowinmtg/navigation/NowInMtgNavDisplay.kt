@@ -17,6 +17,7 @@ import com.donghanx.favorites.navigation.FavoritesRoute
 import com.donghanx.favorites.navigation.favoritesEntry
 import com.donghanx.navigation.NavigationState
 import com.donghanx.navigation.Navigator
+import com.donghanx.navigation.navkey.routeName
 import com.donghanx.navigation.toDecoratedEntries
 import com.donghanx.randomcards.navigation.RandomCardsRoute
 import com.donghanx.randomcards.navigation.randomCardsEntry
@@ -46,7 +47,7 @@ fun NowInMtgNavDisplay(
                 navigator.navigateToCardDetailsWithMultiverseId(
                     previewImageUrl = card.imageUrl,
                     multiverseId = card.id.toIntOrNull() ?: INVALID_ID,
-                    parentRoute = RandomCardsRoute.toString(),
+                    parentRoute = RandomCardsRoute::class.routeName,
                 )
             },
             onScrollToTop = onScrollToTop,
@@ -57,7 +58,7 @@ fun NowInMtgNavDisplay(
             onSetClick = { setInfo ->
                 navigator.navigateToSetDetails(
                     setId = setInfo.scryfallId,
-                    parentRoute = SetsRoute.toString(),
+                    parentRoute = SetsRoute::class.routeName,
                 )
             },
             onScrollToTop = onScrollToTop,
@@ -67,7 +68,7 @@ fun NowInMtgNavDisplay(
                 navigator.navigateToCardDetails(
                     previewImageUrl = card.imageUrl,
                     cardId = card.id,
-                    parentRoute = FavoritesRoute.toString(),
+                    parentRoute = FavoritesRoute::class.routeName,
                 )
             },
             onScrollToTop = onScrollToTop,
@@ -78,7 +79,7 @@ fun NowInMtgNavDisplay(
             onSetClick = { setInfo ->
                 navigator.navigateToSetDetails(
                     setId = setInfo.scryfallId,
-                    parentRoute = SearchRoute.toString(),
+                    parentRoute = SearchRoute::class.routeName,
                 )
             },
         )
@@ -88,7 +89,7 @@ fun NowInMtgNavDisplay(
                 navigator.navigateToCardDetails(
                     cardId = card.id,
                     previewImageUrl = card.imageUrl,
-                    parentRoute = SetDetailsRoute.toString(),
+                    parentRoute = SetDetailsRoute::class.routeName,
                 )
             },
             onTopBarVisibilityChanged = onTopBarVisibilityChanged,

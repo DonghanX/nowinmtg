@@ -62,6 +62,7 @@ import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import com.donghanx.model.SetInfo
+import com.donghanx.navigation.navkey.routeName
 import com.donghanx.setdetails.navigation.SetDetailsRoute
 import com.donghanx.ui.CardsGallery
 import kotlinx.collections.immutable.ImmutableList
@@ -273,7 +274,7 @@ private fun CardsGalleryInSet(
     onScrollToTop: () -> Unit = {},
 ) {
     CardsGallery(
-        parentRoute = SetDetailsRoute.toString(),
+        parentRoute = SetDetailsRoute::class.routeName,
         cards = cardsInSet,
         onCardClick = onCardClick,
         header = {
