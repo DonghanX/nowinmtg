@@ -1,6 +1,5 @@
 package com.donghanx.nowinmtg.navigation
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,7 +29,6 @@ import com.donghanx.sets.navigation.SetsRoute
 import com.donghanx.sets.navigation.setsEntry
 import com.donghanx.settings.navigation.settingsDialogEntry
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NowInMtgNavDisplay(
     navigator: Navigator,

@@ -8,7 +8,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 
 @Composable
-fun NotInMtgProvidersWrapper(
+fun NowInMtgProvidersWrapper(
     isBottomNavBarAnimating: Boolean,
     content: @Composable SharedTransitionScope.() -> Unit,
 ) {

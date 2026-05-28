@@ -16,6 +16,7 @@ import com.donghanx.navigation.navkey.DialogNavKey
 /** Create a navigation state that persists config changes and process death. */
 @Composable
 fun rememberNavigationState(startRoute: NavKey, topLevelRoutes: Set<NavKey>): NavigationState {
+    require(startRoute in topLevelRoutes) { "startRoute must be included in topLevelRoutes" }
     val topLevelRouteStack = rememberNavBackStack(startRoute)
     val backStacks = topLevelRoutes.associateWith { key -> rememberNavBackStack(key) }
 
@@ -33,7 +34,7 @@ fun rememberNavigationState(startRoute: NavKey, topLevelRoutes: Set<NavKey>): Na
  * modified using the `Navigator` class.
  *
  * @param startRoute the start route. The user will exit the app through this route.
- * @param topLevelRouteStack the back stacks that track all the active top-level route.
+ * @param topLevelRouteStack the back stack that tracks all the active top-level route.
  * @param backStacks the back stacks for each top-level route.
  */
 class NavigationState(

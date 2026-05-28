@@ -36,7 +36,7 @@ class NowInMtgAppState(
         get() = topLevelNavItems.find { navigationState.currentRouteIgnoringDialog == it.route }
 
     val isTopLevelRoute: Boolean
-        @Composable get() = currentRoute in TOP_LEVEL_ROUTES
+        get() = currentRoute in TOP_LEVEL_ROUTES
 
     val topLevelNavItems: List<TopLevelNavItem> = TopLevelNavItem.entries
 

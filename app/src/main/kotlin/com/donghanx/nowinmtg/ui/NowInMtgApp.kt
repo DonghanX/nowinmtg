@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.animateReset
 import com.donghanx.design.composable.extensions.conditional
-import com.donghanx.design.composable.provider.NotInMtgProvidersWrapper
+import com.donghanx.design.composable.provider.NowInMtgProvidersWrapper
 import com.donghanx.design.ui.appbar.NowInMtgTopAppBar
 import com.donghanx.navigation.Navigator
 import com.donghanx.nowinmtg.navigation.NowInMtgNavDisplay
@@ -141,7 +141,7 @@ fun NowInMtgApp(
                             .consumeWindowInsets(paddingValues)
                 ) {
                     val coroutineScope = rememberCoroutineScope()
-                    NotInMtgProvidersWrapper(isBottomNavBarAnimating = isBottomNavBarAnimating) {
+                    NowInMtgProvidersWrapper(isBottomNavBarAnimating = isBottomNavBarAnimating) {
                         NowInMtgNavDisplay(
                             navigator = navigator,
                             navigationState = appState.navigationState,
