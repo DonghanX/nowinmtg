@@ -12,22 +12,19 @@ import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val Project.libs: VersionCatalog
     get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-private typealias CommonExtensionType = CommonExtension<*, *, *, *, *, *>
-
-internal fun Project.configureKotlinAndroid(commonExtension: CommonExtensionType) {
+internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     with(commonExtension) {
         compileSdk = 36
-        defaultConfig { minSdk = 26 }
+        defaultConfig.apply { minSdk = 26 }
 
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_18
-            targetCompatibility = JavaVersion.VERSION_18
+        compileOptions.apply {
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
     }
 
@@ -36,8 +33,8 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtensionType
 
 internal fun Project.configureKotlinJvm() {
     extensions.configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_18
-        targetCompatibility = JavaVersion.VERSION_18
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     configureKotlin()
@@ -46,7 +43,6 @@ internal fun Project.configureKotlinJvm() {
 private fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_18)
             // Treat all Kotlin warnings as errors (disabled by default)
             // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
             val warningsAsErrors: String? by project
@@ -63,9 +59,9 @@ private fun Project.configureKotlin() {
     }
 }
 
-internal fun Project.configureAndroidCompose(commonExtension: CommonExtensionType) {
+internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
     commonExtension.apply {
-        buildFeatures { compose = true }
+        buildFeatures.apply { compose = true }
 
         configComposeCompiler()
 

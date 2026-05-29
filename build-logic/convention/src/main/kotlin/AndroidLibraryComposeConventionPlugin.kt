@@ -1,4 +1,4 @@
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.donghanx.convention.configureAndroidCompose
 import com.donghanx.convention.libs
 import org.gradle.api.Plugin
@@ -14,10 +14,10 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.plugin.compose")
                 apply("org.jetbrains.kotlin.plugin.serialization")
             }
-            val extension = extensions.getByType<LibraryExtension>()
 
             dependencies { add("implementation", libs.findLibrary("kotlinx.immutable").get()) }
 
+            val extension = extensions.getByType<LibraryExtension>()
             configureAndroidCompose(extension)
         }
     }
