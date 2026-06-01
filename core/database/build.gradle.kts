@@ -1,9 +1,9 @@
 plugins {
     id("donghanx.android.library")
-    id("org.jetbrains.kotlin.kapt")
     id("donghanx.android.hilt")
-    alias(libs.plugins.com.google.devtools.ksp)
     alias(libs.plugins.org.jetbrains.kotlin.plugin.serialization)
+    alias(libs.plugins.androidx.room)
+    alias(libs.plugins.com.google.devtools.ksp)
 }
 
 android {
@@ -19,10 +19,12 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
+
+    room { schemaDirectory("$projectDir/schemas") }
 }
 
 dependencies {

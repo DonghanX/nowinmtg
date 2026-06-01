@@ -1,6 +1,6 @@
 [versions]
-kotlin = "2.1.20"
-agp = "8.13.2"
+kotlin = "2.3.21"
+agp = "9.1.1"
 androidx-compose-bom = "2026.03.00"
 activity-compose = "1.10.1"
 androidx-junit = "1.1.5"
@@ -11,12 +11,12 @@ junit = "4.13.2"
 kotest = "6.1.11"
 kotlinx-coroutines-android = "1.10.1"
 lifecycle = "2.8.7"
-hilt = "2.51.1"
+hilt = "2.59.2"
 kotlinx-serialization = "1.8.0"
 ktor = "3.1.2"
 okhttp = "4.12.0"
-room = "2.6.1"
-ksp = "2.1.20-1.0.32"
+room = "2.8.4"
+ksp = "2.3.6"
 coil = "3.1.0"
 navigation3 = "1.1.0"
 lifecycle-viewmodel-nav3 = "2.10.0"
@@ -101,10 +101,10 @@ androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "d
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 org-jetbrains-kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 com-diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+androidx-room = { id = "androidx.room", version.ref = "room" }

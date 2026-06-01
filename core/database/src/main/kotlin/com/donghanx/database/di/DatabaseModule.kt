@@ -17,6 +17,6 @@ object DatabaseModule {
     @Singleton
     fun providesNimDatabase(@ApplicationContext applicationContext: Context): NimDatabase =
         Room.databaseBuilder(applicationContext, NimDatabase::class.java, "nim-database")
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 }

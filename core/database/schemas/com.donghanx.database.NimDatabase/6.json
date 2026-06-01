@@ -1,0 +1,334 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 6,
+    "identityHash": "65eb5723817f17c29e1354d89ca730da",
+    "entities": [
+      {
+        "tableName": "random_cards",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`multiverseId` INTEGER NOT NULL, `name` TEXT NOT NULL, `imageUrl` TEXT, `types` TEXT, `orderIndex` INTEGER NOT NULL, PRIMARY KEY(`multiverseId`))",
+        "fields": [
+          {
+            "fieldPath": "multiverseId",
+            "columnName": "multiverseId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "types",
+            "columnName": "types",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "orderIndex",
+            "columnName": "orderIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "multiverseId"
+          ]
+        }
+      },
+      {
+        "tableName": "card_details",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `multiverseId` INTEGER, `artist` TEXT, `cmc` REAL, `colorIdentity` TEXT, `colors` TEXT, `flavor` TEXT, `layout` TEXT NOT NULL, `manaCost` TEXT, `name` TEXT NOT NULL, `text` TEXT, `typeLine` TEXT, `power` TEXT, `rarity` TEXT NOT NULL, `set` TEXT NOT NULL, `setName` TEXT NOT NULL, `toughness` TEXT, `artCrop` TEXT, `borderCrop` TEXT, `large` TEXT, `normal` TEXT, `png` TEXT, `small` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "multiverseId",
+            "columnName": "multiverseId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "artist",
+            "columnName": "artist",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cmc",
+            "columnName": "cmc",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "colorIdentity",
+            "columnName": "colorIdentity",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "colors",
+            "columnName": "colors",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "flavor",
+            "columnName": "flavor",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "layout",
+            "columnName": "layout",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manaCost",
+            "columnName": "manaCost",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "typeLine",
+            "columnName": "typeLine",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "power",
+            "columnName": "power",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "rarity",
+            "columnName": "rarity",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "set",
+            "columnName": "set",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "setName",
+            "columnName": "setName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toughness",
+            "columnName": "toughness",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageUris.artCrop",
+            "columnName": "artCrop",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageUris.borderCrop",
+            "columnName": "borderCrop",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageUris.large",
+            "columnName": "large",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageUris.normal",
+            "columnName": "normal",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageUris.png",
+            "columnName": "png",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageUris.small",
+            "columnName": "small",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "sets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`scryfallId` TEXT NOT NULL, `code` TEXT NOT NULL, `cardCount` INTEGER NOT NULL, `digital` INTEGER NOT NULL, `iconSvgUri` TEXT NOT NULL, `name` TEXT NOT NULL, `setType` TEXT NOT NULL, `releasedAt` TEXT NOT NULL, `scryfallUri` TEXT NOT NULL, `searchUri` TEXT NOT NULL, `uri` TEXT NOT NULL, PRIMARY KEY(`scryfallId`))",
+        "fields": [
+          {
+            "fieldPath": "scryfallId",
+            "columnName": "scryfallId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cardCount",
+            "columnName": "cardCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "digital",
+            "columnName": "digital",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconSvgUri",
+            "columnName": "iconSvgUri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "setType",
+            "columnName": "setType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "releasedAt",
+            "columnName": "releasedAt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scryfallUri",
+            "columnName": "scryfallUri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "searchUri",
+            "columnName": "searchUri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uri",
+            "columnName": "uri",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "scryfallId"
+          ]
+        }
+      },
+      {
+        "tableName": "favorite_card",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `multiverseId` INTEGER, `name` TEXT NOT NULL, `imageUrl` TEXT, `set` TEXT NOT NULL, `setName` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "multiverseId",
+            "columnName": "multiverseId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "set",
+            "columnName": "set",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "setName",
+            "columnName": "setName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "rulings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cardId` TEXT NOT NULL, `rulings` TEXT NOT NULL, PRIMARY KEY(`cardId`))",
+        "fields": [
+          {
+            "fieldPath": "cardId",
+            "columnName": "cardId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rulings",
+            "columnName": "rulings",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "cardId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '65eb5723817f17c29e1354d89ca730da')"
+    ]
+  }
+}

@@ -2,7 +2,7 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.donghanx.convention.configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.configure
 
 class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -11,9 +11,7 @@ class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.plugin.compose")
             }
-            val extension = extensions.getByType<ApplicationExtension>()
-
-            configureAndroidCompose(extension)
+            extensions.configure<ApplicationExtension> { configureAndroidCompose(this) }
         }
     }
 }

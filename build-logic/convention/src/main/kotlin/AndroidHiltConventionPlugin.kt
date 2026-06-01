@@ -7,13 +7,13 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
+                apply("com.google.devtools.ksp")
                 apply("dagger.hilt.android.plugin")
-                apply("org.jetbrains.kotlin.kapt")
             }
 
             dependencies {
                 add("implementation", libs.findLibrary("hilt.android").get())
-                add("kapt", libs.findLibrary("hilt.android.compiler").get())
+                add("ksp", libs.findLibrary("hilt.android.compiler").get())
             }
         }
     }
