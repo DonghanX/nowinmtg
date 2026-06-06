@@ -19,7 +19,7 @@ val Project.libs: VersionCatalog
 
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     with(commonExtension) {
-        compileSdk = 36
+        compileSdk = 37
         defaultConfig.apply { minSdk = 26 }
 
         compileOptions.apply {
