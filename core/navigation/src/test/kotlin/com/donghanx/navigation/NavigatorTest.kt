@@ -22,7 +22,7 @@ private data class TestDetailRoute(val id: Int) : NavKey
 
 private data object TestDialogRoute : DialogNavKey
 
-class NavigationTest {
+class NavigatorTest {
 
     private lateinit var navigationState: NavigationState
     private lateinit var navigator: Navigator

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreProvider
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
@@ -54,25 +55,33 @@ class NavigationState(
         get() = currentStack.last { it !is DialogNavKey }
 }
 
+/**
+ * Decorate each back stack's entries with a SaveableStateHolder and ViewModelStore scoped to that
+ * stack. When [NavigationState.backStacks] changes, [rememberDecoratedNavEntries] will be
+ * recomposed and return an updated list of decorated entries.
+ *
+ * ViewModels should remain alive even when a top-level route is not active as long as the
+ * corresponding route is in the backstack.
+ */
 @Composable
 fun NavigationState.toDecoratedEntries(
     entryProvider: (NavKey) -> NavEntry<NavKey>
 ): List<NavEntry<NavKey>> {
-    // For each backstack, create a SaveableStateHolder decorator and ViewModelStore decorator and
-    // use them to decorate the entries from that stack. When backStacks changes,
-    // rememberDecoratedNavEntries will be recomposed and a new list of decorated entries is
-    // returned. ViewModels should remain alive even when a top-level route is not active as long as
-    // the corresponding route is in the backstack.
-    val decoratedEntries = backStacks.mapValues { (_, stack) ->
+    val decoratedEntries = backStacks.mapValues { (topLevelRoute, stack) ->
+        // Hoist a separate ViewModelStoreProvider per top-level route to ensure state isolation
+        // between back stacks, while allowing the ViewModels to persist during back stack swaps.
+        //
+        // The no-arg overload for rememberViewModelStoreNavEntryDecorator would break the
+        // multi-back-stacks scenario if two stacks hold entries with the exact same NavKey. Today
+        // CardDetailsRoute happens to stay unique via its parentRoute field, but that exists for
+        // the SharedElement transition, not for scoping the ViewModel. Passing an explicit provider
+        // makes the isolation no longer dependent on how routes are keyed.
+        val viewModelStoreProvider = rememberViewModelStoreProvider(key = topLevelRoute)
+
         val decorators =
             listOf(
                 rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
-                // TODO: once lifecycle-viewmodel-nav3 2.11.0 beta2 is available, check the new
-                //  rememberViewModelStoreNavEntryDecorator overload that accepts the
-                //  ViewModelStoreProvider to fix this issue:
-                //  https://issuetracker.google.com/issues/503420425
-                //  For now, use 2.10.0 stable version instead.
-                rememberViewModelStoreNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator(viewModelStoreProvider),
             )
 
         rememberDecoratedNavEntries(
