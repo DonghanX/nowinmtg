@@ -32,6 +32,7 @@ import com.donghanx.common.utils.DateMillisRange
 import com.donghanx.design.composable.extensions.isFirstItemNotVisible
 import com.donghanx.design.composable.extensions.safeDrawingTopPadding
 import com.donghanx.design.composable.provider.LocalIsBottomNavBarAnimating
+import com.donghanx.design.theme.NowInMTGTheme
 import com.donghanx.design.ui.scrolltotop.ScrollToTopButton
 import com.donghanx.model.SetInfo
 import com.donghanx.sets.preview.SetsListPreviewParameterProvider
@@ -109,6 +110,7 @@ private fun SetsList(
                 stickyHeader(key = yearReleased) {
                     StickyYearReleased(
                         yearReleased = yearReleased,
+                        count = sets.size,
                         modifier = Modifier.padding(horizontal = 6.dp),
                     )
                 }
@@ -172,5 +174,5 @@ private fun SetsFilterRow(
 private fun SetsListPreview(
     @PreviewParameter(SetsListPreviewParameterProvider::class) groupedSets: Map<Int, List<SetInfo>>
 ) {
-    SetsList(groupedSets = groupedSets, onSetClick = {}, onScrollToTop = {})
+    NowInMTGTheme { SetsList(groupedSets = groupedSets, onSetClick = {}, onScrollToTop = {}) }
 }

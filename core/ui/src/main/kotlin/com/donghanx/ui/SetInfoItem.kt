@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.donghanx.design.theme.NowInMTGTheme
 
 @Composable
 fun SetInfoItem(
@@ -61,26 +64,51 @@ fun SetInfoItem(
 }
 
 @Composable
-fun StickyYearReleased(yearReleased: Int, modifier: Modifier = Modifier) {
-    Row(modifier = modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.surface)) {
+fun StickyYearReleased(yearReleased: Int, count: Int, modifier: Modifier = Modifier) {
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.surface)
+                .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         val yearReleasedStr = remember { yearReleased.toString() }
-        Text(text = yearReleasedStr, fontWeight = FontWeight.Bold)
+
+        Text(
+            text = yearReleasedStr,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        HorizontalDivider(
+            modifier = Modifier.weight(1F).padding(horizontal = 10.dp),
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+
+        Text(
+            text = "$count sets",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun SetInfoItemPreview() {
-    SetInfoItem(
-        code = "soi",
-        name = "Shadows over Innistrad",
-        iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400",
-        onClick = {},
-    )
+    NowInMTGTheme {
+        SetInfoItem(
+            code = "soi",
+            name = "Shadows over Innistrad",
+            iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400",
+            onClick = {},
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun StickyYearReleasedPreview() {
-    StickyYearReleased(yearReleased = 2023)
+    NowInMTGTheme { StickyYearReleased(yearReleased = 2023, count = 10) }
 }
