@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.donghanx.common.extensions.toDisplayName
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.hasEnoughItemsToScroll
 import com.donghanx.design.composable.extensions.toDp
@@ -237,7 +238,11 @@ private fun SetDetailsTopBar(
         }
 
         setInfo?.let {
-            SetDetailsTitle(name = it.name, iconUri = it.iconSvgUri, modifier = Modifier.weight(1F))
+            SetDetailsTitle(
+                name = it.name.toDisplayName(),
+                iconUri = it.iconSvgUri,
+                modifier = Modifier.weight(1F),
+            )
         }
 
         Spacer(modifier = Modifier.size(40.dp))

@@ -1,6 +1,7 @@
 package com.donghanx.sets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -97,7 +99,7 @@ private fun SetsList(
     onSetClick: (SetInfo) -> Unit,
     onScrollToTop: () -> Unit,
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.surface)) {
         val scope = rememberCoroutineScope()
         val lazyListState = rememberLazyListState()
 
@@ -117,9 +119,7 @@ private fun SetsList(
 
                 items(items = sets, key = { it.scryfallId }) {
                     SetInfoItem(
-                        code = it.code,
-                        name = it.name,
-                        iconUrl = it.iconSvgUri,
+                        setInfo = it,
                         onClick = { onSetClick(it) },
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
                     )

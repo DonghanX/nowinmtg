@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.donghanx.common.extensions.capitalize
+import com.donghanx.common.extensions.toDisplayName
 import com.donghanx.design.ui.chip.FilterChipWithLeadingIcon
 import com.donghanx.sets.composable.BottomSheetContentWrapper
 import com.donghanx.sets.composable.FilterChipWithBottomSheetContent
@@ -39,9 +39,7 @@ internal fun SetTypeFilter(selectedSetType: String?, onSetTypeChanged: (setType:
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     FilterChipWithBottomSheetContent(
-        label = {
-            Text(text = selectedSetType?.toReadableSetTypeLabel() ?: stringResource(R.string.type))
-        },
+        label = { Text(text = selectedSetType?.toDisplayName() ?: stringResource(R.string.type)) },
         bottomSheetState = bottomSheetState,
         selected = selectedSetType != null,
         showBottomSheet = showBottomSheet,
@@ -87,7 +85,7 @@ private fun SetTypesSelector(
         ) {
             FlowRow(horizontalArrangement = Arrangement.Start) {
                 setTypes.forEach { setType ->
-                    val setTypeLabel = remember { setType.toReadableSetTypeLabel() }
+                    val setTypeLabel = remember { setType.toDisplayName() }
 
                     FilterChipWithLeadingIcon(
                         selected = selectedType == setType,
@@ -107,9 +105,3 @@ private fun SetTypesSelector(
         }
     }
 }
-
-private fun String.toReadableSetTypeLabel(
-    oldDelimiter: String = "_",
-    newDelimiter: String = " ",
-): String =
-    split(oldDelimiter).joinToString(separator = newDelimiter) { prevStr -> prevStr.capitalize() }

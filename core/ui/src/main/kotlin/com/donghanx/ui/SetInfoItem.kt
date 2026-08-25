@@ -2,65 +2,122 @@ package com.donghanx.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.donghanx.common.extensions.toDisplayName
+import com.donghanx.common.utils.monthYearOfDate
 import com.donghanx.design.theme.NowInMTGTheme
+import com.donghanx.mock.MockUtils
+import com.donghanx.model.SetInfo
 
 @Composable
 fun SetInfoItem(
-    code: String,
-    name: String,
-    iconUrl: String,
+    setInfo: SetInfo,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    resizable: Boolean = false,
-    maxLines: Int = 1,
+    maxLines: Int = 2,
 ) {
     Row(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(vertical = 4.dp, horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
-            model = iconUrl,
-            contentDescription = name,
+            model = setInfo.iconSvgUri,
+            contentDescription = setInfo.name,
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface),
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(36.dp),
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(12.dp))
 
-        Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .horizontalScroll(state = rememberScrollState(), enabled = !resizable),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(text = name, fontSize = 20.sp, fontWeight = FontWeight.Bold, maxLines = maxLines)
+        Column(modifier = Modifier.weight(1F)) {
+            with(setInfo) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = maxLines,
+                    overflow = TextOverflow.Ellipsis,
+                )
 
-            Text(text = code, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(2.dp))
+
+                SetMetaDataRow(
+                    code = code,
+                    setType = setType,
+                    cardCount = cardCount,
+                    releasedAt = releasedAt,
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun SetMetaDataRow(
+    code: String,
+    setType: String,
+    cardCount: Int,
+    releasedAt: String,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        SetCodeChip(code)
+
+        val cardCount = pluralStringResource(R.plurals.card_count, cardCount, cardCount)
+
+        Text(
+            text = "${setType.toDisplayName()} · $cardCount · ${releasedAt.monthYearOfDate()}",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+private fun SetCodeChip(code: String, modifier: Modifier = Modifier) {
+    Text(
+        text = code.uppercase(),
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(6.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .padding(horizontal = 6.dp, vertical = 4.dp),
+    )
 }
 
 @Composable
@@ -70,13 +127,11 @@ fun StickyYearReleased(yearReleased: Int, count: Int, modifier: Modifier = Modif
             modifier
                 .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.surface)
-                .padding(vertical = 6.dp),
+                .padding(vertical = 6.dp, horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val yearReleasedStr = remember { yearReleased.toString() }
-
         Text(
-            text = yearReleasedStr,
+            text = yearReleased.toString(),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -87,7 +142,7 @@ fun StickyYearReleased(yearReleased: Int, count: Int, modifier: Modifier = Modif
         )
 
         Text(
-            text = "$count sets",
+            text = pluralStringResource(R.plurals.set_count, count, count),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -99,9 +154,7 @@ fun StickyYearReleased(yearReleased: Int, count: Int, modifier: Modifier = Modif
 private fun SetInfoItemPreview() {
     NowInMTGTheme {
         SetInfoItem(
-            code = "soi",
-            name = "Shadows over Innistrad",
-            iconUrl = "https://svgs.scryfall.io/sets/soi.svg?1698638400",
+            setInfo = MockUtils.soiExpansion,
             onClick = {},
         )
     }
