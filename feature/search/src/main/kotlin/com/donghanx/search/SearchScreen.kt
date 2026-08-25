@@ -86,10 +86,7 @@ private fun SearchScreen(
                 is SearchUiState.Success -> {
                     LazyColumn {
                         items(searchUiState.searchedSets) {
-                            SetInfoItem(
-                                setInfo = it,
-                                onClick = { onSetClick(it) },
-                            )
+                            SetInfoItem(setInfo = it, onClick = { onSetClick(it) })
                         }
                     }
                 }

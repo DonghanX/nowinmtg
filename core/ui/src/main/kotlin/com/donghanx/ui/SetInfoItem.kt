@@ -80,12 +80,7 @@ fun SetInfoItem(
 }
 
 @Composable
-private fun SetMetaDataRow(
-    code: String,
-    setType: String,
-    cardCount: Int,
-    releasedAt: String,
-) {
+private fun SetMetaDataRow(code: String, setType: String, cardCount: Int, releasedAt: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -152,12 +147,7 @@ fun StickyYearReleased(yearReleased: Int, count: Int, modifier: Modifier = Modif
 @Preview(showBackground = true)
 @Composable
 private fun SetInfoItemPreview() {
-    NowInMTGTheme {
-        SetInfoItem(
-            setInfo = MockUtils.soiExpansion,
-            onClick = {},
-        )
-    }
+    NowInMTGTheme { SetInfoItem(setInfo = MockUtils.soiExpansion, onClick = {}) }
 }
 
 @Preview(showBackground = true)
