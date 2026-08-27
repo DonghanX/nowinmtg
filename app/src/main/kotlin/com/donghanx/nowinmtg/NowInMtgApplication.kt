@@ -6,6 +6,7 @@ import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.svg.SvgDecoder
+import com.donghanx.common.USER_AGENT
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
 import okhttp3.tls.HandshakeCertificates
@@ -30,6 +31,15 @@ class NowInMtgApplication : Application(), SingletonImageLoader.Factory {
                                     clientCertificates.sslSocketFactory(),
                                     clientCertificates.trustManager,
                                 )
+                                .addInterceptor { chain ->
+                                    chain.proceed(
+                                        chain
+                                            .request()
+                                            .newBuilder()
+                                            .header(name = "User-Agent", value = USER_AGENT)
+                                            .build()
+                                    )
+                                }
                                 .build()
                         }
                     )
