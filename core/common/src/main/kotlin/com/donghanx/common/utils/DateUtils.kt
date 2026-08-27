@@ -4,9 +4,20 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+private val MONTH_YEAR_FORMATTER: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault())
+
+private val DAY_MONTH_YEAR_FORMATTER: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.getDefault())
 
 /** Called to get the year integer from date string in the format of "yyyy-mm-dd" */
 fun String.yearOfDate(): Int = toIsoLocalDate().year
+
+fun String.monthYearOfDate(): String = toIsoLocalDate().format(MONTH_YEAR_FORMATTER)
+
+fun String.dayMonthYearOfDate(): String = toIsoLocalDate().format(DAY_MONTH_YEAR_FORMATTER)
 
 fun String.epochMilliOfDate(offset: Int): Long {
     return toIsoLocalDate().toEpochMilli(offset)

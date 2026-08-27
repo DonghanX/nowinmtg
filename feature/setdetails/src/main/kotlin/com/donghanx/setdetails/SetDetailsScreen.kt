@@ -1,7 +1,6 @@
 package com.donghanx.setdetails
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
@@ -29,8 +27,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -50,13 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.donghanx.common.extensions.toDisplayName
+import com.donghanx.common.utils.dayMonthYearOfDate
 import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.hasEnoughItemsToScroll
 import com.donghanx.design.composable.extensions.toDp
 import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
 import com.donghanx.design.ui.appbar.CollapsingNestedScrollConnection
 import com.donghanx.design.ui.appbar.rememberCollapsingNestedScrollConnection
-import com.donghanx.design.ui.grid.fullWidthItem
 import com.donghanx.design.ui.placeholder.EmptyScreenWithIcon
 import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.mock.MockUtils
@@ -65,6 +62,7 @@ import com.donghanx.model.SetInfo
 import com.donghanx.navigation.navkey.routeName
 import com.donghanx.setdetails.navigation.SetDetailsRoute
 import com.donghanx.ui.CardsGallery
+import com.donghanx.ui.SetMetaDataRow
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -146,7 +144,6 @@ private fun SetDetailsScreen(
 
                     CardsGalleryInSet(
                         cardsInSet = setDetailsUiState.cards,
-                        releasedAt = setDetailsUiState.setInfo?.releasedAt,
                         onCardClick = onCardClick,
                         lazyGridState = lazyGridState,
                         onScrollToTop = { nestedScrollConnection.reset() },
@@ -193,28 +190,21 @@ private fun SetDetailsHeader(
 
         SetDetailsTopBar(setInfo = setInfo, onBackClick = onBackClick)
 
-        SetDetailsBasicInfo(
-            setInfo = setInfo,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        )
-
-        HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 4.dp))
-    }
-}
-
-@Composable
-private fun SetDetailsBasicInfo(setInfo: SetInfo?, modifier: Modifier = Modifier) {
-    setInfo?.let {
-        Row(
-            modifier = modifier.horizontalScroll(state = rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(space = 6.dp),
-        ) {
-            SuggestionChip(onClick = {}, label = { Text("type: ${it.setType}") })
-
-            SuggestionChip(onClick = {}, label = { Text("code: ${it.code}") })
-
-            SuggestionChip(onClick = {}, label = { Text("count: ${it.cardCount}") })
+        setInfo?.let {
+            SetMetaDataRow(
+                code = it.code,
+                setType = it.setType,
+                cardCount = it.cardCount,
+                releasedDate = it.releasedAt.dayMonthYearOfDate(),
+                modifier =
+                    Modifier.padding(top = 2.dp, bottom = 8.dp)
+                        .align(alignment = Alignment.CenterHorizontally),
+                contentTextStyle = MaterialTheme.typography.bodyMedium,
+                chipTextStyle = MaterialTheme.typography.labelMedium,
+            )
         }
+
+        HorizontalDivider(modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
     }
 }
 
@@ -237,7 +227,11 @@ private fun SetDetailsTopBar(
         }
 
         setInfo?.let {
-            SetDetailsTitle(name = it.name, iconUri = it.iconSvgUri, modifier = Modifier.weight(1F))
+            SetDetailsTitle(
+                name = it.name.toDisplayName(),
+                iconUri = it.iconSvgUri,
+                modifier = Modifier.weight(1F),
+            )
         }
 
         Spacer(modifier = Modifier.size(40.dp))
@@ -267,7 +261,6 @@ private fun SetDetailsTitle(name: String, iconUri: String, modifier: Modifier = 
 @Composable
 private fun CardsGalleryInSet(
     cardsInSet: ImmutableList<CardPreview>,
-    releasedAt: String?,
     onCardClick: (CardPreview) -> Unit,
     lazyGridState: LazyGridState,
     modifier: Modifier = Modifier,
@@ -277,16 +270,6 @@ private fun CardsGalleryInSet(
         parentRoute = SetDetailsRoute::class.routeName,
         cards = cardsInSet,
         onCardClick = onCardClick,
-        header = {
-            fullWidthItem {
-                Text(
-                    text = "Released at $releasedAt",
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
-        },
         contentPadding = PaddingValues(all = 4.dp),
         lazyGridState = lazyGridState,
         onScrollToTop = onScrollToTop,
@@ -328,4 +311,4 @@ private fun SetDetailsScreenPreview() {
     }
 }
 
-private val appBarHeight = 116.dp
+private val appBarHeight = 104.dp
