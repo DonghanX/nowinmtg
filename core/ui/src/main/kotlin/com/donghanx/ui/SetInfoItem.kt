@@ -97,10 +97,10 @@ fun SetMetaDataRow(
     ) {
         SetCodeChip(code = code, textStyle = chipTextStyle)
 
-        val cardCount = pluralStringResource(R.plurals.card_count, cardCount, cardCount)
+        val cardCountText = pluralStringResource(R.plurals.card_count, cardCount, cardCount)
 
         Text(
-            text = "${setType.toDisplayName()} · $cardCount · $releasedDate",
+            text = "${setType.toDisplayName()} · $cardCountText · $releasedDate",
             style = contentTextStyle,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
