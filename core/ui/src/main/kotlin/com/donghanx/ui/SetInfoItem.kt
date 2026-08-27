@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,7 +73,7 @@ fun SetInfoItem(
                     code = code,
                     setType = setType,
                     cardCount = cardCount,
-                    releasedAt = releasedAt,
+                    releasedDate = releasedAt.monthYearOfDate(),
                 )
             }
         }
@@ -80,19 +81,28 @@ fun SetInfoItem(
 }
 
 @Composable
-private fun SetMetaDataRow(code: String, setType: String, cardCount: Int, releasedAt: String) {
+fun SetMetaDataRow(
+    code: String,
+    setType: String,
+    cardCount: Int,
+    releasedDate: String,
+    modifier: Modifier = Modifier,
+    contentTextStyle: TextStyle = MaterialTheme.typography.bodySmall,
+    chipTextStyle: TextStyle = MaterialTheme.typography.labelSmall,
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        SetCodeChip(code)
+        SetCodeChip(code = code, textStyle = chipTextStyle)
 
         val cardCount = pluralStringResource(R.plurals.card_count, cardCount, cardCount)
 
         Text(
-            text = "${setType.toDisplayName()} · $cardCount · ${releasedAt.monthYearOfDate()}",
-            style = MaterialTheme.typography.bodySmall,
+            text = "${setType.toDisplayName()} · $cardCount · $releasedDate",
+            style = contentTextStyle,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -101,10 +111,14 @@ private fun SetMetaDataRow(code: String, setType: String, cardCount: Int, releas
 }
 
 @Composable
-private fun SetCodeChip(code: String, modifier: Modifier = Modifier) {
+private fun SetCodeChip(
+    code: String,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle = MaterialTheme.typography.labelSmall,
+) {
     Text(
         text = code.uppercase(),
-        style = MaterialTheme.typography.labelSmall,
+        style = textStyle,
         fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier =
