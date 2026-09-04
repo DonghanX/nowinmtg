@@ -40,7 +40,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,6 +52,7 @@ import com.donghanx.design.R as DesignR
 import com.donghanx.design.composable.extensions.hasEnoughItemsToScroll
 import com.donghanx.design.composable.extensions.toDp
 import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
+import com.donghanx.design.theme.NowInMTGTheme
 import com.donghanx.design.ui.appbar.CollapsingNestedScrollConnection
 import com.donghanx.design.ui.appbar.rememberCollapsingNestedScrollConnection
 import com.donghanx.design.ui.placeholder.EmptyScreenWithIcon
@@ -292,22 +293,24 @@ private fun TopBarScrollSyncEffect(
     LaunchedEffect(isTopbarCollapsed) { onTopBarVisibilityChanged(isTopbarCollapsed) }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun SetDetailsScreenPreview() {
     SharedTransitionProviderPreviewWrapper {
-        SetDetailsScreen(
-            setDetailsUiState =
-                SetDetailsUiState(
-                    cards = MockUtils.emptyCards.toImmutableList(),
-                    setInfo = MockUtils.soiExpansion,
-                    isLoading = false,
-                ),
-            onBackClick = {},
-            onCardClick = {},
-            onTopBarVisibilityChanged = {},
-            onShowSnackbar = {},
-        )
+        NowInMTGTheme {
+            SetDetailsScreen(
+                setDetailsUiState =
+                    SetDetailsUiState(
+                        cards = MockUtils.emptyCards.toImmutableList(),
+                        setInfo = MockUtils.soiExpansion,
+                        isLoading = false,
+                    ),
+                onBackClick = {},
+                onCardClick = {},
+                onTopBarVisibilityChanged = {},
+                onShowSnackbar = {},
+            )
+        }
     }
 }
 
