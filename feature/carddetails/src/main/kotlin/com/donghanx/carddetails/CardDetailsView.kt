@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -61,18 +62,18 @@ internal fun CardDetailsView(
     placeholderResId: Int? = null,
 ) {
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 8.dp)) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            // TODO: Accommodate different window size
-            CardImage(
-                imageUrl = cardDetails?.imageUris?.png ?: previewImageUrl,
-                cacheKeyId = cacheKeyId,
-                contentDescription = cardDetails?.name,
-                parentRoute = parentRoute,
-                placeholderResId = placeholderResId,
-            )
+        CardImage(
+            imageUrl = cardDetails?.imageUris?.png ?: previewImageUrl,
+            cacheKeyId = cacheKeyId,
+            contentDescription = cardDetails?.name,
+            parentRoute = parentRoute,
+            placeholderResId = placeholderResId,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        )
 
-            cardDetails?.let { CardBasicInfo(cardDetails = it, modifier = modifier.fillMaxWidth()) }
-        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        cardDetails?.let { CardBasicInfo(cardDetails = it, modifier = modifier.fillMaxWidth()) }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -108,7 +109,7 @@ private fun CardImage(
                             animatedVisibilityScope = LocalNavAnimatedVisibilityScope.currentNotNull,
                         )
                     }
-                    .fillMaxWidth(fraction = 0.5F)
+                    .fillMaxWidth(fraction = 0.8F)
                     .aspectRatio(ratio = 5F / 7F),
             contentScale = ContentScale.Crop,
         )
@@ -121,32 +122,47 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
         Column(
             modifier = Modifier.padding(horizontal = 4.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.Start,
         ) {
-            Text(
-                text = cardDetails.name,
-                textAlign = TextAlign.Center,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = cardDetails.name,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+
+                // TODO: parse manaCost string to a visualized form
+                cardDetails.manaCost
+                    ?.takeIf { it.isNotEmpty() }
+                    ?.let { manaCost ->
+                        Text(
+                            text = manaCost,
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
+            }
+
+            cardDetails.typeLine?.let {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
 
             Text(
                 text = "${cardDetails.setName} (${cardDetails.set})",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold,
             )
-
-            LightHorizontalDivider()
-
-            cardDetails.typeLine?.let {
-                Text(
-                    text = it,
-                    textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-                LightHorizontalDivider()
-            }
 
             if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
                 Text(
@@ -157,20 +173,6 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                 )
                 LightHorizontalDivider()
             }
-
-            // TODO: parse manaCost string to a visualized form
-            cardDetails.manaCost
-                ?.takeIf { it.isNotEmpty() }
-                ?.let { manaCost ->
-                    Text(
-                        text = manaCost,
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                    )
-
-                    LightHorizontalDivider()
-                }
 
             Text(
                 text = cardDetails.rarity.capitalize(),
