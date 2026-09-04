@@ -21,7 +21,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -255,7 +255,7 @@ private fun ContrastLevel.toOptionLabel(): String {
     return stringResource(resId)
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun SettingsDialogLoadingPreview() {
     NowInMTGTheme {
@@ -277,14 +277,12 @@ private fun SettingsDialogSuccessWithDynamicColorPreview(
         useDynamicColor = userPreference.themeConfig.useDynamicColor,
         useDarkMode = userPreference.darkModeConfig.useDarkMode(true),
     ) {
-        Surface {
-            SettingsDialog(
-                settingsUiState = SettingsUiState.Success(userPreference),
-                onUpdateThemeConfig = {},
-                onUpdateDarkModeConfig = {},
-                onUpdateContrastLevel = {},
-            )
-        }
+        SettingsDialog(
+            settingsUiState = SettingsUiState.Success(userPreference),
+            onUpdateThemeConfig = {},
+            onUpdateDarkModeConfig = {},
+            onUpdateContrastLevel = {},
+        )
     }
 }
 

@@ -15,9 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.donghanx.design.theme.NowInMTGTheme
 
 @Composable
 fun EmptyScreenWithIcon(text: String, imageVector: ImageVector, modifier: Modifier = Modifier) {
@@ -35,7 +36,9 @@ fun EmptyScreenWithIcon(text: String, imageVector: ImageVector, modifier: Modifi
 }
 
 @Composable
-@Preview(showBackground = true, backgroundColor = 0XFFFFFF)
+@PreviewLightDark
 private fun EmptyFavoritesViewPreview() {
-    EmptyScreenWithIcon(text = "Empty Screen", imageVector = Icons.Outlined.FavoriteBorder)
+    NowInMTGTheme {
+        EmptyScreenWithIcon(text = "Empty Screen", imageVector = Icons.Outlined.FavoriteBorder)
+    }
 }

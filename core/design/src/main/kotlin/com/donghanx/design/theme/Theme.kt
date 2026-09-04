@@ -3,6 +3,7 @@ package com.donghanx.design.theme
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -274,7 +275,9 @@ fun NowInMTGTheme(
             else -> lightSchemesByContrastLevel.getValue(contrastLevel)
         }
 
-    MaterialTheme(colorScheme = colorScheme, typography = AppTypography, content = content)
+    MaterialTheme(colorScheme = colorScheme, typography = AppTypography) {
+        Surface(color = MaterialTheme.colorScheme.background, content = content)
+    }
 }
 
 private val lightSchemesByContrastLevel =

@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -43,6 +43,7 @@ import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
 import com.donghanx.design.composable.provider.currentNotNull
+import com.donghanx.design.theme.NowInMTGTheme
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.design.ui.shared.CardSharedElementKey
 import com.donghanx.mock.MockUtils
@@ -266,20 +267,22 @@ private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(modifier = modifier, thickness = 0.5.dp)
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun CardDetailsViewPreview(
     @PreviewParameter(CardDetailsPreviewParameterProvider::class) cardDetails: CardDetails
 ) {
     SharedTransitionProviderPreviewWrapper {
-        CardDetailsView(
-            cacheKeyId = null,
-            cardDetails = cardDetails,
-            rulings = MockUtils.rulingsProgenitus,
-            parentRoute = "Favorites",
-            previewImageUrl = null,
-            placeholderResId = R.drawable.img_progenitus,
-        )
+        NowInMTGTheme {
+            CardDetailsView(
+                cacheKeyId = null,
+                cardDetails = cardDetails,
+                rulings = MockUtils.rulingsProgenitus,
+                parentRoute = "Favorites",
+                previewImageUrl = null,
+                placeholderResId = R.drawable.img_progenitus,
+            )
+        }
     }
 }
 

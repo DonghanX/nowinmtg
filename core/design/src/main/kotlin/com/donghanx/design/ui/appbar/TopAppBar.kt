@@ -23,8 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.donghanx.design.theme.NowInMTGTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,16 +79,18 @@ fun NowInMtgTopAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+@PreviewLightDark
 @Composable
 private fun NowInMtgTopAppBarPreview() {
-    NowInMtgTopAppBar(
-        title = "App Bar Title",
-        navigationIcon = Icons.Rounded.Search,
-        navigationIconContentDescription = "Search",
-        actionIcon = Icons.Rounded.Settings,
-        actionIconContentDescription = "Settings",
-        showNavigationIcon = true,
-        shouldAdjustNavigationRail = false,
-    )
+    NowInMTGTheme {
+        NowInMtgTopAppBar(
+            title = "App Bar Title",
+            navigationIcon = Icons.Rounded.Search,
+            navigationIconContentDescription = "Search",
+            actionIcon = Icons.Rounded.Settings,
+            actionIconContentDescription = "Settings",
+            showNavigationIcon = true,
+            shouldAdjustNavigationRail = false,
+        )
+    }
 }

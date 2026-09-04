@@ -9,7 +9,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import com.donghanx.design.theme.NowInMTGTheme
 
 @Composable
 fun FilterChipWithLeadingIcon(
@@ -28,30 +29,34 @@ fun FilterChipWithLeadingIcon(
     )
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun FilterChipWithLeadingIconActivePreview() {
-    FilterChipWithLeadingIcon(
-        selected = true,
-        label = "filter chip",
-        onClick = {},
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Filled.Done,
-                contentDescription = null,
-                modifier = Modifier.size(FilterChipDefaults.IconSize),
-            )
-        },
-    )
+    NowInMTGTheme {
+        FilterChipWithLeadingIcon(
+            selected = true,
+            label = "filter chip",
+            onClick = {},
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Done,
+                    contentDescription = null,
+                    modifier = Modifier.size(FilterChipDefaults.IconSize),
+                )
+            },
+        )
+    }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun FilterChipWithLeadingIconInactivePreview() {
-    FilterChipWithLeadingIcon(
-        selected = false,
-        label = "filter chip",
-        onClick = {},
-        leadingIcon = {},
-    )
+    NowInMTGTheme {
+        FilterChipWithLeadingIcon(
+            selected = false,
+            label = "filter chip",
+            onClick = {},
+            leadingIcon = {},
+        )
+    }
 }

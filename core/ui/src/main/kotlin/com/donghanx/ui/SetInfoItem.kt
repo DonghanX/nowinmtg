@@ -24,7 +24,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.donghanx.common.extensions.toDisplayName
@@ -158,13 +158,13 @@ fun StickyYearReleased(yearReleased: Int, count: Int, modifier: Modifier = Modif
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun SetInfoItemPreview() {
     NowInMTGTheme { SetInfoItem(setInfo = MockUtils.soiExpansion, onClick = {}) }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun StickyYearReleasedPreview() {
     NowInMTGTheme { StickyYearReleased(yearReleased = 2023, count = 10) }

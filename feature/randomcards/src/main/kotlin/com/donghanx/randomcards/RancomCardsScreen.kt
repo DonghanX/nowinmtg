@@ -8,10 +8,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
+import com.donghanx.design.theme.NowInMTGTheme
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardPreview
 import com.donghanx.navigation.navkey.routeName
@@ -56,14 +57,16 @@ internal fun RandomCardsScreen(
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 private fun CardsGalleryPreview() {
     SharedTransitionProviderPreviewWrapper {
-        CardsGallery(
-            parentRoute = RandomCardsRoute::class.routeName,
-            cards = MockUtils.emptyCards.toImmutableList(),
-            onCardClick = {},
-        )
+        NowInMTGTheme {
+            CardsGallery(
+                parentRoute = RandomCardsRoute::class.routeName,
+                cards = MockUtils.emptyCards.toImmutableList(),
+                onCardClick = {},
+            )
+        }
     }
 }
