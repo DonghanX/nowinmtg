@@ -17,8 +17,23 @@ data class CardDetails(
     val text: String?,
     val typeLine: String?,
     val power: String?,
-    val rarity: String,
+    val rarity: Rarity,
     val set: String,
     val setName: String,
     val toughness: String?,
 )
+
+enum class Rarity {
+    Mythic,
+    Rare,
+    Uncommon,
+    Common,
+    Special,
+    Bonus,
+    Unknown;
+
+    companion object {
+        fun fromRarityValue(value: String): Rarity =
+            entries.find { it.name.equals(value, ignoreCase = true) } ?: Unknown
+    }
+}

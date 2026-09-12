@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
+import com.donghanx.model.Rarity
 import com.donghanx.model.network.ImageUris
 import com.donghanx.model.network.NetworkCardDetails
 
@@ -68,7 +69,7 @@ fun CardDetailsEntity.asExternalModel(): CardDetails =
         text = text,
         typeLine = typeLine,
         power = power,
-        rarity = rarity,
+        rarity = Rarity.fromRarityValue(rarity),
         set = set,
         setName = setName,
         toughness = toughness,

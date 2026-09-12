@@ -1,5 +1,6 @@
 package com.donghanx.carddetails
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,17 +41,19 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.placeholder
-import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.composable.extensions.conditional
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
 import com.donghanx.design.composable.provider.SharedTransitionProviderPreviewWrapper
 import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.theme.NowInMTGTheme
+import com.donghanx.design.theme.RarityTheme
+import com.donghanx.design.theme.fromRarity
 import com.donghanx.design.ui.card.ExpandableCard
 import com.donghanx.design.ui.shared.CardSharedElementKey
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
+import com.donghanx.model.Rarity
 import com.donghanx.model.Ruling
 
 @Composable
@@ -158,11 +163,15 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                 )
             }
 
-            Text(
-                text = "${cardDetails.setName} (${cardDetails.set})",
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.SemiBold,
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = "${cardDetails.setName} (${cardDetails.set})",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold,
+                )
+
+                CardRarityChip(rarity = cardDetails.rarity)
+            }
 
             if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
                 Text(
@@ -173,13 +182,6 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                 )
                 LightHorizontalDivider()
             }
-
-            Text(
-                text = cardDetails.rarity.capitalize(),
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-            )
 
             LightHorizontalDivider()
 
@@ -267,6 +269,23 @@ private fun CardRulings(rulings: List<Ruling>, modifier: Modifier = Modifier) {
 @Composable
 private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(modifier = modifier, thickness = 0.5.dp)
+}
+
+@Composable
+private fun CardRarityChip(rarity: Rarity, modifier: Modifier = Modifier) {
+    val rarityColors = RarityTheme.colors.fromRarity(rarity)
+
+    Text(
+        text = rarity.name.uppercase(),
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = rarityColors.onColorContainer,
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(6.dp))
+                .background(rarityColors.colorContainer)
+                .padding(horizontal = 6.dp, vertical = 2.dp),
+    )
 }
 
 @PreviewLightDark
