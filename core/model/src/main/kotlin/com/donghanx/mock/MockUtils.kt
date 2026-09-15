@@ -39,6 +39,8 @@ object MockUtils {
                     png = "",
                     small = "",
                 ),
+            loyalty = null,
+            defense = null,
         )
 
     val cardDetailsIncomplete: CardDetails =
@@ -60,6 +62,8 @@ object MockUtils {
             layout = "double-faced",
             imageUris = null,
             flavor = null,
+            loyalty = null,
+            defense = null,
             setName = "Shadows over Innistrad",
         )
 

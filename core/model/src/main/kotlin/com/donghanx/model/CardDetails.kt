@@ -21,6 +21,8 @@ data class CardDetails(
     val set: String,
     val setName: String,
     val toughness: String?,
+    val loyalty: String?,
+    val defense: String?,
 )
 
 enum class Rarity {

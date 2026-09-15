@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "65eb5723817f17c29e1354d89ca730da",
+    "identityHash": "f9f18b4fb80ed942ebf02671a81c25e4",
     "entities": [
       {
         "tableName": "random_cards",
@@ -46,7 +46,7 @@
       },
       {
         "tableName": "card_details",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `multiverseId` INTEGER, `artist` TEXT, `cmc` REAL, `colorIdentity` TEXT, `colors` TEXT, `flavor` TEXT, `layout` TEXT NOT NULL, `manaCost` TEXT, `name` TEXT NOT NULL, `text` TEXT, `typeLine` TEXT, `power` TEXT, `rarity` TEXT NOT NULL, `set` TEXT NOT NULL, `setName` TEXT NOT NULL, `toughness` TEXT, `artCrop` TEXT, `borderCrop` TEXT, `large` TEXT, `normal` TEXT, `png` TEXT, `small` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `multiverseId` INTEGER, `artist` TEXT, `cmc` REAL, `colorIdentity` TEXT, `colors` TEXT, `flavor` TEXT, `layout` TEXT NOT NULL, `manaCost` TEXT, `name` TEXT NOT NULL, `text` TEXT, `typeLine` TEXT, `power` TEXT, `rarity` TEXT NOT NULL, `set` TEXT NOT NULL, `setName` TEXT NOT NULL, `toughness` TEXT, `loyalty` TEXT, `defense` TEXT, `artCrop` TEXT, `borderCrop` TEXT, `large` TEXT, `normal` TEXT, `png` TEXT, `small` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -137,6 +137,16 @@
           {
             "fieldPath": "toughness",
             "columnName": "toughness",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "loyalty",
+            "columnName": "loyalty",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "defense",
+            "columnName": "defense",
             "affinity": "TEXT"
           },
           {
@@ -328,7 +338,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '65eb5723817f17c29e1354d89ca730da')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f9f18b4fb80ed942ebf02671a81c25e4')"
     ]
   }
 }

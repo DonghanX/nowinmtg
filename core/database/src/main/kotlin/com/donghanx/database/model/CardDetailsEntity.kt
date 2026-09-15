@@ -29,6 +29,8 @@ data class CardDetailsEntity(
     val set: String,
     val setName: String,
     val toughness: String?,
+    val loyalty: String?,
+    val defense: String?,
 )
 
 fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
@@ -51,6 +53,8 @@ fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
         set = set,
         setName = setName,
         toughness = toughness,
+        loyalty = loyalty,
+        defense = defense,
     )
 
 fun CardDetailsEntity.asExternalModel(): CardDetails =
@@ -73,6 +77,8 @@ fun CardDetailsEntity.asExternalModel(): CardDetails =
         set = set,
         setName = setName,
         toughness = toughness,
+        loyalty = loyalty,
+        defense = defense,
     )
 
 fun CardDetailsEntity.asExternalPreviewModel(): CardPreview =

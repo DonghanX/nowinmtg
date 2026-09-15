@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.placeholder
+import com.donghanx.common.extensions.capitalize
 import com.donghanx.design.composable.extensions.conditional
 import com.donghanx.design.composable.provider.LocalNavAnimatedVisibilityScope
 import com.donghanx.design.composable.provider.LocalSharedTransitionScope
@@ -154,33 +155,34 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                     }
             }
 
-            cardDetails.typeLine?.let {
-                Text(
-                    text = it,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Medium,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                cardDetails.typeLine?.let {
+                    Text(
+                        text = it,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Medium,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+
+                cardDetails.toStatBadgeText()?.let { CardStatsBadge(stats = it) }
             }
 
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Text(
                     text = "${cardDetails.setName} (${cardDetails.set})",
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.SemiBold,
                 )
 
-                CardRarityChip(rarity = cardDetails.rarity)
-            }
-
-            if (!cardDetails.power.isNullOrEmpty() && !cardDetails.toughness.isNullOrEmpty()) {
-                Text(
-                    text = "${cardDetails.power}/${cardDetails.toughness}",
-                    textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-                LightHorizontalDivider()
+                CardRarityBadge(rarity = cardDetails.rarity)
             }
 
             LightHorizontalDivider()
@@ -272,11 +274,11 @@ private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun CardRarityChip(rarity: Rarity, modifier: Modifier = Modifier) {
+private fun CardRarityBadge(rarity: Rarity, modifier: Modifier = Modifier) {
     val rarityColors = RarityTheme.colors.fromRarity(rarity)
 
     Text(
-        text = rarity.name.uppercase(),
+        text = rarity.name.capitalize(),
         style = MaterialTheme.typography.labelSmall,
         fontWeight = FontWeight.SemiBold,
         color = rarityColors.onColorContainer,
@@ -284,6 +286,22 @@ private fun CardRarityChip(rarity: Rarity, modifier: Modifier = Modifier) {
             modifier
                 .clip(RoundedCornerShape(6.dp))
                 .background(rarityColors.colorContainer)
+                .padding(horizontal = 6.dp, vertical = 2.dp),
+    )
+}
+
+@Composable
+private fun CardStatsBadge(stats: String, modifier: Modifier = Modifier) {
+    Text(
+        text = stats,
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = FontWeight.Medium,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(6.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                 .padding(horizontal = 6.dp, vertical = 2.dp),
     )
 }
@@ -311,3 +329,11 @@ class CardDetailsPreviewParameterProvider : PreviewParameterProvider<CardDetails
     override val values: Sequence<CardDetails>
         get() = sequenceOf(MockUtils.cardDetailsProgenitus, MockUtils.cardDetailsIncomplete)
 }
+
+private fun CardDetails.toStatBadgeText(): String? =
+    when {
+        power != null && toughness != null -> "$power/$toughness"
+        loyalty != null -> loyalty
+        defense != null -> defense
+        else -> null
+    }
