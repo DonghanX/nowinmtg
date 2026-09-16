@@ -23,6 +23,7 @@ data class CardDetails(
     val toughness: String?,
     val loyalty: String?,
     val defense: String?,
+    val collectorNumber: String,
 )
 
 enum class Rarity {

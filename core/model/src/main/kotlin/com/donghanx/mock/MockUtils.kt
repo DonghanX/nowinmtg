@@ -41,6 +41,7 @@ object MockUtils {
                 ),
             loyalty = null,
             defense = null,
+            collectorNumber = "1",
         )
 
     val cardDetailsIncomplete: CardDetails =
@@ -65,6 +66,7 @@ object MockUtils {
             loyalty = null,
             defense = null,
             setName = "Shadows over Innistrad",
+            collectorNumber = "10",
         )
 
     val rulingsProgenitus =

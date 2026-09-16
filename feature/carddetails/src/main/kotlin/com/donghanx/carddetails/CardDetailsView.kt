@@ -11,12 +11,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,7 +54,7 @@ import com.donghanx.design.composable.provider.currentNotNull
 import com.donghanx.design.theme.NowInMTGTheme
 import com.donghanx.design.theme.RarityTheme
 import com.donghanx.design.theme.fromRarity
-import com.donghanx.design.ui.card.ExpandableCard
+import com.donghanx.design.ui.expandable.ExpandableSection
 import com.donghanx.design.ui.shared.CardSharedElementKey
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
@@ -81,7 +85,7 @@ internal fun CardDetailsView(
 
         cardDetails?.let { CardBasicInfo(cardDetails = it, modifier = modifier.fillMaxWidth()) }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         cardDetails?.let { CardDescription(cardDetails = it, rulings = rulings) }
     }
@@ -173,39 +177,18 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
             }
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = "${cardDetails.setName} (${cardDetails.set})",
+                    text = cardDetails.toCardCollectorInfo(),
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
                 CardRarityBadge(rarity = cardDetails.rarity)
-            }
-
-            LightHorizontalDivider()
-
-            cardDetails.artist?.let { artist ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(id = R.string.illustrated_by),
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                    )
-
-                    HorizontalDivider(modifier = Modifier.width(2.dp))
-
-                    Text(
-                        text = artist,
-                        textAlign = TextAlign.Center,
-                        fontSize = 14.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.Medium,
-                    )
-                }
             }
         }
     }
@@ -218,34 +201,72 @@ private fun CardDescription(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(horizontal = 4.dp),
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        SectionDivider()
+
         cardDetails.text?.let { cardText ->
-            ExpandableCard(headerTitle = stringResource(id = R.string.card_text)) {
-                Text(text = cardText, textAlign = TextAlign.Start, fontWeight = FontWeight.Normal)
-            }
+            Text(
+                text = cardText,
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
         }
 
         cardDetails.flavor?.let { cardFlavor ->
-            ExpandableCard(headerTitle = stringResource(id = R.string.flavor)) {
-                Text(
-                    text = cardFlavor,
-                    textAlign = TextAlign.Start,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Medium,
-                )
+            Text(
+                text = cardFlavor,
+                textAlign = TextAlign.Start,
+                fontStyle = FontStyle.Italic,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        cardDetails.artist?.let { artist -> CardArtistRow(artist) }
+
+        if (rulings.isNotEmpty()) {
+            SectionDivider()
+
+            ExpandableSection(headerTitle = stringResource(id = R.string.rulings)) {
+                CardRulings(rulings = rulings)
             }
         }
 
-        rulings
-            .takeIf { it.isNotEmpty() }
-            ?.let { rulings ->
-                ExpandableCard(headerTitle = stringResource(id = R.string.rulings)) {
-                    CardRulings(rulings = rulings)
-                }
-            }
+        Spacer(modifier = Modifier.height(20.dp))
+    }
+}
+
+@Composable
+private fun CardArtistRow(artist: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = Icons.Filled.Create,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(14.dp),
+        )
+
+        Spacer(modifier = Modifier.width(2.dp))
+
+        Text(
+            text = stringResource(id = R.string.illustrated_by),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        Spacer(modifier = Modifier.width(2.dp))
+
+        Text(
+            text = artist,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontStyle = FontStyle.Italic,
+        )
     }
 }
 
@@ -266,11 +287,6 @@ private fun CardRulings(rulings: List<Ruling>, modifier: Modifier = Modifier) {
             )
         }
     }
-}
-
-@Composable
-private fun LightHorizontalDivider(modifier: Modifier = Modifier) {
-    HorizontalDivider(modifier = modifier, thickness = 0.5.dp)
 }
 
 @Composable
@@ -306,6 +322,11 @@ private fun CardStatsBadge(stats: String, modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+private fun SectionDivider() {
+    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), thickness = 1.dp)
+}
+
 @PreviewLightDark
 @Composable
 private fun CardDetailsViewPreview(
@@ -337,3 +358,6 @@ private fun CardDetails.toStatBadgeText(): String? =
         defense != null -> defense
         else -> null
     }
+
+private fun CardDetails.toCardCollectorInfo(): String =
+    "$setName (${set.uppercase()}) · #${collectorNumber}"
