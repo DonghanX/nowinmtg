@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "44e1aeb748a8aeeb2d4b0f8b499481da",
+    "identityHash": "8da8301c323ffaf00f700e496f29e4f7",
     "entities": [
       {
         "tableName": "random_cards",
@@ -46,7 +46,7 @@
       },
       {
         "tableName": "card_details",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `multiverseId` INTEGER, `artist` TEXT, `cmc` REAL, `colorIdentity` TEXT, `colors` TEXT, `flavor` TEXT, `layout` TEXT NOT NULL, `manaCost` TEXT, `name` TEXT NOT NULL, `text` TEXT, `typeLine` TEXT, `power` TEXT, `rarity` TEXT NOT NULL, `set` TEXT NOT NULL, `setName` TEXT NOT NULL, `toughness` TEXT, `loyalty` TEXT, `defense` TEXT, `collectorNumber` TEXT NOT NULL, `artCrop` TEXT, `borderCrop` TEXT, `large` TEXT, `normal` TEXT, `png` TEXT, `small` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `multiverseId` INTEGER, `artist` TEXT, `cmc` REAL, `colorIdentity` TEXT, `colors` TEXT, `flavor` TEXT, `layout` TEXT NOT NULL, `manaCost` TEXT, `name` TEXT NOT NULL, `text` TEXT, `typeLine` TEXT, `power` TEXT, `rarity` TEXT NOT NULL, `set` TEXT NOT NULL, `setName` TEXT NOT NULL, `toughness` TEXT, `loyalty` TEXT, `defense` TEXT, `collectorNumber` TEXT NOT NULL DEFAULT '', `artCrop` TEXT, `borderCrop` TEXT, `large` TEXT, `normal` TEXT, `png` TEXT, `small` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -153,7 +153,8 @@
             "fieldPath": "collectorNumber",
             "columnName": "collectorNumber",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "''"
           },
           {
             "fieldPath": "imageUris.artCrop",
@@ -344,7 +345,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '44e1aeb748a8aeeb2d4b0f8b499481da')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8da8301c323ffaf00f700e496f29e4f7')"
     ]
   }
 }

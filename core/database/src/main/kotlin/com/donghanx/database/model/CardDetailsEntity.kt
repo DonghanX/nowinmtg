@@ -1,5 +1,6 @@
 package com.donghanx.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -31,7 +32,7 @@ data class CardDetailsEntity(
     val toughness: String?,
     val loyalty: String?,
     val defense: String?,
-    val collectorNumber: String,
+    @ColumnInfo(defaultValue = "") val collectorNumber: String,
 )
 
 fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
