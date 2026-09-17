@@ -56,6 +56,7 @@ import com.donghanx.design.theme.RarityTheme
 import com.donghanx.design.theme.fromRarity
 import com.donghanx.design.ui.expandable.ExpandableSection
 import com.donghanx.design.ui.shared.CardSharedElementKey
+import com.donghanx.design.ui.text.ResizableText
 import com.donghanx.mock.MockUtils
 import com.donghanx.model.CardDetails
 import com.donghanx.model.Rarity
@@ -181,11 +182,13 @@ private fun CardBasicInfo(cardDetails: CardDetails, modifier: Modifier = Modifie
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(
+                ResizableText(
                     text = cardDetails.toCardCollectorInfo(),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(weight = 1F, fill = false),
                 )
 
                 CardRarityBadge(rarity = cardDetails.rarity)
@@ -205,9 +208,9 @@ private fun CardDescription(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        SectionDivider()
-
         cardDetails.text?.let { cardText ->
+            SectionDivider()
+
             Text(
                 text = cardText,
                 textAlign = TextAlign.Start,
