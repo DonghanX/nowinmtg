@@ -9,7 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
@@ -21,6 +24,9 @@ fun ResizableText(
     fontSize: TextUnit = 16.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     maxLines: Int = 1,
+    style: TextStyle = TextStyle.Default,
+    color: Color = Color.Unspecified,
+    textAlign: TextAlign = TextAlign.Center,
 ) {
     var multiplier by remember { mutableFloatStateOf(1F) }
     var readyToDraw by remember { mutableStateOf(false) }
@@ -37,6 +43,9 @@ fun ResizableText(
                 readyToDraw = true
             }
         },
+        style = style,
+        color = color,
+        textAlign = textAlign,
         modifier =
             modifier.drawWithContent {
                 if (readyToDraw) {

@@ -1,10 +1,12 @@
 package com.donghanx.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
+import com.donghanx.model.Rarity
 import com.donghanx.model.network.ImageUris
 import com.donghanx.model.network.NetworkCardDetails
 
@@ -28,6 +30,9 @@ data class CardDetailsEntity(
     val set: String,
     val setName: String,
     val toughness: String?,
+    val loyalty: String?,
+    val defense: String?,
+    @ColumnInfo(defaultValue = "") val collectorNumber: String,
 )
 
 fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
@@ -50,6 +55,9 @@ fun NetworkCardDetails.asCardDetailsEntity(): CardDetailsEntity =
         set = set,
         setName = setName,
         toughness = toughness,
+        loyalty = loyalty,
+        defense = defense,
+        collectorNumber = collectorNumber,
     )
 
 fun CardDetailsEntity.asExternalModel(): CardDetails =
@@ -68,10 +76,13 @@ fun CardDetailsEntity.asExternalModel(): CardDetails =
         text = text,
         typeLine = typeLine,
         power = power,
-        rarity = rarity,
+        rarity = Rarity.fromRarityValue(rarity),
         set = set,
         setName = setName,
         toughness = toughness,
+        loyalty = loyalty,
+        defense = defense,
+        collectorNumber = collectorNumber,
     )
 
 fun CardDetailsEntity.asExternalPreviewModel(): CardPreview =

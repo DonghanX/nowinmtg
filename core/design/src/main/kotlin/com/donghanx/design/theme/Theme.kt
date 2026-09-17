@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -274,9 +275,12 @@ fun NowInMTGTheme(
             useDarkMode -> darkSchemesByContrastLevel.getValue(contrastLevel)
             else -> lightSchemesByContrastLevel.getValue(contrastLevel)
         }
+    val rarityColorScheme = if (useDarkMode) darkRarityColorScheme else lightRarityColorScheme
 
-    MaterialTheme(colorScheme = colorScheme, typography = AppTypography) {
-        Surface(color = MaterialTheme.colorScheme.background, content = content)
+    CompositionLocalProvider(LocalRarityColorScheme provides rarityColorScheme) {
+        MaterialTheme(colorScheme = colorScheme, typography = AppTypography) {
+            Surface(color = MaterialTheme.colorScheme.background, content = content)
+        }
     }
 }
 

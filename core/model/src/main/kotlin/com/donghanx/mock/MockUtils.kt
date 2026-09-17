@@ -2,6 +2,7 @@ package com.donghanx.mock
 
 import com.donghanx.model.CardDetails
 import com.donghanx.model.CardPreview
+import com.donghanx.model.Rarity
 import com.donghanx.model.Ruling
 import com.donghanx.model.SetInfo
 import com.donghanx.model.network.ImageUris
@@ -19,7 +20,7 @@ object MockUtils {
             colors = listOf("B", "G", "R", "U", "W"),
             colorIdentity = listOf("B", "G", "R", "U", "W"),
             typeLine = "Legendary Creature — Hydra Avatar",
-            rarity = "mythic",
+            rarity = Rarity.Mythic,
             set = "con",
             setName = "Conflux",
             text =
@@ -38,6 +39,9 @@ object MockUtils {
                     png = "",
                     small = "",
                 ),
+            loyalty = null,
+            defense = null,
+            collectorNumber = "1",
         )
 
     val cardDetailsIncomplete: CardDetails =
@@ -50,7 +54,7 @@ object MockUtils {
             colors = null,
             colorIdentity = null,
             typeLine = "Legendary Creature — Angel",
-            rarity = "Mythic Rare",
+            rarity = Rarity.Mythic,
             set = "SOI",
             text = null,
             artist = null,
@@ -59,7 +63,10 @@ object MockUtils {
             layout = "double-faced",
             imageUris = null,
             flavor = null,
+            loyalty = null,
+            defense = null,
             setName = "Shadows over Innistrad",
+            collectorNumber = "10",
         )
 
     val rulingsProgenitus =

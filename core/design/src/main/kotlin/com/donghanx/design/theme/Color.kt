@@ -217,3 +217,43 @@ val surfaceContainerLowDarkHighContrast = Color(0xFF1E201A)
 val surfaceContainerDarkHighContrast = Color(0xFF2F312A)
 val surfaceContainerHighDarkHighContrast = Color(0xFF3A3C35)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF454840)
+
+val rarityCommonLight = Color(0xFF5B5F53)
+val onRarityCommonLight = Color(0xFFFFFFFF)
+val rarityCommonContainerLight = Color(0xFFE1E4D5)
+val onRarityCommonContainerLight = Color(0xFF44483D)
+
+val rarityUncommonLight = Color(0xFF536268)
+val onRarityUncommonLight = Color(0xFFFFFFFF)
+val rarityUncommonContainerLight = Color(0xFFD6E5F1)
+val onRarityUncommonContainerLight = Color(0xFF3C4A53)
+
+val rarityRareLight = Color(0xFF825900)
+val onRarityRareLight = Color(0xFFFFFFFF)
+val rarityRareContainerLight = Color(0xFFFFDEA8)
+val onRarityRareContainerLight = Color(0xFF634300)
+
+val rarityMythicLight = Color(0xFFA03000)
+val onRarityMythicLight = Color(0xFFFFFFFF)
+val rarityMythicContainerLight = Color(0xFFFFDBD1)
+val onRarityMythicContainerLight = Color(0xFF7C2300)
+
+val rarityCommonDark = Color(0xFFC5C8BA)
+val onRarityCommonDark = Color(0xFF2F312A)
+val rarityCommonContainerDark = Color(0xFF44483D)
+val onRarityCommonContainerDark = Color(0xFFE1E4D5)
+
+val rarityUncommonDark = Color(0xFFBAC9D5)
+val onRarityUncommonDark = Color(0xFF26343C)
+val rarityUncommonContainerDark = Color(0xFF3C4A53)
+val onRarityUncommonContainerDark = Color(0xFFD6E5F1)
+
+val rarityRareDark = Color(0xFFF5B934)
+val onRarityRareDark = Color(0xFF472F00)
+val rarityRareContainerDark = Color(0xFF634300)
+val onRarityRareContainerDark = Color(0xFFFFDEA8)
+
+val rarityMythicDark = Color(0xFFFFA68D)
+val onRarityMythicDark = Color(0xFF5B1600)
+val rarityMythicContainerDark = Color(0xFF7C2300)
+val onRarityMythicContainerDark = Color(0xFFFFDBD1)

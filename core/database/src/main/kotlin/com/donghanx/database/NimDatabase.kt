@@ -1,5 +1,6 @@
 package com.donghanx.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -20,7 +21,8 @@ import com.donghanx.database.model.SetEntity
             FavoriteCardEntity::class,
             RulingsEntity::class,
         ],
-    version = 6,
+    version = 7,
+    autoMigrations = [AutoMigration(from = 6, to = 7)],
 )
 @TypeConverters(StringListTypeConverters::class, RulingsConverter::class)
 abstract class NimDatabase : RoomDatabase() {
