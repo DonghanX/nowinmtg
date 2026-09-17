@@ -203,42 +203,45 @@ private fun CardDescription(
     rulings: List<Ruling>,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier.padding(horizontal = 4.dp),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        cardDetails.text?.let { cardText ->
-            SectionDivider()
+    // TODO: handle the issue that texts that aren't composed will not be included in copy
+    //  operations and select all will not expand the selection to include them
+    SelectionContainer(modifier = modifier.padding(horizontal = 4.dp)) {
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            cardDetails.text?.let { cardText ->
+                SectionDivider()
 
-            Text(
-                text = cardText,
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
-
-        cardDetails.flavor?.let { cardFlavor ->
-            Text(
-                text = cardFlavor,
-                textAlign = TextAlign.Start,
-                fontStyle = FontStyle.Italic,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-
-        cardDetails.artist?.let { artist -> CardArtistRow(artist) }
-
-        if (rulings.isNotEmpty()) {
-            SectionDivider()
-
-            ExpandableSection(headerTitle = stringResource(id = R.string.rulings)) {
-                CardRulings(rulings = rulings)
+                Text(
+                    text = cardText,
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
-        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+            cardDetails.flavor?.let { cardFlavor ->
+                Text(
+                    text = cardFlavor,
+                    textAlign = TextAlign.Start,
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            cardDetails.artist?.let { artist -> CardArtistRow(artist) }
+
+            if (rulings.isNotEmpty()) {
+                SectionDivider()
+
+                ExpandableSection(headerTitle = stringResource(id = R.string.rulings)) {
+                    CardRulings(rulings = rulings)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
     }
 }
 
